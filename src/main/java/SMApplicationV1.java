@@ -11,8 +11,8 @@ public class SMApplicationV1 {
     private static final int GRID_COLUMNS = 50; // M
     private static final int MEMORY_SIZE = 10; // t
     private static final int SUCCESSIVE_MOVEMENTS = 1; // i
-    private static final double K = 0.3; // k
-    private static final double K_PLUS = 0.1; // k-
+    private static final double K_MINUS = 0.3; // k-
+    private static final double K_PLUS = 0.1; // k+
 
     public static void main(String[] args) {
     }

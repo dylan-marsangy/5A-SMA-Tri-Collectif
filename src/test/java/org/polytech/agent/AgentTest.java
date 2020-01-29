@@ -19,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AgentTest {
 
-    private static final int t = 10;
-    private static final double k = 0.3;
-    private static final double kPlus = 0.1;
+    private final int t = 10;
+    private final double K_MINUS = 0.3;
+    private final double K_PLUS = 0.1;
 
     private Agent agent;
 
     @BeforeEach
     public void initializeAgent() {
         Agent.cleanID();
-        agent = new Agent(t, kPlus, k);
+        agent = new Agent(t, K_PLUS, K_MINUS);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ public class AgentTest {
     @Test
     @DisplayName("Identification By Auto-Incremented Long")
     public void agentsIdentification() {
-        assertEquals(2L, new Agent(t, kPlus, k).getID());
+        assertEquals(2L, new Agent(t, K_PLUS, K_MINUS).getID());
     }
 
     // MEMORY ----------------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ public class AgentTest {
         IntStream.rangeClosed(1, t / 2).forEach(index -> agent.visit(BlockValue.A));
         IntStream.rangeClosed(1, t / 2).forEach(index -> agent.visit(BlockValue.B));
 
-        double expected = Math.pow(kPlus / (kPlus + 0.5), 2);
+        double expected = Math.pow(K_PLUS / (K_PLUS + 0.5), 2);
         System.out.println(expected);
 
         Map.Entry<BlockValue, Double> result = new StrategyPickUp().computeProba(agent);
@@ -92,7 +92,7 @@ public class AgentTest {
         IntStream.rangeClosed(1, t / 3).forEach(index -> agent.visit(BlockValue.A));
         IntStream.rangeClosed(1, 2 * t / 3).forEach(index -> agent.visit(BlockValue.B));
 
-        double expected = Math.pow(kPlus / (kPlus + ((double) 3 / 10)), 2);
+        double expected = Math.pow(K_PLUS / (K_PLUS + ((double) 3 / 10)), 2);
         System.out.println(expected);
 
         Map.Entry<BlockValue, Double> result = new StrategyPickUp().computeProba(agent);
@@ -111,7 +111,7 @@ public class AgentTest {
         Map<Direction, Movable> perception = new HashMap<>();
         Arrays.stream(Direction.values()).forEach(direction -> perception.put(direction, new Block(BlockValue.A)));
 
-        double expected = Math.pow(1 / (k + 1), 2);
+        double expected = Math.pow(1 / (K_MINUS + 1), 2);
         assertEquals(expected, new StrategyPutDown().computeProba(agent, perception));
     }
 
@@ -126,7 +126,7 @@ public class AgentTest {
         perception.put(Direction.WEST, new Block(BlockValue.A));
         perception.put(Direction.SOUTH, null);
 
-        double expected = Math.pow(0.75 / (k + 0.75), 2);
+        double expected = Math.pow(0.75 / (K_MINUS + 0.75), 2);
         assertEquals(expected, new StrategyPutDown().computeProba(agent, perception));
     }
 

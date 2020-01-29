@@ -45,7 +45,7 @@ public class StrategyPutDown implements Strategy {
     public double computeProba(Agent agent, Map<Direction, Movable> perception) {
         // Calcul de f.
         double f = computeF(agent, perception);
-        return Math.pow((f / (agent.getK() + f)), 2);
+        return Math.pow((f / (agent.getkMinus() + f)), 2);
     }
 
     /**

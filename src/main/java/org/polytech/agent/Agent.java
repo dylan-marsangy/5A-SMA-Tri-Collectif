@@ -21,7 +21,7 @@ public class Agent implements Movable {
     private Long id;
 
     private double kPlus;
-    private double k;
+    private double kMinus;
 
     Queue<BlockValue> memory;
 
@@ -33,12 +33,12 @@ public class Agent implements Movable {
         attributeId();
     }
 
-    public Agent(int memorySize, double kPlus, double k) {
+    public Agent(int memorySize, double kPlus, double kMinus) {
         attributeId();
         buildMemory(memorySize);
 
         this.kPlus = kPlus;
-        this.k = k;
+        this.kMinus = kMinus;
     }
 
     private void attributeId() {
@@ -141,11 +141,11 @@ public class Agent implements Movable {
         this.kPlus = kPlus;
     }
 
-    public double getK() {
-        return k;
+    public double getkMinus() {
+        return kMinus;
     }
 
-    public void setK(double k) {
-        this.k = k;
+    public void setkMinus(double kMinus) {
+        this.kMinus = kMinus;
     }
 }

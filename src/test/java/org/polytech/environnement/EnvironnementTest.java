@@ -16,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Environnement Tests")
 public class EnvironnementTest {
 
-    private static final int n = 5;
-    private static final int m = 5;
-    private static final int nbAgents = 5;
-    private static final int nbObjects = 10;
+    private final int n = 5;
+    private final int m = 5;
+    private final int nbAgents = 5;
+    private final int nbObjects = 10;
 
-    private static final int t = 10;
-    private static final double k = 0.3;
-    private static final double kPlus = 0.1;
+    private final int t = 10;
+    private final double k = 0.3;
+    private final double kPlus = 0.1;
 
     private Environnement environnement;
 
