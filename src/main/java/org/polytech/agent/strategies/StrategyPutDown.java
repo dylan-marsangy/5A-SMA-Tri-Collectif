@@ -6,7 +6,9 @@ import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Stratégie d'un agent pour déposer un bloc.
@@ -25,11 +27,17 @@ public class StrategyPutDown implements Strategy {
      */
     @Override
     public Direction execute(Agent agent, Map<Direction, Movable> perception) {
-        double rand = new Random().nextDouble();
-
         double proba = computeProba(agent, perception);
-        if (rand <= proba) {
-            //TODO: Choisir direction vide
+        if (new Random().nextDouble() <= proba) {
+            // Garder seulement les directions dans lesquelles la case but est vide.
+            perception.values().removeIf(Objects::nonNull);
+
+            // Choisir aléatoirement une direction restante.
+            if (perception.size() == 0) return null;
+            return perception.keySet().stream()
+                    .skip(new Random().nextInt(perception.size()))
+                    .findFirst()
+                    .orElse(null);
         }
 
         return null;
