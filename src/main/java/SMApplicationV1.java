@@ -1,3 +1,7 @@
+import org.polytech.environnement.Environnement;
+
+import java.util.stream.IntStream;
+
 public class SMApplicationV1 {
 
     private static final int NUMBER_BLOCKS_A = 200;
@@ -11,6 +15,5 @@ public class SMApplicationV1 {
     private static final double K_PLUS = 0.1; // k-
 
     public static void main(String[] args) {
-
     }
 }

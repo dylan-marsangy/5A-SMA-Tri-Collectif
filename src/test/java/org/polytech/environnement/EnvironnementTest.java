@@ -8,10 +8,9 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,8 +62,6 @@ public class EnvironnementTest {
 
         assertEquals(expected, environnement.toString());
     }
-
-
 
     // INSERT ----------------------------------------------------------------------------------------------------------
 
@@ -177,8 +174,8 @@ public class EnvironnementTest {
         assertEquals(expected, environnement.perception(agent, 2));
     }
 
+    // RANDOM INSERTS --------------------------------------------------------------------------------------------------
 
-    // RANDOM INSERTS ------------------------------------------------------------------------------------------------------
     @Test
     @DisplayName("Count elements on grid")
     public void hasCorrectElements() {
@@ -202,5 +199,18 @@ public class EnvironnementTest {
         assertEquals(agents, nbAgents);
         assertEquals(objects, nbObjects);
     }
+
+    // RUNNING ---------------------------------------------------------------------------------------------------------
+
+    @Test
+    @DisplayName("Pick Random Agent")
+    public void pickRandomAgent() {
+        environnement.insertAgents(t);
+        Set<Long> picked = new HashSet<>();
+        IntStream.rangeClosed(1, 20).forEach(input -> picked.add(environnement.pickRandomAgent().getID()));
+
+        assertNotEquals(1, picked.size());
+    }
+
 
 }

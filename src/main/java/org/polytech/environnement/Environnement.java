@@ -5,23 +5,34 @@ import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import java.util.Random;
+import java.util.*;
 
-import java.util.HashMap;
-import java.util.Map;
+public class Environnement implements Runnable {
 
-public class Environnement {
-
+    /**
+     * Grille sur laquelle évoluent les agents et les blocs.
+     */
     Movable[][] grid;
+    /**
+     * Nombre d'agents sur la grille.
+     */
     private int nbAgents;
-    private int nbObjects;
+    /**
+     * Nombre de blocs sur la grille.
+     *  */
+    private int nbBlocks;
+
+    /**
+     * Collection des agents évoluent sur la grille.
+     */
+    private Set<Agent> agents;
 
     private Environnement() {}
 
     public Environnement(int n, int m, int nbAgents, int nbObjects) {
         this.grid = new Movable[n][m];
         this.nbAgents = nbAgents;
-        this.nbObjects = nbObjects;
+        this.nbBlocks = nbObjects;
     }
 
     public void insertAgents(int memorySize) {
@@ -30,6 +41,7 @@ public class Environnement {
         int n = grid.length;
         int m = grid[0].length;
 
+        agents = new HashSet<>();
         for (int i = 0 ; i < nbAgents ; i++) {
             do {
                 x = rand.nextInt(n);
@@ -37,8 +49,9 @@ public class Environnement {
             }
             while (!isEmpty(x, y));
 
-            Movable entity = new Agent(memorySize);
+            Agent entity = new Agent(memorySize);
             insert(entity, x, y);
+            agents.add(entity);
         }
     }
 
@@ -50,7 +63,7 @@ public class Environnement {
         BlockValue value;
         int randIndex;
 
-        for (int i = 0 ; i < nbObjects ; i++) {
+        for (int i = 0; i < nbBlocks; i++) {
             do {
                 x = rand.nextInt(n);
                 y = rand.nextInt(m);
@@ -71,6 +84,12 @@ public class Environnement {
         }
     }
 
+    /**
+     * Déplacement une entité dans une direction donnée.
+     * @param entity Entité à déplacer
+     * @param direction Direction dans laquelle déplacer l'entité
+     * @throws CollisionException Si le mouvement implique une collision
+     */
     public void move(Movable entity, Direction direction) throws CollisionException {
         Pair<Integer, Integer> coordinates = findEntity(entity);
         int x = coordinates.getKey() ;
@@ -153,6 +172,14 @@ public class Environnement {
         throw new MovableNotFoundException("Entity does not exist on the grid.");
     }
 
+    public Agent pickRandomAgent() {
+        return agents.stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
+    }
+
+    @Override
+    public void run() {
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -177,5 +204,13 @@ public class Environnement {
 
     public void setGrid(Movable[][] grid) {
         this.grid = grid;
+    }
+
+    public Set<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(Set<Agent> agents) {
+        this.agents = agents;
     }
 }
