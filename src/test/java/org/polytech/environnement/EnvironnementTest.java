@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
+import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
 import java.util.AbstractMap;
@@ -21,18 +22,20 @@ public class EnvironnementTest {
     private static final int n = 5;
     private static final int m = 5;
     private static final int t = 10;
+    private static final int nbAgents = 5;
+    private static final int nbObjects = 10;
 
     private Environnement environnement;
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(n, m);
+        environnement = new Environnement(n, m, nbAgents, nbObjects);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
 
     @Test
-    @DisplayName("Initialiaze Grid")
+    @DisplayName("Initialize Grid")
     public void hasCorrectDimensions() {
         assertTrue(environnement.isInside(0, 0));
         assertTrue(environnement.isInside(0, m - 1));
@@ -60,6 +63,8 @@ public class EnvironnementTest {
 
         assertEquals(expected, environnement.toString());
     }
+
+
 
     // INSERT ----------------------------------------------------------------------------------------------------------
 
@@ -170,6 +175,32 @@ public class EnvironnementTest {
         expected.put(Direction.WEST, null);
 
         assertEquals(expected, environnement.perception(agent, 2));
+    }
+
+
+    // RANDOM INSERTS ------------------------------------------------------------------------------------------------------
+    @Test
+    @DisplayName("Count elements on grid")
+    public void hasCorrectElements() {
+        environnement.insertAgents(t);
+        environnement.insertBlocks();
+
+        int agents = 0;
+        int objects = 0;
+
+        for (int i = 0; i < environnement.getGrid().length ; i++) {
+            for (int j = 0 ; j < environnement.getGrid()[i].length ; j++) {
+                if (environnement.getEntity(i, j) instanceof Agent) {
+                    ++agents;
+                }
+                else if (environnement.getEntity(i, j) instanceof Block) {
+                    ++objects;
+                }
+            }
+        }
+
+        assertEquals(agents, nbAgents);
+        assertEquals(objects, nbObjects);
     }
 
 }

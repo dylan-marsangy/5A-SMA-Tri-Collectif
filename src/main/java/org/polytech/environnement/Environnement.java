@@ -6,12 +6,9 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
 import java.util.Random;
-import org.polytech.agent.Agent;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Environnement {
 
@@ -21,16 +18,13 @@ public class Environnement {
 
     private Environnement() {}
 
-    public Environnement(int n, int m, int nbAgents, int memorySize, int nbObjects) {
+    public Environnement(int n, int m, int nbAgents, int nbObjects) {
         this.grid = new Movable[n][m];
         this.nbAgents = nbAgents;
         this.nbObjects = nbObjects;
-
-        insertAgents(memorySize);
-        insertBlocks();
     }
 
-    private void insertAgents(int memorySize) {
+    public void insertAgents(int memorySize) {
         Random rand = new Random();
         int x, y;
         int n = grid.length;
@@ -41,14 +35,14 @@ public class Environnement {
                 x = rand.nextInt(n);
                 y = rand.nextInt(m);
             }
-            while (getEntity(x, y) != null);
+            while (!isEmpty(x, y));
 
             Movable entity = new Agent(memorySize);
             insert(entity, x, y);
         }
     }
 
-    private void insertBlocks() {
+    public void insertBlocks() {
         Random rand = new Random();
         int x, y;
         int n = grid.length;
@@ -61,7 +55,7 @@ public class Environnement {
                 x = rand.nextInt(n);
                 y = rand.nextInt(m);
             }
-            while (getEntity(x, y) != null);
+            while (!isEmpty(x, y));
 
             randIndex = rand.nextInt(2);
 
