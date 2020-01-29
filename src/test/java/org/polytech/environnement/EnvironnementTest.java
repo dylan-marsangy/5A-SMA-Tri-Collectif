@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.polytech.agent.Agent;
+import org.polytech.environnement.block.Block;
+import org.polytech.environnement.block.BlockValue;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -38,6 +40,25 @@ public class EnvironnementTest {
         assertTrue(environnement.isInside(n - 1, m - 1));
 
         assertFalse(environnement.isInside(n, m));
+    }
+
+    @Test
+    @DisplayName("Display Grid")
+    public void displayGrid() {
+        environnement.insert(new Agent(t), 0, 0);
+        environnement.insert(new Agent(t), 1, 0);
+        environnement.insert(new Agent(t), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 3);
+        environnement.insert(new Block(BlockValue.B), 4, 2);
+
+        String expected =
+                " 1 | 0 | 0 | 0 | 0 |\n" +
+                        " 2 | 0 | 0 | 0 | 0 |\n" +
+                        " 3 | 0 | 0 | A | 0 |\n" +
+                        " 0 | 0 | 0 | 0 | 0 |\n" +
+                        " 0 | 0 | B | 0 | 0 |\n";
+
+        assertEquals(expected, environnement.toString());
     }
 
     // INSERT ----------------------------------------------------------------------------------------------------------

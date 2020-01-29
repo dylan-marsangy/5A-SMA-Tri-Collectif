@@ -159,6 +159,24 @@ public class Environnement {
         throw new MovableNotFoundException("Entity does not exist on the grid.");
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        Movable entity;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                entity = getEntity(i, j);
+                sb.append(String.format(" %s |", entity != null ? entity.toString() : "0"));
+
+                if (j == grid[i].length - 1) sb.append("\n");
+
+            }
+        }
+
+        return sb.toString();
+    }
+
     public Movable[][] getGrid() {
         return grid;
     }
