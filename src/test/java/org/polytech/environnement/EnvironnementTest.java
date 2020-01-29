@@ -5,13 +5,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
+import org.polytech.environnement.exceptions.CollisionException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,17 +18,19 @@ public class EnvironnementTest {
 
     private static final int n = 5;
     private static final int m = 5;
+    private static final int nbAgents = 5;
+    private static final int nbObjects = 10;
+
     private static final int t = 10;
     private static final double k = 0.3;
     private static final double kPlus = 0.1;
-    private static final int nbAgents = 5;
-    private static final int nbObjects = 10;
 
     private Environnement environnement;
 
     @BeforeEach
     public void initializeEnvironnement() {
         environnement = new Environnement(n, m, nbAgents, nbObjects);
+        Agent.cleanID();
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
@@ -76,12 +76,6 @@ public class EnvironnementTest {
     }
 
     @Test
-    @DisplayName("Refuse Entity Insertion Outside Grid")
-    public void insertEntity_outsideGrid() {
-        assertThrows(CollisionException.class, () -> environnement.insert(new Agent(t, kPlus, k), 0, -10));
-    }
-
-    @Test
     @DisplayName("Avoid Collisions While Inserting")
     public void avoidCollisions_whenInserting() {
         environnement.insert(new Agent(t, kPlus, k), 1, 1);
@@ -99,12 +93,6 @@ public class EnvironnementTest {
         assertNull(environnement.getEntity(1 ,1));
     }
 
-    @Test
-    @DisplayName("Refuse Removal Walls")
-    public void removeWalls() {
-        assertThrows(CollisionException.class, () -> environnement.remove(0, -10));
-    }
-
     // MOVE ------------------------------------------------------------------------------------------------------------
 
     @Test
@@ -112,7 +100,7 @@ public class EnvironnementTest {
     public void moveEntity() {
         Agent agent = new Agent(t, kPlus, k);
         environnement.insert(agent, 1,1);
-        environnement.move(agent, Direction.NORTH);
+        environnement.move(agent, Direction.NORTH, 1);
         assertNull(environnement.getEntity(1, 1));
         assertEquals(agent, environnement.getEntity(0, 1));
     }
@@ -122,7 +110,7 @@ public class EnvironnementTest {
     public void avoidMoving_outsideGrid() {
         Agent a1 = new Agent(t, kPlus, k);
         environnement.insert(a1, 0, 0);
-        assertThrows(CollisionException.class, () -> environnement.move(a1, Direction.NORTH));
+        assertFalse(environnement.move(a1, Direction.NORTH, 1));
     }
 
     @Test
@@ -132,25 +120,10 @@ public class EnvironnementTest {
         Agent a2 = new Agent(t, kPlus, k);
         environnement.insert(a1, 0, 1);
         environnement.insert(a2, 1, 1);
-        assertThrows(CollisionException.class, () -> environnement.move(a2, Direction.NORTH));
+        assertThrows(CollisionException.class, () -> environnement.move(a2, Direction.NORTH, 1));
     }
 
     // PERCEPTION ------------------------------------------------------------------------------------------------------
-
-    @Test
-    @DisplayName("Get Entity Perception For Direction")
-    public void getPerception_oneDirection() {
-        Agent agent = new Agent(t, kPlus, k);
-        Agent a2 = new Agent(t, kPlus, k);
-        Agent a3 = new Agent(t, kPlus, k);
-
-        environnement.insert(agent, 2, 2);
-        environnement.insert(a2, 1, 2);
-        environnement.insert(a3, 0, 2);
-
-        assertEquals(a2, environnement.perception(agent, Direction.NORTH, 1));
-        assertEquals(a3, environnement.perception(agent, Direction.NORTH, 2));
-    }
 
     @Test
     @DisplayName("Get Entity Perception For All Directions")
@@ -159,19 +132,16 @@ public class EnvironnementTest {
         Agent a2 = new Agent(t, kPlus, k);
         Agent a3 = new Agent(t, kPlus, k);
         Agent a4 = new Agent(t, kPlus, k);
-        Agent a5 = new Agent(t, kPlus, k);
 
-        environnement.insert(agent, 2, 2);
-        environnement.insert(a2, 0, 2);
-        environnement.insert(a3, 4, 2);
-        environnement.insert(a4, 2, 4);
-        environnement.insert(a5, 3, 3);
+        environnement.insert(agent, 0, 2);
+        environnement.insert(a2, 2, 2);
+        environnement.insert(a3, 0, 0);
+        environnement.insert(a4, 4, 2);
 
         Map<Direction, Movable> expected = new HashMap<>();
-        expected.put(Direction.NORTH, a2);
-        expected.put(Direction.SOUTH, a3);
-        expected.put(Direction.EAST, a4);
-        expected.put(Direction.WEST, null);
+        expected.put(Direction.SOUTH, a2);
+        expected.put(Direction.EAST, null);
+        expected.put(Direction.WEST, a3);
 
         assertEquals(expected, environnement.perception(agent, 2));
     }
@@ -207,7 +177,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Pick Random Agent")
     public void pickRandomAgent() {
-        environnement.insertAgents(t);
+        environnement.insertAgents(t, kPlus, k);
         Set<Long> picked = new HashSet<>();
         IntStream.rangeClosed(1, 20).forEach(input -> picked.add(environnement.pickRandomAgent().getID()));
 

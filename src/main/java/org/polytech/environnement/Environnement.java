@@ -4,6 +4,8 @@ import javafx.util.Pair;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
+import org.polytech.environnement.exceptions.CollisionException;
+import org.polytech.environnement.exceptions.MovableNotFoundException;
 
 import java.util.*;
 
@@ -85,104 +87,106 @@ public class Environnement implements Runnable {
     }
 
     /**
-     * Déplacement une entité dans une direction donnée.
+     * Déplace une entité dans une direction donnée sur une distance donnée si possible.
      * @param entity Entité à déplacer
      * @param direction Direction dans laquelle déplacer l'entité
+     * @param d Distance sur laquelle déplacer l'entité
+     * @return (1) True si le mouvement a réussi, (2) false sinon.
      * @throws CollisionException Si le mouvement implique une collision
      */
-    public void move(Movable entity, Direction direction) throws CollisionException {
+    public boolean move(Movable entity, Direction direction, int d) throws CollisionException {
         Pair<Integer, Integer> coordinates = findEntity(entity);
         int x = coordinates.getKey() ;
         int y = coordinates.getValue();
 
-        int xGoal = coordinates.getKey() + direction.x;
-        int yGoal = coordinates.getValue() + direction.y;
+        int xGoal = coordinates.getKey() + d * direction.x;
+        int yGoal = coordinates.getValue() + d * direction.y;
 
         // Déplacement
-        insert(entity, xGoal, yGoal);
-        remove(x, y);
+        if (isInside(xGoal, yGoal)) {
+            insert(entity, xGoal, yGoal);
+            remove(x, y);
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Perception d'une entité dans toutes les directions sur une certaine distance.
+     * S'il y a un mur dans une direction, elle n'est pas répertoriée dans le résultat.
+     *
      * @param entity Entité qui cherche à scanner son environnement
-     * @param d Distance à scanner
+     * @param d      Distance à scanner
      * @return Objets qui se trouve à la d-ième case dans toutes les directions par rapport à l'entité
      */
     public Map<Direction, Movable> perception(Movable entity, int d) {
         Map<Direction, Movable> neighbors = new HashMap<>();
 
+        Pair<Integer, Integer> coordinates;
+        int xGoal, yGoal;
         for (Direction direction : Direction.values()) {
-            neighbors.put(direction, perception(entity, direction, d));
+            coordinates = findEntity(entity);
+            xGoal = coordinates.getKey() + d * direction.x;
+            yGoal = coordinates.getValue() + d * direction.y;
+
+            if (isInside(xGoal, yGoal)) {
+                neighbors.put(direction, getEntity(xGoal, yGoal));
+            }
         }
 
         return neighbors;
     }
 
     /**
-     * Perception d'une entité dans une direction sur une certaine distance.
-     * @param entity Entité qui cherche à scanner son environnement
-     * @param direction Direction dans laquelle l'entité scanne
-     * @param d Distance à scanner
-     * @return Objet qui se trouve à la d-ième case par rapport à l'entité dans la direction souhaitée
-     */
-    public Movable perception(Movable entity, Direction direction, int d) {
-        Pair<Integer, Integer> coordinates = findEntity(entity);
-        int xGoal = coordinates.getKey() + d * direction.x;
-        int yGoal = coordinates.getValue() + d * direction.y;
-
-        return getEntity(xGoal, yGoal);
-    }
-
-    /**
-     * Vide une case de la grille.
-     * @param x Abscisse de la case à vider
-     * @param y Ordonnée de la case à vider
-     * @throws CollisionException Si la case à vider est en dehors du plateau
-     */
-    public void remove(int x, int y) {
-        if (isInside(x, y)) this.grid[x][y] = null;
-        else throw new CollisionException("Vous êtes en train de casser les murs. >:(");
-    }
-
-    /**
-     * Insère une entité sur la grille si possible.
-     * @param entity Entité à insérer
-     * @param x Abscisse de la case dans laquelle insérer l'entité
-     * @param y Ordonnée de la case dans laquelle insérer l'entité
-     * @throws CollisionException Si la case est en dehors de la grille ou déjà occupée par une autre entité
-     */
-    public void insert(Movable entity, int x, int y) throws CollisionException {
-        if (isInside(x, y)) {
-            if (isEmpty(x, y)) this.grid[x][y] = entity;
-            else throw new CollisionException("Une entité est déjà présente sur la case.");
-        } else throw new CollisionException("L'entité ne peut pas rentrer dans les murs.");
-
-    }
-
-    /**
-     * Renvoie l'entité éventuellement présente dans une case de la grille.
-     * @param x Abscisse de la case
-     * @param y Ordonnée de la case
-     * @return (1) Entité présente sur la case, (2) null sinon.
-     */
-    public Movable getEntity(int x, int y) {
-        return (isInside(x, y)) ? this.grid[x][y] : null;
-    }
-
-    /**
      * Indique si la position appartient à la grille ou non.
+     *
      * @param x Abscisse de la position
      * @param y Ordonnée de la position
      * @return (1) True si la position est à l'intérieur de la grille, (2) false sinon.
      */
     public boolean isInside(int x, int y) {
-        return (x >=0 && x < grid.length &&
-                y >=0 && y < grid[0].length);
+        return (x >= 0 && x < grid.length &&
+                y >= 0 && y < grid[0].length);
+    }
+
+    /**
+     * Vide une case de la grille.
+     *
+     * @param x Abscisse de la case à vider
+     * @param y Ordonnée de la case à vider
+     */
+    public void remove(int x, int y) {
+        this.grid[x][y] = null;
+    }
+
+    /**
+     * Insère une entité sur la grille si possible.
+     *
+     * @param entity Entité à insérer
+     * @param x      Abscisse de la case dans laquelle insérer l'entité
+     * @param y      Ordonnée de la case dans laquelle insérer l'entité
+     * @throws CollisionException Si la case est en dehors de la grille ou déjà occupée par une autre entité
+     */
+    public void insert(Movable entity, int x, int y) throws CollisionException {
+        if (isEmpty(x, y)) this.grid[x][y] = entity;
+        else throw new CollisionException("Une entité est déjà présente sur la case.");
+    }
+
+    /**
+     * Renvoie l'entité éventuellement présente dans une case de la grille.
+     *
+     * @param x Abscisse de la case
+     * @param y Ordonnée de la case
+     * @return Entité présente sur la case, null si elle est vide.
+     */
+    public Movable getEntity(int x, int y) {
+        return this.grid[x][y];
     }
 
     /**
      * Indique si une entité est présente ou non dans une case de la grille.
+     *
      * @param i Abscisse de la position de l'entité
      * @param j Ordonnée de la position de l'entité
      * @return (1) True si la case est vide, (2) false sinon.
@@ -232,7 +236,6 @@ public class Environnement implements Runnable {
                 sb.append(String.format(" %s |", entity != null ? entity.toString() : "0"));
 
                 if (j == grid[i].length - 1) sb.append("\n");
-
             }
         }
 

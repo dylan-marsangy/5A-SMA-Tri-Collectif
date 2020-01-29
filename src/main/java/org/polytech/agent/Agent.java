@@ -51,38 +51,70 @@ public class Agent implements Movable {
         }
     }
 
+    // STRATEGY PICK UP ------------------------------------------------------------------------------------------------
+
+    public Block pickUp(Map<Direction, Movable> neighbors) {
+        neighbors.computeIfPresent()
+    }
+
     /**
-     * Compte le nombre de blocs de chaque type dans la mémoire
-     * @return numberOfBlocks[BlockValue.A] et numberOfBlocks[BlockValue.B]
+     * Détermine si l'agent prend le bloc ou non.
+     * @param currentBlock: Bloc à tester
+     * @return boolean
      */
-    public HashMap<BlockValue, Integer> getNumberOfBlocksInMemory() {
-        Iterator<BlockValue> it = memory.iterator();
-        HashMap<BlockValue, Integer> numberOfBlocks = new HashMap<BlockValue, Integer>();
-        numberOfBlocks.put(BlockValue.A, 0);
-        numberOfBlocks.put(BlockValue.B, 0);
+    public boolean doITakeIt(Block currentBlock) {
+        double proba = computeFPickUp(currentBlock);
 
-        while(it.hasNext()){
-            BlockValue block = it.next();
+        double rand = new Random().nextDouble();
 
-            switch (block) {
-                case A:
-                {
-                    numberOfBlocks.put(BlockValue.A, numberOfBlocks.get(BlockValue.A) + 1);
-                    break;
-                }
-                case B:
-                {
-                    numberOfBlocks.put(BlockValue.B, numberOfBlocks.get(BlockValue.B) + 1);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-        }
+        return (rand <= proba);
+    }
 
-        return numberOfBlocks;
+    /**
+     * Calcule la probabilité de prendre un bloc.
+     * @return Probabilité.
+     */
+    public double computeProbaPickUp() {
+        double f = computeFPickUp();
+        return Math.pow((kPlus / (kPlus + f)), 2);
+    }
+
+    /**
+     * Calcule le résultat de la fonction de prise.
+     * @return Valeur f
+     */
+    public double computeFPickUp() {
+        Long nbBlocks = computeBlockPickUp().getValue();
+        return (double) nbBlocks / this.memory.size();
+    }
+
+    /**
+     * Calcule le type de bloc qu'il est préférable de saisir.
+     * @return Type de bloc avec le nombre d'occurences dans la mémoire
+     */
+    public Map.Entry<BlockValue, Long> computeBlockPickUp() {
+        Map<BlockValue, Long> nbBlocks = countBlocks();
+        return Collections.min(nbBlocks.entrySet(), Map.Entry.comparingByValue());
+    }
+
+    /**
+     * Compte le nombre de blocs de chaque valeur dans la mémoire de l'agent.
+     * @return Nombre d'éléments de chaque valeur dans la mémoire
+     */
+    public Map<BlockValue, Long> countBlocks() {
+        Map<BlockValue, Long> result = new HashMap<>();
+        Arrays.stream(BlockValue.values()).forEach(value -> result.put(value, countBlocks(value)));
+
+        return result;
+    }
+
+    /**
+     * Compte le nombre de blocs d'une certaine valeur dans la mémoire de l'agent.
+     * @param value Valeur du bloc à compter.
+     * @return Nombre d'éléments correspondants dans la mémoire
+     */
+    public Long countBlocks(BlockValue value) {
+        return this.memory.stream().filter(val -> val == value).count();
     }
 
     /**
@@ -123,50 +155,7 @@ public class Agent implements Movable {
         return nb / blocks.keySet().size();
     }
 
-    /**
-     * Calcule le f dans le cas où l'agent souhaite prendre un bloc
-     * @param currentBlock: Block à tester
-     * @return double
-     */
-    public double getFTake(BlockValue currentBlock) {
-        double nb;
-        HashMap<BlockValue, Integer> numberOfBlocks = getNumberOfBlocksInMemory();
-
-        switch (currentBlock) {
-            case A: {
-                nb = numberOfBlocks.get(BlockValue.A);
-                break;
-            }
-            case B: {
-                nb = numberOfBlocks.get(BlockValue.B);
-                break;
-            }
-            default: {
-                return 0;
-            }
-        }
-
-        return nb / memory.size();
-    }
-
-    public double getProbaToTake(Block currentBlock) {
-        double f = getFTake(currentBlock.getValue());
-
-        return Math.pow((kPlus / (kPlus + f)), 2);
-    }
-
-    /**
-     * Calcule la proba de prendre un bloc
-     * @param currentBlock: Bloc à tester
-     * @return boolean
-     */
-    public boolean doITakeIt(Block currentBlock) {
-        double proba = getProbaToTake(currentBlock);
-
-        double rand = new Random().nextDouble();
-
-        return (rand <= proba);
-    }
+    // STRATEGY PUT DOWN -----------------------------------------------------------------------------------------------
 
     /**
      * Calcule la proba de poser le bloc tenu
@@ -182,14 +171,12 @@ public class Agent implements Movable {
         return (rand <= proba);
     }
 
-    @Override
-    public void move(Direction direction) {
-
-    }
-
     public void visit(BlockValue value) {
         memory.add(value);
-        System.out.println(memory.toString());
+    }
+
+    public boolean isHolding() {
+        return this.holding == null;
     }
 
     @Override
@@ -210,6 +197,10 @@ public class Agent implements Movable {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+
+    public static void cleanID() {
+        COUNTER_INSTANTIATIONS = 0L;
     }
 
     public Long getID() { return this.id; }

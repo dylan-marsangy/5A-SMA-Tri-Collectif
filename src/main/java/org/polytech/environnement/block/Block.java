@@ -16,11 +16,6 @@ public class Block implements Movable {
         this.value = value;
     }
 
-    @Override
-    public void move(Direction direction) {
-
-    }
-
     public BlockValue getValue() {
         return value;
     }
