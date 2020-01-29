@@ -12,7 +12,7 @@ public class EnvironnementTest {
     private static final int m = 3;
     private static final int t = 10;
 
-    private static Environnement environnement;
+    private Environnement environnement;
 
     @BeforeEach
     public void initializeEnvironnement() {
