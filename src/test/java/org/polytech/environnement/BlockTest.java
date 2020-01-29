@@ -13,6 +13,6 @@ public class BlockTest {
     @DisplayName("Blocks are identified by either A or B.")
     public void blocksIdentification() {
         assertEquals("A", new Block(BlockValue.A).toString(), "Block A is not identified by A.");
-        assertEquals("B", new Block(BlockValue.B).toString(), "Block A is not identified by A.");
+        assertEquals("B", new Block(BlockValue.B).toString(), "Block B is not identified by B.");
     }
 }
