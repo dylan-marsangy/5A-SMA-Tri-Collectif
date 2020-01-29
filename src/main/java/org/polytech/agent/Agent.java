@@ -6,10 +6,7 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.Direction;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -86,6 +83,39 @@ public class Agent implements Movable {
         return numberOfBlocks;
     }
 
+    private double getFPutDown(Map<Direction, Movable> blocks) {
+        HashMap<BlockValue, Integer> numberOfBlocks = new HashMap<BlockValue, Integer>();
+        numberOfBlocks.put(BlockValue.A, 0);
+        numberOfBlocks.put(BlockValue.B, 0);
+
+        for (Direction direction : blocks.keySet()) {
+            Movable element = blocks.get(direction);
+
+            if (element instanceof Block) {
+                BlockValue blockValue = ((Block) element).getValue();
+                numberOfBlocks.put(blockValue, numberOfBlocks.get(blockValue));
+            }
+        }
+
+        double nb;
+
+        switch (holding.getValue()) {
+            case A : {
+                nb = numberOfBlocks.get(BlockValue.A);
+                break;
+            }
+            case B: {
+                nb = numberOfBlocks.get(BlockValue.B);
+                break;
+            }
+            default: {
+                return 0;
+            }
+        }
+
+        return nb / blocks.keySet().size();
+    }
+
     private double getFTake(BlockValue currentBlock) {
         double nb;
         HashMap<BlockValue, Integer> numberOfBlocks = getNumberOfBlocksInMemory();
@@ -116,8 +146,8 @@ public class Agent implements Movable {
         return (rand <= proba);
     }
 
-    private boolean doIPutItDown(BlockValue currentBlock) {
-        double f = getFTake(currentBlock);
+    private boolean doIPutItDown(Map<Direction, Movable> blocks) {
+        double f = getFPutDown(blocks);
 
         double proba = Math.pow((f / (k + f)), 2);
         double rand = new Random().nextDouble();
