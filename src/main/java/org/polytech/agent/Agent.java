@@ -2,6 +2,7 @@ package org.polytech.agent;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.polytech.environnement.Movable;
+import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.Direction;
 
@@ -47,6 +48,10 @@ public class Agent implements Movable {
                 return memory.stream().map(Enum::toString).collect(Collectors.joining(""));
             }
         };
+
+        for (int i = 0; i < memorySize ; i++) {
+            memory.add(BlockValue.ZERO);
+        }
     }
 
     private HashMap<BlockValue, Integer> getNumberOfBlocksInMemory() {
@@ -79,17 +84,17 @@ public class Agent implements Movable {
         return numberOfBlocks;
     }
 
-    private int getFTake(BlockValue currentBlock) {
-        int f;
+    private double getFTake(BlockValue currentBlock) {
+        double nb;
         HashMap<BlockValue, Integer> numberOfBlocks = getNumberOfBlocksInMemory();
 
         switch (currentBlock) {
             case A: {
-                f = numberOfBlocks.get(BlockValue.A);
+                nb = numberOfBlocks.get(BlockValue.A);
                 break;
             }
             case B: {
-                f = numberOfBlocks.get(BlockValue.B);
+                nb = numberOfBlocks.get(BlockValue.B);
                 break;
             }
             default: {
@@ -97,11 +102,11 @@ public class Agent implements Movable {
             }
         }
 
-        return f;
+        return nb / memory.size();
     }
 
     private boolean doITakeIt(BlockValue currentBlock) {
-        int f = getFTake(currentBlock);
+        double f = getFTake(currentBlock);
 
         double proba = Math.pow((kPlus / (kPlus + f)), 2);
         double rand = new Random().nextDouble();
@@ -110,7 +115,7 @@ public class Agent implements Movable {
     }
 
     private boolean doIPutItDown(BlockValue currentBlock) {
-        int f = getFTake(currentBlock);
+        double f = getFTake(currentBlock);
 
         double proba = Math.pow((f / (kMinus + f)), 2);
         double rand = new Random().nextDouble();
