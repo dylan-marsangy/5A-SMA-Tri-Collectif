@@ -2,18 +2,23 @@ package org.polytech.agent;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.polytech.environnement.Movable;
+import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.Direction;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
+/**
+ * Agent intelligent parcourant un environnement.
+ */
 public class Agent implements Movable {
 
     private static Long COUNTER_INSTANTIATIONS = 0L;
-
     private Long id;
 
     Queue<BlockValue> memory;
+
+    private Block holding;
 
     private Agent() {
         attributeId();
@@ -69,4 +74,15 @@ public class Agent implements Movable {
         return this.memory;
     }
 
+    public void setMemory(Queue<BlockValue> memory) {
+        this.memory = memory;
+    }
+
+    public Block getHolding() {
+        return holding;
+    }
+
+    public void setHolding(Block holding) {
+        this.holding = holding;
+    }
 }
