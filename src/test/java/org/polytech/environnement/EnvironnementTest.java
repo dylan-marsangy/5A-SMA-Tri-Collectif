@@ -21,6 +21,8 @@ public class EnvironnementTest {
     private static final int n = 5;
     private static final int m = 5;
     private static final int t = 10;
+    private static final double k = 0.3;
+    private static final double kPlus = 0.1;
     private static final int nbAgents = 5;
     private static final int nbObjects = 10;
 
@@ -47,9 +49,9 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Display Grid")
     public void displayGrid() {
-        environnement.insert(new Agent(t), 0, 0);
-        environnement.insert(new Agent(t), 1, 0);
-        environnement.insert(new Agent(t), 2, 0);
+        environnement.insert(new Agent(t, kPlus, k), 0, 0);
+        environnement.insert(new Agent(t, kPlus, k), 1, 0);
+        environnement.insert(new Agent(t, kPlus, k), 2, 0);
         environnement.insert(new Block(BlockValue.A), 2, 3);
         environnement.insert(new Block(BlockValue.B), 4, 2);
 
@@ -68,7 +70,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Insert Entity Inside Grid")
     public void insertEntity_insideGrid() {
-        Agent agent = new Agent(t);
+        Agent agent = new Agent(t, kPlus, k);
         environnement.insert(agent, 1, 1);
         assertEquals(agent, environnement.getEntity(1 ,1));
     }
@@ -76,14 +78,14 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Refuse Entity Insertion Outside Grid")
     public void insertEntity_outsideGrid() {
-        assertThrows(CollisionException.class, () -> environnement.insert(new Agent(t), 0, -10));
+        assertThrows(CollisionException.class, () -> environnement.insert(new Agent(t, kPlus, k), 0, -10));
     }
 
     @Test
     @DisplayName("Avoid Collisions While Inserting")
     public void avoidCollisions_whenInserting() {
-        environnement.insert(new Agent(t), 1, 1);
-        assertThrows(CollisionException.class, () -> environnement.insert(new Agent(t), 1, 1));
+        environnement.insert(new Agent(t, kPlus, k), 1, 1);
+        assertThrows(CollisionException.class, () -> environnement.insert(new Agent(t, kPlus, k), 1, 1));
     }
 
     // DELETE ----------------------------------------------------------------------------------------------------------
@@ -91,7 +93,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Remove Entity From Grid")
     public void removeEntity() {
-        Agent agent = new Agent(t);
+        Agent agent = new Agent(t, kPlus, k);
         environnement.insert(agent, 1, 1);
         environnement.remove(1 ,1);
         assertNull(environnement.getEntity(1 ,1));
@@ -108,7 +110,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Move Entity Inside Grid")
     public void moveEntity() {
-        Agent agent = new Agent(t);
+        Agent agent = new Agent(t, kPlus, k);
         environnement.insert(agent, 1,1);
         environnement.move(agent, Direction.NORTH);
         assertNull(environnement.getEntity(1, 1));
@@ -118,7 +120,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Avoid Moves Outside Grid")
     public void avoidMoving_outsideGrid() {
-        Agent a1 = new Agent(t);
+        Agent a1 = new Agent(t, kPlus, k);
         environnement.insert(a1, 0, 0);
         assertThrows(CollisionException.class, () -> environnement.move(a1, Direction.NORTH));
     }
@@ -126,8 +128,8 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Avoid Collisions While Moving")
     public void avoidCollisions_whenMoving() {
-        Agent a1 = new Agent(t);
-        Agent a2 = new Agent(t);
+        Agent a1 = new Agent(t, kPlus, k);
+        Agent a2 = new Agent(t, kPlus, k);
         environnement.insert(a1, 0, 1);
         environnement.insert(a2, 1, 1);
         assertThrows(CollisionException.class, () -> environnement.move(a2, Direction.NORTH));
@@ -138,9 +140,9 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Get Entity Perception For Direction")
     public void getPerception_oneDirection() {
-        Agent agent = new Agent(t);
-        Agent a2 = new Agent(t);
-        Agent a3 = new Agent(t);
+        Agent agent = new Agent(t, kPlus, k);
+        Agent a2 = new Agent(t, kPlus, k);
+        Agent a3 = new Agent(t, kPlus, k);
 
         environnement.insert(agent, 2, 2);
         environnement.insert(a2, 1, 2);
@@ -153,11 +155,11 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Get Entity Perception For All Directions")
     public void getPerception_allDirections() {
-        Agent agent = new Agent(t);
-        Agent a2 = new Agent(t);
-        Agent a3 = new Agent(t);
-        Agent a4 = new Agent(t);
-        Agent a5 = new Agent(t);
+        Agent agent = new Agent(t, kPlus, k);
+        Agent a2 = new Agent(t, kPlus, k);
+        Agent a3 = new Agent(t, kPlus, k);
+        Agent a4 = new Agent(t, kPlus, k);
+        Agent a5 = new Agent(t, kPlus, k);
 
         environnement.insert(agent, 2, 2);
         environnement.insert(a2, 0, 2);
@@ -179,7 +181,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Count elements on grid")
     public void hasCorrectElements() {
-        environnement.insertAgents(t);
+        environnement.insertAgents(t, kPlus, k);
         environnement.insertBlocks();
 
         int agents = 0;

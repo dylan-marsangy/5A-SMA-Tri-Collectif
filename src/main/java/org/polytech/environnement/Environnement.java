@@ -35,7 +35,7 @@ public class Environnement implements Runnable {
         this.nbBlocks = nbObjects;
     }
 
-    public void insertAgents(int memorySize) {
+    public void insertAgents(int memorySize, double kPlus, double k) {
         Random rand = new Random();
         int x, y;
         int n = grid.length;
@@ -49,7 +49,7 @@ public class Environnement implements Runnable {
             }
             while (!isEmpty(x, y));
 
-            Agent entity = new Agent(memorySize);
+            Agent entity = new Agent(memorySize, kPlus, k);
             insert(entity, x, y);
             agents.add(entity);
         }

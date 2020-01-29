@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Agent intelligent parcourant un environnement.
+ * Agent intelligent parcourant un environnement comme un jambon.
  * Un agent est identifié par un Long auto-incrémenté avec l'instantiation d'un nouvel agent.
  */
 public class Agent implements Movable {
@@ -25,13 +25,10 @@ public class Agent implements Movable {
 
     private Block holding;
 
-    private Agent(double kPlus, double k) {
+
+    public Agent(int memorySize, double kPlus, double k) {
         this.kPlus = kPlus;
         this.k = k;
-        attributeId();
-    }
-
-    public Agent(int memorySize) {
         attributeId();
         buildMemory(memorySize);
     }
@@ -54,7 +51,11 @@ public class Agent implements Movable {
         }
     }
 
-    private HashMap<BlockValue, Integer> getNumberOfBlocksInMemory() {
+    /**
+     * Compte le nombre de blocs de chaque type dans la mémoire
+     * @return numberOfBlocks[BlockValue.A] et numberOfBlocks[BlockValue.B]
+     */
+    public HashMap<BlockValue, Integer> getNumberOfBlocksInMemory() {
         Iterator<BlockValue> it = memory.iterator();
         HashMap<BlockValue, Integer> numberOfBlocks = new HashMap<BlockValue, Integer>();
         numberOfBlocks.put(BlockValue.A, 0);
@@ -84,7 +85,12 @@ public class Agent implements Movable {
         return numberOfBlocks;
     }
 
-    private double getFPutDown(Map<Direction, Movable> blocks) {
+    /**
+     * Calcule le f dans le cas où l'agent pose un objet
+     * @param blocks: Blocks perçus autour de l'agent
+     * @return double
+     */
+    public double getFPutDown(Map<Direction, Movable> blocks) {
         HashMap<BlockValue, Integer> numberOfBlocks = new HashMap<BlockValue, Integer>();
         numberOfBlocks.put(BlockValue.A, 0);
         numberOfBlocks.put(BlockValue.B, 0);
@@ -117,7 +123,12 @@ public class Agent implements Movable {
         return nb / blocks.keySet().size();
     }
 
-    private double getFTake(BlockValue currentBlock) {
+    /**
+     * Calcule le f dans le cas où l'agent souhaite prendre un bloc
+     * @param currentBlock: Block à tester
+     * @return double
+     */
+    public double getFTake(BlockValue currentBlock) {
         double nb;
         HashMap<BlockValue, Integer> numberOfBlocks = getNumberOfBlocksInMemory();
 
@@ -138,16 +149,31 @@ public class Agent implements Movable {
         return nb / memory.size();
     }
 
-    private boolean doITakeIt(BlockValue currentBlock) {
-        double f = getFTake(currentBlock);
+    public double getProbaToTake(Block currentBlock) {
+        double f = getFTake(currentBlock.getValue());
 
-        double proba = Math.pow((kPlus / (kPlus + f)), 2);
+        return Math.pow((kPlus / (kPlus + f)), 2);
+    }
+
+    /**
+     * Calcule la proba de prendre un bloc
+     * @param currentBlock: Bloc à tester
+     * @return boolean
+     */
+    public boolean doITakeIt(Block currentBlock) {
+        double proba = getProbaToTake(currentBlock);
+
         double rand = new Random().nextDouble();
 
         return (rand <= proba);
     }
 
-    private boolean doIPutItDown(Map<Direction, Movable> blocks) {
+    /**
+     * Calcule la proba de poser le bloc tenu
+     * @param blocks: Blocs perçus autour de l'agent
+     * @return boolean
+     */
+    public boolean doIPutItDown(Map<Direction, Movable> blocks) {
         double f = getFPutDown(blocks);
 
         double proba = Math.pow((f / (k + f)), 2);
