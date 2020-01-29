@@ -20,14 +20,16 @@ public class Agent implements Movable {
     private static Long COUNTER_INSTANTIATIONS = 0L;
     private Long id;
 
-    private final double kPlus = 0.1;
-    private final double kMinus = 0.3;
+    private double kPlus;
+    private double k;
 
     Queue<BlockValue> memory;
 
     private Block holding;
 
-    private Agent() {
+    private Agent(double kPlus, double k) {
+        this.kPlus = kPlus;
+        this.k = k;
         attributeId();
     }
 
@@ -117,7 +119,7 @@ public class Agent implements Movable {
     private boolean doIPutItDown(BlockValue currentBlock) {
         double f = getFTake(currentBlock);
 
-        double proba = Math.pow((f / (kMinus + f)), 2);
+        double proba = Math.pow((f / (k + f)), 2);
         double rand = new Random().nextDouble();
 
         return (rand <= proba);

@@ -2,6 +2,11 @@ package org.polytech.environnement;
 
 import javafx.util.Pair;
 import org.polytech.agent.Agent;
+import org.polytech.environnement.block.Block;
+import org.polytech.environnement.block.BlockValue;
+
+import java.util.Random;
+import org.polytech.agent.Agent;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,11 +16,65 @@ import java.util.stream.Collectors;
 public class Environnement {
 
     Movable[][] grid;
+    private int nbAgents;
+    private int nbObjects;
 
     private Environnement() {}
 
-    public Environnement(int n, int m) {
+    public Environnement(int n, int m, int nbAgents, int memorySize, int nbObjects) {
         this.grid = new Movable[n][m];
+        this.nbAgents = nbAgents;
+        this.nbObjects = nbObjects;
+
+        insertAgents(memorySize);
+        insertBlocks();
+    }
+
+    private void insertAgents(int memorySize) {
+        Random rand = new Random();
+        int x, y;
+        int n = grid.length;
+        int m = grid[0].length;
+
+        for (int i = 0 ; i < nbAgents ; i++) {
+            do {
+                x = rand.nextInt(n);
+                y = rand.nextInt(m);
+            }
+            while (getEntity(x, y) != null);
+
+            Movable entity = new Agent(memorySize);
+            insert(entity, x, y);
+        }
+    }
+
+    private void insertBlocks() {
+        Random rand = new Random();
+        int x, y;
+        int n = grid.length;
+        int m = grid[0].length;
+        BlockValue value;
+        int randIndex;
+
+        for (int i = 0 ; i < nbObjects ; i++) {
+            do {
+                x = rand.nextInt(n);
+                y = rand.nextInt(m);
+            }
+            while (getEntity(x, y) != null);
+
+            randIndex = rand.nextInt(2);
+
+            if (randIndex == 0) {
+                value = BlockValue.A;
+            }
+            else {
+                value = BlockValue.B;
+            }
+
+            Movable entity = new Block(value);
+            insert(entity, x, y);
+        }
     }
 
     public void move(Movable entity, Direction direction) throws CollisionException {
