@@ -1,9 +1,12 @@
 package org.polytech.agent;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.polytech.environnement.block.BlockValue;
+
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * Agent intelligent parcourant un environnement.
+ * Un agent est identifié par un Long auto-incrémenté avec l'instantiation d'un nouvel agent.
  */
 public class Agent implements Movable {
 

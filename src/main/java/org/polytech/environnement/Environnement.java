@@ -134,11 +134,24 @@ public class Environnement implements Runnable {
         return getEntity(xGoal, yGoal);
     }
 
+    /**
+     * Vide une case de la grille.
+     * @param x Abscisse de la case à vider
+     * @param y Ordonnée de la case à vider
+     * @throws CollisionException Si la case à vider est en dehors du plateau
+     */
     public void remove(int x, int y) {
         if (isInside(x, y)) this.grid[x][y] = null;
         else throw new CollisionException("Vous êtes en train de casser les murs. >:(");
     }
 
+    /**
+     * Insère une entité sur la grille si possible.
+     * @param entity Entité à insérer
+     * @param x Abscisse de la case dans laquelle insérer l'entité
+     * @param y Ordonnée de la case dans laquelle insérer l'entité
+     * @throws CollisionException Si la case est en dehors de la grille ou déjà occupée par une autre entité
+     */
     public void insert(Movable entity, int x, int y) throws CollisionException {
         if (isInside(x, y)) {
             if (isEmpty(x, y)) this.grid[x][y] = entity;
@@ -147,19 +160,43 @@ public class Environnement implements Runnable {
 
     }
 
+    /**
+     * Renvoie l'entité éventuellement présente dans une case de la grille.
+     * @param x Abscisse de la case
+     * @param y Ordonnée de la case
+     * @return (1) Entité présente sur la case, (2) null sinon.
+     */
     public Movable getEntity(int x, int y) {
         return (isInside(x, y)) ? this.grid[x][y] : null;
     }
 
+    /**
+     * Indique si la position appartient à la grille ou non.
+     * @param x Abscisse de la position
+     * @param y Ordonnée de la position
+     * @return (1) True si la position est à l'intérieur de la grille, (2) false sinon.
+     */
     public boolean isInside(int x, int y) {
         return (x >=0 && x < grid.length &&
                 y >=0 && y < grid[0].length);
     }
 
+    /**
+     * Indique si une entité est présente ou non dans une case de la grille.
+     * @param i Abscisse de la position de l'entité
+     * @param j Ordonnée de la position de l'entité
+     * @return (1) True si la case est vide, (2) false sinon.
+     */
     public boolean isEmpty(int i, int j) {
         return getEntity(i, j) == null;
     }
 
+    /**
+     * Renvoie les coordonnées d'une entité de la grille.
+     * @param entity Entité à rechercher
+     * @return Coordonnées x et y de la position de l'entité dans la grille (matrice)
+     * @throws MovableNotFoundException Si l'entité n'existe pas sur la grille
+     */
     public Pair<Integer, Integer> findEntity(Movable entity) throws MovableNotFoundException {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -172,6 +209,10 @@ public class Environnement implements Runnable {
         throw new MovableNotFoundException("Entity does not exist on the grid.");
     }
 
+    /**
+     * Tire aléatoirement un agent parmi les agents disposés sur la grille.
+     * @return Agent aléatoire
+     */
     public Agent pickRandomAgent() {
         return agents.stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
     }
