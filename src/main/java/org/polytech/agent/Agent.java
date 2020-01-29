@@ -2,10 +2,10 @@ package org.polytech.agent;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.Direction;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.Random;
@@ -49,23 +49,24 @@ public class Agent implements Movable {
         };
     }
 
-    private boolean doITakeIt(BlockValue currentBlock) {
+    private HashMap<BlockValue, Integer> getNumberOfBlocksInMemory() {
         Iterator<BlockValue> it = memory.iterator();
-        int cptA = 0;
-        int cptB = 0;
+        HashMap<BlockValue, Integer> numberOfBlocks = new HashMap<BlockValue, Integer>();
+        numberOfBlocks.put(BlockValue.A, 0);
+        numberOfBlocks.put(BlockValue.B, 0);
 
         while(it.hasNext()){
-            BlockValue block = it.next();   // o a pour valeur un objet de la collectio
+            BlockValue block = it.next();
 
             switch (block) {
                 case A:
                 {
-                    ++cptA;
+                    numberOfBlocks.put(BlockValue.A, numberOfBlocks.get(BlockValue.A) + 1);
                     break;
                 }
                 case B:
                 {
-                    ++cptB;
+                    numberOfBlocks.put(BlockValue.B, numberOfBlocks.get(BlockValue.B) + 1);
                     break;
                 }
                 default:
@@ -75,22 +76,43 @@ public class Agent implements Movable {
             }
         }
 
+        return numberOfBlocks;
+    }
+
+    private int getFTake(BlockValue currentBlock) {
         int f;
+        HashMap<BlockValue, Integer> numberOfBlocks = getNumberOfBlocksInMemory();
 
         switch (currentBlock) {
             case A: {
-                f = cptA;
+                f = numberOfBlocks.get(BlockValue.A);
                 break;
             }
             case B: {
-                f = cptB;
+                f = numberOfBlocks.get(BlockValue.B);
                 break;
             }
             default: {
-                return false;
+                return 0;
             }
         }
-        double proba = (kPlus / (kPlus + f));
+
+        return f;
+    }
+
+    private boolean doITakeIt(BlockValue currentBlock) {
+        int f = getFTake(currentBlock);
+
+        double proba = Math.pow((kPlus / (kPlus + f)), 2);
+        double rand = new Random().nextDouble();
+
+        return (rand <= proba);
+    }
+
+    private boolean doIPutItDown(BlockValue currentBlock) {
+        int f = getFTake(currentBlock);
+
+        double proba = Math.pow((f / (kMinus + f)), 2);
         double rand = new Random().nextDouble();
 
         return (rand <= proba);
