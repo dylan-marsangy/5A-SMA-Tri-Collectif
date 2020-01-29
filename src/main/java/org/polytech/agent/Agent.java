@@ -1,12 +1,14 @@
 package org.polytech.agent;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.polytech.agent.strategies.Strategy;
+import org.polytech.environnement.Direction;
 import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
-import org.polytech.environnement.Direction;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 /**
@@ -25,12 +27,18 @@ public class Agent implements Movable {
 
     private Block holding;
 
+    // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
+
+    private Agent() {
+        attributeId();
+    }
 
     public Agent(int memorySize, double kPlus, double k) {
-        this.kPlus = kPlus;
-        this.k = k;
         attributeId();
         buildMemory(memorySize);
+
+        this.kPlus = kPlus;
+        this.k = k;
     }
 
     private void attributeId() {
@@ -51,124 +59,17 @@ public class Agent implements Movable {
         }
     }
 
-    // STRATEGY PICK UP ------------------------------------------------------------------------------------------------
-
-    public Block pickUp(Map<Direction, Movable> neighbors) {
-        neighbors.computeIfPresent()
-    }
+    // STRATEGY --------------------------------------------------------------------------------------------------------
 
     /**
-     * Détermine si l'agent prend le bloc ou non.
-     * @param currentBlock: Bloc à tester
-     * @return boolean
+     * Exécute une stratégie.
+     *
+     * @param strategy   Stratégie à exécuter
+     * @param perception Perception sur laquelle se baser
+     * @return Résultat de la stratégie (interprétation dépendante de la stratégie appliquée)
      */
-    public boolean doITakeIt(Block currentBlock) {
-        double proba = computeFPickUp(currentBlock);
-
-        double rand = new Random().nextDouble();
-
-        return (rand <= proba);
-    }
-
-    /**
-     * Calcule la probabilité de prendre un bloc.
-     * @return Probabilité.
-     */
-    public double computeProbaPickUp() {
-        double f = computeFPickUp();
-        return Math.pow((kPlus / (kPlus + f)), 2);
-    }
-
-    /**
-     * Calcule le résultat de la fonction de prise.
-     * @return Valeur f
-     */
-    public double computeFPickUp() {
-        Long nbBlocks = computeBlockPickUp().getValue();
-        return (double) nbBlocks / this.memory.size();
-    }
-
-    /**
-     * Calcule le type de bloc qu'il est préférable de saisir.
-     * @return Type de bloc avec le nombre d'occurences dans la mémoire
-     */
-    public Map.Entry<BlockValue, Long> computeBlockPickUp() {
-        Map<BlockValue, Long> nbBlocks = countBlocks();
-        return Collections.min(nbBlocks.entrySet(), Map.Entry.comparingByValue());
-    }
-
-    /**
-     * Compte le nombre de blocs de chaque valeur dans la mémoire de l'agent.
-     * @return Nombre d'éléments de chaque valeur dans la mémoire
-     */
-    public Map<BlockValue, Long> countBlocks() {
-        Map<BlockValue, Long> result = new HashMap<>();
-        Arrays.stream(BlockValue.values()).forEach(value -> result.put(value, countBlocks(value)));
-
-        return result;
-    }
-
-    /**
-     * Compte le nombre de blocs d'une certaine valeur dans la mémoire de l'agent.
-     * @param value Valeur du bloc à compter.
-     * @return Nombre d'éléments correspondants dans la mémoire
-     */
-    public Long countBlocks(BlockValue value) {
-        return this.memory.stream().filter(val -> val == value).count();
-    }
-
-    /**
-     * Calcule le f dans le cas où l'agent pose un objet
-     * @param blocks: Blocks perçus autour de l'agent
-     * @return double
-     */
-    public double getFPutDown(Map<Direction, Movable> blocks) {
-        HashMap<BlockValue, Integer> numberOfBlocks = new HashMap<BlockValue, Integer>();
-        numberOfBlocks.put(BlockValue.A, 0);
-        numberOfBlocks.put(BlockValue.B, 0);
-
-        for (Direction direction : blocks.keySet()) {
-            Movable element = blocks.get(direction);
-
-            if (element instanceof Block) {
-                BlockValue blockValue = ((Block) element).getValue();
-                numberOfBlocks.put(blockValue, numberOfBlocks.get(blockValue));
-            }
-        }
-
-        double nb;
-
-        switch (holding.getValue()) {
-            case A : {
-                nb = numberOfBlocks.get(BlockValue.A);
-                break;
-            }
-            case B: {
-                nb = numberOfBlocks.get(BlockValue.B);
-                break;
-            }
-            default: {
-                return 0;
-            }
-        }
-
-        return nb / blocks.keySet().size();
-    }
-
-    // STRATEGY PUT DOWN -----------------------------------------------------------------------------------------------
-
-    /**
-     * Calcule la proba de poser le bloc tenu
-     * @param blocks: Blocs perçus autour de l'agent
-     * @return boolean
-     */
-    public boolean doIPutItDown(Map<Direction, Movable> blocks) {
-        double f = getFPutDown(blocks);
-
-        double proba = Math.pow((f / (k + f)), 2);
-        double rand = new Random().nextDouble();
-
-        return (rand <= proba);
+    public Direction execute(Strategy strategy, Map<Direction, Movable> perception) {
+        return strategy.execute(this, perception);
     }
 
     public void visit(BlockValue value) {
@@ -181,7 +82,8 @@ public class Agent implements Movable {
 
     @Override
     public String toString() {
-        return Long.toString(id);
+//        return Long.toString(id);
+        return "X";
     }
 
     @Override
@@ -219,5 +121,31 @@ public class Agent implements Movable {
 
     public void setHolding(Block holding) {
         this.holding = holding;
+    }
+
+    public int getMemorySize() {
+        return this.memory.size();
+    }
+
+    public void setMemorySize(int memorySize) {
+        Queue<BlockValue> clone = new CircularFifoQueue<>(memorySize);
+        clone.addAll(this.memory);
+        this.memory = clone;
+    }
+
+    public double getkPlus() {
+        return kPlus;
+    }
+
+    public void setkPlus(double kPlus) {
+        this.kPlus = kPlus;
+    }
+
+    public double getK() {
+        return k;
+    }
+
+    public void setK(double k) {
+        this.k = k;
     }
 }
