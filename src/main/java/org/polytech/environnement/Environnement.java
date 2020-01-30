@@ -2,6 +2,9 @@ package org.polytech.environnement;
 
 import javafx.util.Pair;
 import org.polytech.agent.Agent;
+import org.polytech.agent.strategies.StrategyMove;
+import org.polytech.agent.strategies.StrategyPickUp;
+import org.polytech.agent.strategies.StrategyPutDown;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
@@ -27,14 +30,14 @@ public class Environnement implements Runnable {
     private Environnement() {
     }
 
-    public Environnement(int n, int m, int nbAgents, int memorySize, double kPlus, double kMinus, int nbBlocksA, int nbBlocksB) {
+    public Environnement(int n, int m, int nbAgents, int distance, int memorySize, double kPlus, double kMinus, int nbBlocksA, int nbBlocksB) {
         this.grid = new Movable[n][m];
 
-        placeAgentsOnGrid(nbAgents, memorySize, kPlus, kMinus);
+        placeAgentsOnGrid(nbAgents, distance, memorySize, kPlus, kMinus);
         insertBlocks(nbBlocksA, nbBlocksB);
     }
 
-    public void placeAgentsOnGrid(int nbAgents, int memorySize, double kPlus, double k) {}
+    public void placeAgentsOnGrid(int nbAgents, int distance, int memorySize, double kPlus, double k) {}
 
     public void insertBlocks(int nbBlocksA, int nbBlocksB) {}
 
@@ -43,6 +46,36 @@ public class Environnement implements Runnable {
     //TODO
     @Override
     public void run() {
+        int count = 0;
+
+        Agent agent;
+        int distance;
+        Map<Direction, Movable> perception; // Perception d'un agent.
+        Direction result; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
+        while (count < 10000) {
+            count++;
+
+            // Tirage aléatoire d'un agent (simulation du multi-threading).
+            agent = pickRandomAgent();
+            distance = agent.getDistance(); // Distance de perception d'un agent.
+
+            // Agent perçoit son environnement et détermine une direction dans laquelle se diriger.
+            // L'environnement l'y déplace.
+            perception = perception(agent, distance);
+            result = agent.execute(new StrategyMove(), perception);
+            if (result != null) move(agent, result, distance);
+
+            // S'il tient un bloc, il va chercher à le déposer. Sinon, il cherche à en prendre un.
+            perception = perception(agent, distance);
+            if (agent.isHolding()) {
+                result = agent.execute(new StrategyPutDown(), perception);
+                if (result != null) putDownBlock(agent, result, distance);
+            } else {
+                result = agent.execute(new StrategyPickUp(), perception);
+                if (result != null) pickUpBlock(agent, result, distance);
+            }
+        }
+
     }
 
     /**

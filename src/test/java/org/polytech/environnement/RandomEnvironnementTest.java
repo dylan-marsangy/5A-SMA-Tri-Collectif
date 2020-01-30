@@ -24,7 +24,7 @@ public class RandomEnvironnementTest {
     private final int NB_BLOCKS_A = 10;
     private final int NB_BLOCKS_B = 10;
 
-
+    private final int I = 1;
     private final int T = 10;
     private final double K_MINUS = 0.3;
     private final double K_PLUS = 0.1;
@@ -34,7 +34,7 @@ public class RandomEnvironnementTest {
     @BeforeEach
     public void initializeEnvironnement() {
         Agent.cleanID();
-        environnement = new RandomEnvironnement(N, M, NB_AGENTS, T, K_PLUS, K_MINUS, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new RandomEnvironnement(N, M, NB_AGENTS, I, T, K_PLUS, K_MINUS, NB_BLOCKS_A, NB_BLOCKS_B);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------

@@ -28,6 +28,7 @@ public class EnvironnementTest {
     private final int NB_BLOCKS_A = 10;
     private final int NB_BLOCKS_B = 10;
 
+    private final int I = 1;
     private final int T = 10;
     private final double K_MINUS = 0.3;
     private final double K_PLUS = 0.1;
@@ -37,10 +38,10 @@ public class EnvironnementTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_AGENTS, T, K_PLUS, K_MINUS, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M, NB_AGENTS, I, T, K_PLUS, K_MINUS, NB_BLOCKS_A, NB_BLOCKS_B);
 
         Agent.cleanID();
-        agent = new Agent(T, K_MINUS, K_PLUS);
+        agent = new Agent(I, T, K_MINUS, K_PLUS);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
@@ -59,9 +60,9 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Display Grid")
     public void displayGrid() {
-        environnement.insert(new Agent(T, K_PLUS, K_MINUS), 0, 0);
-        environnement.insert(new Agent(T, K_PLUS, K_MINUS), 1, 0);
-        environnement.insert(new Agent(T, K_PLUS, K_MINUS), 2, 0);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS), 0, 0);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS), 1, 0);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS), 2, 0);
         environnement.insert(new Block(BlockValue.A), 2, 3);
         environnement.insert(new Block(BlockValue.B), 4, 2);
 
@@ -81,7 +82,7 @@ public class EnvironnementTest {
     @DisplayName("Avoid Collisions While Inserting")
     public void avoidCollisions_whenInserting() {
         environnement.insert(agent, 1, 1);
-        assertThrows(CollisionException.class, () -> environnement.insert(new Agent(T, K_PLUS, K_MINUS), 1, 1));
+        assertThrows(CollisionException.class, () -> environnement.insert(new Agent(I, T, K_PLUS, K_MINUS), 1, 1));
     }
 
     // DELETE ----------------------------------------------------------------------------------------------------------
@@ -115,7 +116,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Avoid Collisions While Moving")
     public void avoidCollisions_whenMoving() {
-        Agent a2 = new Agent(T, K_PLUS, K_MINUS);
+        Agent a2 = new Agent(I, T, K_PLUS, K_MINUS);
         environnement.insert(agent, 0, 1);
         environnement.insert(a2, 1, 1);
         assertThrows(CollisionException.class, () -> environnement.move(a2, Direction.NORTH, 1));
@@ -126,9 +127,9 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Get Entity Perception For All Directions")
     public void getPerception_allDirections() {
-        Agent a2 = new Agent(T, K_PLUS, K_MINUS);
-        Agent a3 = new Agent(T, K_PLUS, K_MINUS);
-        Agent a4 = new Agent(T, K_PLUS, K_MINUS);
+        Agent a2 = new Agent(I, T, K_PLUS, K_MINUS);
+        Agent a3 = new Agent(I, T, K_PLUS, K_MINUS);
+        Agent a4 = new Agent(I, T, K_PLUS, K_MINUS);
 
         environnement.insert(agent, 0, 2);
         environnement.insert(a2, 2, 2);

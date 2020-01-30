@@ -35,10 +35,15 @@ public class StrategyPickUp implements Strategy {
 
             // Choisir aléatoirement une direction restante.
             if (perception.size() == 0) return null;
-            return perception.keySet().stream()
+            Direction result = perception.keySet().stream()
                     .skip(new Random().nextInt(perception.size()))
                     .findFirst()
                     .orElse(null);
+
+            // Agent tente de prendre un bloc : il l'insère dans sa mémoire.
+            agent.visit((Block) perception.get(result));
+
+            return result;
         }
 
         return null;

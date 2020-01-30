@@ -28,6 +28,10 @@ public class Agent implements Movable {
      */
     private Long id;
 
+    /**
+     * Distance de perception d'un agent.
+     */
+    private int distance;
     private double kPlus;
     private double kMinus;
 
@@ -47,10 +51,11 @@ public class Agent implements Movable {
         attributeId();
     }
 
-    public Agent(int memorySize, double kPlus, double kMinus) {
+    public Agent(int distance, int memorySize, double kPlus, double kMinus) {
         attributeId();
         buildMemory(memorySize);
 
+        this.distance = distance;
         this.kPlus = kPlus;
         this.kMinus = kMinus;
     }
@@ -60,7 +65,7 @@ public class Agent implements Movable {
      */
     private void attributeId() {
         COUNTER_INSTANTIATIONS++;
-        this.id = COUNTER_INSTANTIATIONS;
+        setID(COUNTER_INSTANTIATIONS);
     }
 
     /**
@@ -117,7 +122,7 @@ public class Agent implements Movable {
     }
 
     /**
-     * Visite un bloc (l'ajoute dans la mémoire de l'agent).
+     * Visite un bloc (l'ajoute dans la mémoire de l'agent le type du bloc).
      * @param block Bloc rencontré
      */
     public void visit(Block block) {
@@ -163,6 +168,16 @@ public class Agent implements Movable {
     }
 
     public Long getID() { return this.id; }
+
+    private void setID(Long id) { this.id = id; }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
 
     public Queue<BlockValue> getMemory() {
         return this.memory;
