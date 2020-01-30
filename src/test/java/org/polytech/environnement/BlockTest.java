@@ -7,6 +7,7 @@ import org.polytech.environnement.block.BlockValue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@DisplayName("Block Tests")
 public class BlockTest {
 
     @Test

@@ -6,6 +6,7 @@ import org.polytech.environnement.Direction;
 import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
+import org.polytech.environnement.exceptions.CollisionException;
 
 import java.util.Map;
 import java.util.Queue;
@@ -72,13 +73,33 @@ public class Agent implements Movable {
         return strategy.execute(this, perception);
     }
 
-    public void visit(BlockValue value) {
-        memory.add(value);
+    /**
+     * Prend un bloc.
+     * @param block Bloc à prendre
+     * @throws CollisionException Si l'agent tient déjà un bloc
+     */
+    public void pickUp(Block block) throws CollisionException {
+        if (isHolding()) throw new CollisionException("L'agent tient déjà un bloc.");
+        else setHolding(block); visit(block);
     }
 
-    public boolean isHolding() {
-        return this.holding == null;
+    /**
+     * Visite un bloc (l'ajoute dans la mémoire de l'agent).
+     * @param block Bloc rencontré
+     */
+    public void visit(Block block) {
+        memory.add(block.getValue());
     }
+
+    /**
+     * Indique si l'agent tient un bloc ou non.
+     * @return (1) True si l'agent tient un bloc, (2) false sinon
+     */
+    public boolean isHolding() {
+        return this.holding != null;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {

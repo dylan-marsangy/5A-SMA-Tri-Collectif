@@ -4,6 +4,7 @@ import org.polytech.agent.Agent;
 import org.polytech.environnement.Direction;
 import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
+import org.polytech.environnement.exceptions.MovableNotFoundException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -24,9 +25,12 @@ public class StrategyPutDown implements Strategy {
      * @param agent      Agent ayant reçu la perception
      * @param perception Perception de laquelle extraire une direction
      * @return (1) Direction indiquant où déposer le bloc ou (2) null si l'agent ne pose pas son bloc
+     * @throws MovableNotFoundException Si l'agent ne tient pas de bloc
      */
     @Override
-    public Direction execute(Agent agent, Map<Direction, Movable> perception) {
+    public Direction execute(Agent agent, Map<Direction, Movable> perception) throws MovableNotFoundException {
+        if (agent.getHolding() == null) throw new MovableNotFoundException("L'agent ne tient aucun bloc.");
+
         double proba = computeProba(agent, perception);
         if (new Random().nextDouble() <= proba) {
             // Garder seulement les directions dans lesquelles la case but est vide.

@@ -3,6 +3,7 @@ package org.polytech.agent.strategies;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.Direction;
 import org.polytech.environnement.Movable;
+import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
 import java.util.*;
@@ -28,7 +29,16 @@ public class StrategyPickUp implements Strategy {
 
         Map.Entry<BlockValue, Double> preferredBlock = computeProba(agent);
         if (rand <= preferredBlock.getValue()) {
-            //TODO: Choisir direction qui correspond emplacement bloc.
+            // Garder seulement les directions dans lesquelles il y a un bloc de valeur préférée
+            perception.values().removeIf(movable ->
+                    (!(movable instanceof Block)) || ((Block) movable).getValue() != preferredBlock.getKey());
+
+            // Choisir aléatoirement une direction restante.
+            if (perception.size() == 0) return null;
+            return perception.keySet().stream()
+                    .skip(new Random().nextInt(perception.size()))
+                    .findFirst()
+                    .orElse(null);
         }
 
         return null;

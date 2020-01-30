@@ -21,7 +21,7 @@ public class Environnement implements Runnable {
     private int nbAgents;
     /**
      * Nombre de blocs sur la grille.
-     *  */
+     */
     private int nbBlocks;
 
     /**
@@ -29,7 +29,10 @@ public class Environnement implements Runnable {
      */
     private Set<Agent> agents;
 
-    private Environnement() {}
+    // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
+
+    private Environnement() {
+    }
 
     public Environnement(int n, int m, int nbAgents, int nbObjects) {
         this.grid = new Movable[n][m];
@@ -44,7 +47,7 @@ public class Environnement implements Runnable {
         int m = grid[0].length;
 
         agents = new HashSet<>();
-        for (int i = 0 ; i < nbAgents ; i++) {
+        for (int i = 0; i < nbAgents; i++) {
             do {
                 x = rand.nextInt(n);
                 y = rand.nextInt(m);
@@ -76,8 +79,7 @@ public class Environnement implements Runnable {
 
             if (randIndex == 0) {
                 value = BlockValue.A;
-            }
-            else {
+            } else {
                 value = BlockValue.B;
             }
 
@@ -86,11 +88,68 @@ public class Environnement implements Runnable {
         }
     }
 
+    // EXECUTION -------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void run() {
+    }
+
+    /**
+     * Tire aléatoirement un agent parmi les agents disposés sur la grille.
+     * @return Agent aléatoire
+     */
+    public Agent pickRandomAgent() {
+        return new HashSet<>(agents).stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
+    }
+
+    /**
+     * Fait prendre un bloc à un agent.
+     *
+     * @param agent     Agent prenant le bloc
+     * @param direction Direction dans laquelle le bloc se situe
+     * @param d         Distance de l'agent à laquelle se situe le bloc
+     * @throws MovableNotFoundException S'il n'y a pas de bloc à la case cible
+     */
+    public void pickUpBlock(Agent agent, Direction direction, int d) throws MovableNotFoundException {
+        Pair<Integer, Integer> coordinates = findEntity(agent);
+        int xGoal = coordinates.getKey() + d * direction.x;
+        int yGoal = coordinates.getValue() + d * direction.y;
+
+        // Déposer le bloc.
+        Movable entity = getEntity(xGoal, yGoal);
+        if (!(entity instanceof Block)) throw new MovableNotFoundException("Il n'y a pas de bloc sur la case cible.");
+
+        agent.pickUp((Block) entity); // Prend le bloc et l'ajoute en mémoire.
+        remove(xGoal, yGoal);
+    }
+
+    /**
+     * Dépose le bloc tenu par un agent.
+     *
+     * @param agent     Agent dont le bloc est à déposer
+     * @param direction Direction dans laquelle poser le bloc
+     * @param d         Distance sur laquelle poser le bloc
+     * @throws CollisionException Si la case cible de dépôt est déjà occupée
+     */
+    public void putDownBlock(Agent agent, Direction direction, int d) {
+        Pair<Integer, Integer> coordinates = findEntity(agent);
+        int xGoal = coordinates.getKey() + d * direction.x;
+        int yGoal = coordinates.getValue() + d * direction.y;
+
+        // Déposer le bloc.
+        Block block = agent.getHolding();
+        insert(block, xGoal, yGoal);
+        agent.setHolding(null);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Déplace une entité dans une direction donnée sur une distance donnée si possible.
-     * @param entity Entité à déplacer
+     *
+     * @param entity    Entité à déplacer
      * @param direction Direction dans laquelle déplacer l'entité
-     * @param d Distance sur laquelle déplacer l'entité
+     * @param d         Distance sur laquelle déplacer l'entité
      * @return (1) True si le mouvement a réussi, (2) false sinon.
      * @throws CollisionException Si le mouvement implique une collision
      */
@@ -137,6 +196,8 @@ public class Environnement implements Runnable {
 
         return neighbors;
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Indique si la position appartient à la grille ou non.
@@ -213,18 +274,9 @@ public class Environnement implements Runnable {
         throw new MovableNotFoundException("Entity does not exist on the grid.");
     }
 
-    /**
-     * Tire aléatoirement un agent parmi les agents disposés sur la grille.
-     * @return Agent aléatoire
-     */
-    public Agent pickRandomAgent() {
-        return agents.stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
-    }
+    // -----------------------------------------------------------------------------------------------------------------
 
-    @Override
-    public void run() {
-    }
-
+    //TODO: Couleur
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
