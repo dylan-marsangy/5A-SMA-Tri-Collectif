@@ -28,8 +28,6 @@ public class StrategyMove implements Strategy {
         // Garder les directions libres (cases inoccupées).
         perception.values().removeIf(Objects::nonNull);
 
-        //TODO: A tester
-
         // S'il n'y a pas de cases libres autour, l'agent reste immobile.
         if (perception.size() == 0) return null;
         // Sinon, il choisit aléatoirement une direction.

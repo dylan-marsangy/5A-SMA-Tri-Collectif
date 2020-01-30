@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.polytech.agent.Agent;
+import org.polytech.agent.strategies.StrategyMove;
 import org.polytech.agent.strategies.StrategyPickUp;
 import org.polytech.agent.strategies.StrategyPutDown;
 import org.polytech.environnement.block.Block;
@@ -191,6 +192,62 @@ public class EnvironnementTest {
         assertNotEquals(1, picked.size());
     }
 
+    // RUNNING --- MOVE ------------------------------------------------------------------------------------------------
+
+    @Test
+    @DisplayName("agent should move when surrounded by other entities")
+    public void agentDoesntMove_whenSurroundedBy_Others() {
+        // Agent entouré des blocs A.
+        environnement.insert(agent, 2, 2);
+        environnement.insert(new Block(BlockValue.A), 0, 2);
+        environnement.insert(new Block(BlockValue.A), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 4);
+        environnement.insert(new Block(BlockValue.A), 4, 2);
+
+        assertEquals(agent, environnement.getEntity(2,2));
+        assertFalse(environnement.isEmpty(4, 2));
+        assertFalse(environnement.isEmpty(0, 2));
+        assertFalse(environnement.isEmpty(2, 0));
+        assertFalse(environnement.isEmpty(2, 4));
+
+        Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
+        assertNull(result);
+    }
+
+    @RepeatedTest(10)
+    @DisplayName("agent should randomly move")
+    public void agentRandomWalk() {
+        // Agent entouré des blocs A.
+        environnement.insert(agent, 2, 2);
+        assertEquals(agent, environnement.getEntity(2,2));
+        assertTrue(environnement.isEmpty(4, 2));
+        assertTrue(environnement.isEmpty(0, 2));
+        assertTrue(environnement.isEmpty(2, 0));
+        assertTrue(environnement.isEmpty(2, 4));
+
+        Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
+        assertNotNull(result);
+        System.out.println("Move towards : " + result);
+
+        environnement.move(agent, result, 2);
+        assertNull(environnement.getEntity(2,2));
+
+        switch (result) {
+            case SOUTH:
+                assertFalse(environnement.isEmpty(4, 2));
+                break;
+            case NORTH:
+                assertFalse(environnement.isEmpty(0, 2));
+                break;
+            case WEST:
+                assertFalse(environnement.isEmpty(2, 0));
+                break;
+            case EAST:
+                assertFalse(environnement.isEmpty(2, 4));
+                break;
+        }
+    }
+
     // RUNNING --- PICK UP ---------------------------------------------------------------------------------------------
 
     @Test
@@ -233,6 +290,7 @@ public class EnvironnementTest {
         System.out.println("Pick up towards : " + result);
 
         environnement.pickUpBlock(agent, result, 2);
+        assertEquals(agent, environnement.getEntity(2,2));
         assertTrue(agent.isHolding());
         assertTrue(expected.contains(result));
 
