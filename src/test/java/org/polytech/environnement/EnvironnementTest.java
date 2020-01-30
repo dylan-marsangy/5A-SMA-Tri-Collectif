@@ -64,14 +64,7 @@ public class EnvironnementTest {
         environnement.insert(new Block(BlockValue.A), 2, 3);
         environnement.insert(new Block(BlockValue.B), 4, 2);
 
-        String expected =
-                " X | 0 | 0 | 0 | 0 |\n" +
-                        " X | 0 | 0 | 0 | 0 |\n" +
-                        " X | 0 | 0 | A | 0 |\n" +
-                        " 0 | 0 | 0 | 0 | 0 |\n" +
-                        " 0 | 0 | B | 0 | 0 |\n";
-
-        assertEquals(expected, environnement.toString());
+        System.out.println(environnement);
     }
 
     // INSERT ----------------------------------------------------------------------------------------------------------

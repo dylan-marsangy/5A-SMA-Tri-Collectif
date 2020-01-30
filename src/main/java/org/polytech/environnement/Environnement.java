@@ -6,6 +6,7 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
+import org.polytech.utils.Color;
 
 import java.util.*;
 
@@ -282,10 +283,24 @@ public class Environnement implements Runnable {
         StringBuilder sb = new StringBuilder();
 
         Movable entity;
+        Color format;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 entity = getEntity(i, j);
-                sb.append(String.format(" %s |", entity != null ? entity.toString() : "0"));
+
+                if (entity != null) {
+                    // Attribuer une couleur d'output selon le type de Movable (Agent ou Bloc A/B).
+                    if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.A)
+                        format = Color.BLUE;
+                    else if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.B)
+                        format = Color.RED;
+                    else format = Color.YELLOW;
+
+                    sb.append(String.format(" %s |", format + entity.toString() + Color.RESET));
+                } else {
+                    sb.append(" 0 |");
+                }
+
 
                 if (j == grid[i].length - 1) sb.append("\n");
             }
