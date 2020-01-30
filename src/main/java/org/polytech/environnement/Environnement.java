@@ -46,13 +46,14 @@ public class Environnement implements Runnable {
     //TODO
     @Override
     public void run() {
-        int count = 0;
+        System.out.println(this);
 
+        int count = 0;
         Agent agent;
         int distance;
         Map<Direction, Movable> perception; // Perception d'un agent.
         Direction result; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
-        while (count < 10000) {
+        while (count < 300000) {
             count++;
 
             // Tirage aléatoire d'un agent (simulation du multi-threading).
@@ -76,6 +77,7 @@ public class Environnement implements Runnable {
             }
         }
 
+        System.out.println(this);
     }
 
     /**
@@ -273,9 +275,9 @@ public class Environnement implements Runnable {
                 if (entity != null) {
                     // Attribuer une couleur d'output selon le type de Movable (Agent ou Bloc A/B).
                     if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.A)
-                        format = Color.BLUE;
+                        format = Color.BLUE_BACKGROUND;
                     else if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.B)
-                        format = Color.RED;
+                        format = Color.RED_BACKGROUND;
                     else format = Color.YELLOW;
 
                     sb.append(String.format(" %s |", format + entity.toString() + Color.RESET));
