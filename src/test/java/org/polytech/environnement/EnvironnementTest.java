@@ -25,7 +25,8 @@ public class EnvironnementTest {
     private final int N = 5;
     private final int M = 5;
     private final int NB_AGENTS = 5;
-    private final int NB_BLOCKS = 10;
+    private final int NB_BLOCKS_A = 10;
+    private final int NB_BLOCKS_B = 10;
 
     private final int T = 10;
     private final double K_MINUS = 0.3;
@@ -36,7 +37,7 @@ public class EnvironnementTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_AGENTS, NB_BLOCKS);
+        environnement = new Environnement(N, M, NB_AGENTS, T, K_PLUS, K_MINUS, NB_BLOCKS_A, NB_BLOCKS_B);
 
         Agent.cleanID();
         agent = new Agent(T, K_MINUS, K_PLUS);
@@ -140,49 +141,6 @@ public class EnvironnementTest {
         expected.put(Direction.WEST, a3);
 
         assertEquals(expected, environnement.perception(agent, 2));
-    }
-
-    // RANDOM INSERTS --------------------------------------------------------------------------------------------------
-
-    @Test
-    @DisplayName("Count elements on grid")
-    public void hasCorrectElements() {
-        environnement.insertAgents(T, K_PLUS, K_MINUS);
-        environnement.insertBlocks();
-
-        int agents = 0;
-        int objects = 0;
-
-        for (int i = 0; i < environnement.getGrid().length; i++) {
-            for (int j = 0; j < environnement.getGrid()[i].length; j++) {
-                if (environnement.getEntity(i, j) instanceof Agent) {
-                    ++agents;
-                } else if (environnement.getEntity(i, j) instanceof Block) {
-                    ++objects;
-                }
-            }
-        }
-
-        assertEquals(agents, NB_AGENTS);
-        assertEquals(objects, NB_BLOCKS);
-    }
-
-    // RUNNING ---------------------------------------------------------------------------------------------------------
-
-    @RepeatedTest(10)
-    @DisplayName("Pick Random Agent")
-    public void pickRandomAgent() {
-        Agent.cleanID();
-        environnement.insertAgents(T, K_PLUS, K_MINUS);
-
-        Set<Long> picked = new HashSet<>();
-        IntStream.rangeClosed(1, 20).forEach(input -> {
-            Long id = environnement.pickRandomAgent().getID();
-            System.out.println(id);
-            picked.add(id);
-        });
-
-        assertNotEquals(1, picked.size());
     }
 
     // RUNNING --- MOVE ------------------------------------------------------------------------------------------------

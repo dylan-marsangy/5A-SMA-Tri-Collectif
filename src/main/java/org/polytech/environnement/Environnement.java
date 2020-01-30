@@ -15,82 +15,32 @@ public class Environnement implements Runnable {
     /**
      * Grille sur laquelle évoluent les agents et les blocs.
      */
-    Movable[][] grid;
-    /**
-     * Nombre d'agents sur la grille.
-     */
-    private int nbAgents;
-    /**
-     * Nombre de blocs sur la grille.
-     */
-    private int nbBlocks;
+    protected Movable[][] grid;
 
     /**
      * Collection des agents évoluent sur la grille.
      */
-    private Set<Agent> agents;
+    protected Set<Agent> agents;
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
     private Environnement() {
     }
 
-    public Environnement(int n, int m, int nbAgents, int nbObjects) {
+    public Environnement(int n, int m, int nbAgents, int memorySize, double kPlus, double kMinus, int nbBlocksA, int nbBlocksB) {
         this.grid = new Movable[n][m];
-        this.nbAgents = nbAgents;
-        this.nbBlocks = nbObjects;
+
+        placeAgentsOnGrid(nbAgents, memorySize, kPlus, kMinus);
+        insertBlocks(nbBlocksA, nbBlocksB);
     }
 
-    public void insertAgents(int memorySize, double kPlus, double k) {
-        Random rand = new Random();
-        int x, y;
-        int n = grid.length;
-        int m = grid[0].length;
+    public void placeAgentsOnGrid(int nbAgents, int memorySize, double kPlus, double k) {}
 
-        agents = new HashSet<>();
-        for (int i = 0; i < nbAgents; i++) {
-            do {
-                x = rand.nextInt(n);
-                y = rand.nextInt(m);
-            }
-            while (!isEmpty(x, y));
-
-            Agent entity = new Agent(memorySize, kPlus, k);
-            insert(entity, x, y);
-            agents.add(entity);
-        }
-    }
-
-    public void insertBlocks() {
-        Random rand = new Random();
-        int x, y;
-        int n = grid.length;
-        int m = grid[0].length;
-        BlockValue value;
-        int randIndex;
-
-        for (int i = 0; i < nbBlocks; i++) {
-            do {
-                x = rand.nextInt(n);
-                y = rand.nextInt(m);
-            }
-            while (!isEmpty(x, y));
-
-            randIndex = rand.nextInt(2);
-
-            if (randIndex == 0) {
-                value = BlockValue.A;
-            } else {
-                value = BlockValue.B;
-            }
-
-            Movable entity = new Block(value);
-            insert(entity, x, y);
-        }
-    }
+    public void insertBlocks(int nbBlocksA, int nbBlocksB) {}
 
     // EXECUTION -------------------------------------------------------------------------------------------------------
 
+    //TODO
     @Override
     public void run() {
     }
@@ -277,7 +227,6 @@ public class Environnement implements Runnable {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    //TODO: Couleur
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

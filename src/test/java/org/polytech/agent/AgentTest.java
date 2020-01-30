@@ -2,20 +2,9 @@ package org.polytech.agent;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.polytech.agent.strategies.StrategyPickUp;
-import org.polytech.agent.strategies.StrategyPutDown;
-import org.polytech.environnement.Direction;
-import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
-import org.polytech.environnement.exceptions.MovableNotFoundException;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
