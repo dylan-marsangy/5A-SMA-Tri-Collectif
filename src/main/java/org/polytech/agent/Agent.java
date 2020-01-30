@@ -7,6 +7,7 @@ import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
+import org.polytech.environnement.exceptions.MovableNotFoundException;
 
 import java.util.Map;
 import java.util.Queue;
@@ -18,14 +19,26 @@ import java.util.stream.Collectors;
  */
 public class Agent implements Movable {
 
+    /**
+     * Nombre d'agents instanciés depuis que l'application tourne.
+     **/
     private static Long COUNTER_INSTANTIATIONS = 0L;
+    /**
+     * ID de l'agent (auto-incrémenté).
+     */
     private Long id;
 
     private double kPlus;
     private double kMinus;
 
+    /**
+     * Mémoire de l'agent.
+     */
     Queue<BlockValue> memory;
 
+    /**
+     * Prise de l'agent.
+     */
     private Block holding;
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
@@ -42,11 +55,18 @@ public class Agent implements Movable {
         this.kMinus = kMinus;
     }
 
+    /**
+     * Auto-incrémente l'ID des agents.
+     */
     private void attributeId() {
         COUNTER_INSTANTIATIONS++;
         this.id = COUNTER_INSTANTIATIONS;
     }
 
+    /**
+     * Construit la mémoire des agents (initialise la queue et la remplit de "0").
+     * @param memorySize Taille de la mémoire
+     */
     private void buildMemory(int memorySize) {
         this.memory = new CircularFifoQueue<BlockValue>(memorySize) {
             @Override
@@ -80,7 +100,20 @@ public class Agent implements Movable {
      */
     public void pickUp(Block block) throws CollisionException {
         if (isHolding()) throw new CollisionException("L'agent tient déjà un bloc.");
-        else setHolding(block); visit(block);
+
+        setHolding(block);
+        visit(block);
+    }
+
+    /**
+     * Dépose un bloc.
+     * @throws MovableNotFoundException Si l'agent ne tient pas de bloc
+     *
+     */
+    public void putDown() throws MovableNotFoundException {
+        if (!isHolding()) throw new MovableNotFoundException("L'agent ne tient pas de bloc");
+
+        setHolding(null);
     }
 
     /**
@@ -122,6 +155,9 @@ public class Agent implements Movable {
         return id.hashCode();
     }
 
+    /**
+     * Réinitialise le compteur d'instanciations des agents à 0.
+     */
     public static void cleanID() {
         COUNTER_INSTANTIATIONS = 0L;
     }

@@ -266,7 +266,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("agent should do nothing")
     public void doNotPutDown_A_whenFull_Movable() {
-        agent.setHolding(new Block(BlockValue.A));
+        agent.pickUp(new Block(BlockValue.A));
 
         // Agent entouré d'autres entités : ne devrait pas pouvoir déposer son bloc.
         environnement.insert(agent, 2, 2);
@@ -286,7 +286,7 @@ public class EnvironnementTest {
     @RepeatedTest(10)
     @DisplayName("agent should put down block A on SOUTH or nothing")
     public void putDown_A_whenMostlyBlocks_A() {
-        agent.setHolding(new Block(BlockValue.A));
+        agent.pickUp(new Block(BlockValue.A));
         environnement.insert(agent, 2, 2);
         environnement.insert(new Block(BlockValue.A), 0, 2);
         environnement.insert(new Block(BlockValue.A), 2, 0);

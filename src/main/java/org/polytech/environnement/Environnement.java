@@ -90,7 +90,7 @@ public class Environnement implements Runnable {
         // Déposer le bloc.
         Block block = agent.getHolding();
         insert(block, xGoal, yGoal);
-        agent.setHolding(null);
+        agent.putDown();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
