@@ -8,6 +8,9 @@ import org.polytech.environnement.Direction;
  */
 public class Block implements Movable {
 
+    /**
+     * Valeur du bloc.
+     */
     private BlockValue value;
 
     private Block() {}

@@ -72,20 +72,31 @@ public class StrategyPickUp implements Strategy {
      * @return Meilleur type de bloc à saisir avec sa proportion dans le voisinage récent
      */
     private Map.Entry<BlockValue, Double> computeF(Agent agent) {
-        Map.Entry<BlockValue, Long> preferredBlock = computeBlock(agent);
-        double f = (double) preferredBlock.getValue() / agent.getMemory().size();
+        Map.Entry<BlockValue, Double> preferredBlock = computeBlock(agent);
+        double f = preferredBlock.getValue() / agent.getMemory().size();
         return new AbstractMap.SimpleEntry<>(preferredBlock.getKey(), f);
     }
 
     /**
-     * Calcule le type de bloc qu'il est préférable de saisir pour un certain agent.
+     * Calcule le type de bloc qu'il est préférable de saisir pour un certain agent (incluant l'erreur de perception).
      *
      * @param agent Agent à inspecter
      * @return Type de bloc avec le nombre d'occurences dans la mémoire de l'agent
      */
-    private Map.Entry<BlockValue, Long> computeBlock(Agent agent) {
+    private Map.Entry<BlockValue, Double> computeBlock(Agent agent) {
         // Pour saisir un bloc, on préfère le type qui est le moins présent dans le voisinage parcouru par l'agent.
-        Map<BlockValue, Long> nbBlocks = countBlocks(agent);
+        Map<BlockValue, Double> nbBlocks = countBlocks(agent);
+
+        // Bruitage (error de perception des agents)
+        if (agent.getError() > 0) {
+            double countBlockA = nbBlocks.get(BlockValue.A);
+            double countBlockB = nbBlocks.get(BlockValue.B);
+            countBlockA += countBlockB * agent.getError();
+            countBlockB += countBlockA * agent.getError();
+
+            nbBlocks.put(BlockValue.A, countBlockA);
+            nbBlocks.put(BlockValue.B, countBlockB);
+        }
 
         return Collections.min(nbBlocks.entrySet(), Map.Entry.comparingByValue());
     }
@@ -96,11 +107,11 @@ public class StrategyPickUp implements Strategy {
      * @param agent Agent à inspecter
      * @return Chaque type de bloc avec leur nombre d'occurrence
      */
-    private Map<BlockValue, Long> countBlocks(Agent agent) {
-        Map<BlockValue, Long> result = new HashMap<>();
+    private Map<BlockValue, Double> countBlocks(Agent agent) {
+        Map<BlockValue, Double> result = new HashMap<>();
 
-        Long counterA = 0L;
-        Long counterB = 0L;
+        double counterA = 0L;
+        double counterB = 0L;
         for (BlockValue value : agent.getMemory()) {
             if (value == BlockValue.A) {
                 counterA++;

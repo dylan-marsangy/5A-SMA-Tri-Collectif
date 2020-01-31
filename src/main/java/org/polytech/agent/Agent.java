@@ -32,8 +32,18 @@ public class Agent implements Movable {
      * Distance de perception d'un agent.
      */
     private int distance;
+    /**
+     * Constante k+ utilisée dans la formule de probabilité de prise et dépôt de bloc.
+     */
     private double kPlus;
+    /**
+     * Constante k- utilisée dans la formule de probabilité de prise et dépôt de bloc.
+     */
     private double kMinus;
+    /** Taux d'erreur dans la reconnaissances des objets rencontrés.
+     *
+     */
+    private double error;
 
     /**
      * Mémoire de l'agent.
@@ -51,13 +61,14 @@ public class Agent implements Movable {
         attributeId();
     }
 
-    public Agent(int distance, int memorySize, double kPlus, double kMinus) {
+    public Agent(int distance, int memorySize, double kPlus, double kMinus, double error) {
         attributeId();
         buildMemory(memorySize);
 
         this.distance = distance;
         this.kPlus = kPlus;
         this.kMinus = kMinus;
+        this.error = error;
     }
 
     /**
@@ -141,7 +152,6 @@ public class Agent implements Movable {
 
     @Override
     public String toString() {
-//        return Long.toString(id);
         return "X";
     }
 
@@ -219,5 +229,13 @@ public class Agent implements Movable {
 
     public void setkMinus(double kMinus) {
         this.kMinus = kMinus;
+    }
+
+    public double getError() {
+        return error;
+    }
+
+    public void setError(double error) {
+        this.error = error;
     }
 }

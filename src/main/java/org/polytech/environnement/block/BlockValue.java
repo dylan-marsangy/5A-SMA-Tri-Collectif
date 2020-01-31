@@ -1,5 +1,8 @@
 package org.polytech.environnement.block;
 
+/**
+ * Valeur d'un bloc.
+ */
 public enum BlockValue {
     A("A"), B("B"), ZERO("0");
 

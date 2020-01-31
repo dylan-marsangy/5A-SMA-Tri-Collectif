@@ -30,14 +30,16 @@ public class Environnement implements Runnable {
     private Environnement() {
     }
 
-    public Environnement(int n, int m, int nbAgents, int distance, int memorySize, double kPlus, double kMinus, int nbBlocksA, int nbBlocksB) {
+    public Environnement(int n, int m,
+                         int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error,
+                         int nbBlocksA, int nbBlocksB) {
         this.grid = new Movable[n][m];
 
-        placeAgentsOnGrid(nbAgents, distance, memorySize, kPlus, kMinus);
+        placeAgentsOnGrid(nbAgents, distance, memorySize, kPlus, kMinus, error);
         insertBlocks(nbBlocksA, nbBlocksB);
     }
 
-    public void placeAgentsOnGrid(int nbAgents, int distance, int memorySize, double kPlus, double k) {}
+    public void placeAgentsOnGrid(int nbAgents, int distance, int memorySize, double kPlus, double k, double error) {}
 
     public void insertBlocks(int nbBlocksA, int nbBlocksB) {}
 

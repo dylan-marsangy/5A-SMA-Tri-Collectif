@@ -28,13 +28,16 @@ public class RandomEnvironnementTest {
     private final int T = 10;
     private final double K_MINUS = 0.3;
     private final double K_PLUS = 0.1;
+    private final double ERROR = 0d;
 
     private RandomEnvironnement environnement;
 
     @BeforeEach
     public void initializeEnvironnement() {
         Agent.cleanID();
-        environnement = new RandomEnvironnement(N, M, NB_AGENTS, I, T, K_PLUS, K_MINUS, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new RandomEnvironnement(N, M,
+                NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
+                NB_BLOCKS_A, NB_BLOCKS_B);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------

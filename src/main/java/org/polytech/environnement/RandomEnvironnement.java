@@ -15,12 +15,14 @@ public class RandomEnvironnement extends Environnement {
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
-    public RandomEnvironnement(int n, int m, int nbAgents, int distance, int memorySize, double kPlus, double kMinus, int nbBlocksA, int nbBlocksB) {
-        super(n, m, nbAgents, distance, memorySize, kPlus, kMinus, nbBlocksA, nbBlocksB);
+    public RandomEnvironnement(int n, int m,
+                               int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error,
+                               int nbBlocksA, int nbBlocksB) {
+        super(n, m, nbAgents, distance, memorySize, kPlus, kMinus, error, nbBlocksA, nbBlocksB);
     }
 
     @Override
-    public void placeAgentsOnGrid(int nbAgents, int distance, int memorySize, double kPlus, double k) {
+    public void placeAgentsOnGrid(int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error) {
         Random rand = new Random();
         int x, y;
         int n = grid.length;
@@ -33,7 +35,7 @@ public class RandomEnvironnement extends Environnement {
                 y = rand.nextInt(m);
             } while (!isEmpty(x, y));
 
-            Agent entity = new Agent(distance, memorySize, kPlus, k);
+            Agent entity = new Agent(distance, memorySize, kPlus, kMinus, error);
             insert(entity, x, y);
             agents.add(entity);
         }

@@ -15,13 +15,14 @@ public class AgentTest {
     private final int T = 10;
     private final double K_MINUS = 0.3;
     private final double K_PLUS = 0.1;
+    private final double ERROR = 0d;
 
     private Agent agent;
 
     @BeforeEach
     public void initializeAgent() {
         Agent.cleanID();
-        agent = new Agent(I, T, K_PLUS, K_MINUS);
+        agent = new Agent(I, T, K_PLUS, K_MINUS, ERROR);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
@@ -29,7 +30,7 @@ public class AgentTest {
     @Test
     @DisplayName("Identification By Auto-Incremented Long")
     public void agentsIdentification() {
-        assertEquals(2L, new Agent(I, T, K_PLUS, K_MINUS).getID());
+        assertEquals(2L, new Agent(I, T, K_PLUS, K_MINUS, ERROR).getID());
     }
 
     // MEMORY ----------------------------------------------------------------------------------------------------------
