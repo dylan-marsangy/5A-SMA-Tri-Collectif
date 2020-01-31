@@ -5,51 +5,49 @@ import org.polytech.environnement.Direction;
 import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
+import org.polytech.environnement.exceptions.MovableNotFoundException;
 
 import java.util.*;
 
 /**
  * Stratégie d'un agent pour prendre un bloc.
+ * Cette stratégie est principalement définie par la direction cible de l'agent calculée après l'exécution de la stratégie 'Move'.
+ * Elle permet de déterminer si la direction doit être maintenue (prise de bloc) ou abandonnée.
  */
 public class StrategyPickUp implements Strategy {
 
-    public StrategyPickUp() {
+    /**
+     * Direction cible de l'agent.
+     */
+    private Direction goalDirection;
+
+    public StrategyPickUp(Direction goalDirection) {
+        this.goalDirection = goalDirection;
     }
 
     /**
-     * Décide la direction éventuelle dans laquelle l'agent veut saisir un bloc.
+     * Maintient ou abandonne la direction cible de l'agent (déterminée lors de l'exécution de la stragtégie 'Move').
      *
      * @param agent      Agent ayant reçu la perception
      * @param perception Perception de laquelle extraire une direction
-     * @return (1) Direction indiquant le bloc à saisir ou (2) null si l'agent ne saisit pas de bloc
+     * @return (1) Direction cible de l'agent si un bloc peut être pris ou (2) null sinon.
      */
     @Override
     public Direction execute(Agent agent, Map<Direction, Movable> perception) {
-        double rand = new Random().nextDouble();
+        if (agent.getHolding() != null) throw new MovableNotFoundException("L'agent tient déjà un bloc.");
 
-        Map<BlockValue, Double> probaBlocks = computeProba(agent);
-        Map.Entry<BlockValue, Double> preferredBlock =  Collections.max(probaBlocks.entrySet(), Map.Entry.comparingByValue());
-        if (rand <= preferredBlock.getValue()) {
-            // Garder seulement les directions dans lesquelles il y a un bloc de valeur préférée
-            perception.values().removeIf(movable ->
-                    (!(movable instanceof Block)) || ((Block) movable).getValue() != preferredBlock.getKey());
-
-            // Si l'agent n'a pas de bloc à prendre, on ajoute dans sa mémoire "0".
-            if (perception.size() == 0) {
-                agent.visit(new Block(BlockValue.ZERO));
-                return null;
+        // Vérification qu'un bloc est bien présent dans la direction cible.
+        Movable entity = perception.get(goalDirection);
+        if (entity instanceof Block) {
+            // Calculer la proba pour tenter de prendre le bloc cible.
+            Block block = (Block) entity;
+            double probaPickUp = computeProba(agent).get(block.getValue());
+            if (new Random().nextDouble() <= probaPickUp) {
+                return goalDirection;
             }
 
-            // Choisir aléatoirement une direction restante.
-            Direction result = perception.keySet().stream()
-                    .skip(new Random().nextInt(perception.size()))
-                    .findFirst()
-                    .orElse(null);
-
-            // Agent tente de prendre un bloc : il l'insère dans sa mémoire.
-            agent.visit((Block) perception.get(result));
-
-            return result;
+            // L'agent a pris un bloc (ou tenté) donc on l'ajout en mémoire.
+            agent.visit(block);
         }
 
         return null;

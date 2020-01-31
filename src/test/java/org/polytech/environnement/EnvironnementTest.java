@@ -29,8 +29,8 @@ public class EnvironnementTest {
     private final int N = 5;
     private final int M = 5;
     private final int NB_AGENTS = 5;
-    private final int NB_BLOCKS_A = 10;
-    private final int NB_BLOCKS_B = 10;
+    private final int NB_BLOCKS_A = 5;
+    private final int NB_BLOCKS_B = 5;
 
     private final int I = 1;
     private final int T = 10;
@@ -153,13 +153,34 @@ public class EnvironnementTest {
 
     // RUNNING --- MOVE ------------------------------------------------------------------------------------------------
 
-    @Test
-    @DisplayName("agent should move when surrounded by other entities")
-    public void agentDoesntMove_whenSurroundedBy_Others() {
+    @RepeatedTest(10)
+    @DisplayName("agent should randomly move when no holding")
+    public void agentRandomWalk_noAgents() {
         // Agent entouré des blocs A.
         environnement.insert(agent, 2, 2);
         environnement.insert(new Block(BlockValue.A), 0, 2);
-        environnement.insert(new Block(BlockValue.A), 2, 0);
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 4);
+        environnement.insert(new Block(BlockValue.B), 4, 2);
+
+        assertEquals(agent, environnement.getEntity(2,2));
+        assertFalse(environnement.isEmpty(4, 2));
+        assertFalse(environnement.isEmpty(0, 2));
+        assertFalse(environnement.isEmpty(2, 0));
+        assertFalse(environnement.isEmpty(2, 4));
+
+        Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
+        assertTrue(Arrays.asList(Direction.values()).contains(result));
+    }
+
+
+    @RepeatedTest(10)
+    @DisplayName("agent shouldn't move towards other agents")
+    public void agentRandomWalk_anyAgents() {
+        // Agent entouré des blocs A.
+        environnement.insert(agent, 2, 2);
+        environnement.insert(new Block(BlockValue.A), 0, 2);
+        environnement.insert(new Agent(I, T, K_MINUS, K_PLUS, ERROR), 2, 0);
         environnement.insert(new Block(BlockValue.A), 2, 4);
         environnement.insert(new Block(BlockValue.A), 4, 2);
 
@@ -170,41 +191,28 @@ public class EnvironnementTest {
         assertFalse(environnement.isEmpty(2, 4));
 
         Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
-        assertNull(result);
+        assertNotEquals(Direction.WEST, result);
     }
 
     @RepeatedTest(10)
-    @DisplayName("agent should randomly move")
-    public void agentRandomWalk() {
+    @DisplayName("agent should randomly move towards empty cases only when holding")
+    public void agentRandomWalk_holding() {
+        agent.setHolding(new Block(BlockValue.B));
+
         // Agent entouré des blocs A.
         environnement.insert(agent, 2, 2);
+        environnement.insert(new Block(BlockValue.A), 0, 2);
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 4);
+
         assertEquals(agent, environnement.getEntity(2,2));
         assertTrue(environnement.isEmpty(4, 2));
-        assertTrue(environnement.isEmpty(0, 2));
-        assertTrue(environnement.isEmpty(2, 0));
-        assertTrue(environnement.isEmpty(2, 4));
+        assertFalse(environnement.isEmpty(0, 2));
+        assertFalse(environnement.isEmpty(2, 0));
+        assertFalse(environnement.isEmpty(2, 4));
 
         Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
-        assertNotNull(result);
-        System.out.println("Move towards : " + result);
-
-        environnement.move(agent, result, 2);
-        assertNull(environnement.getEntity(2,2));
-
-        switch (result) {
-            case SOUTH:
-                assertFalse(environnement.isEmpty(4, 2));
-                break;
-            case NORTH:
-                assertFalse(environnement.isEmpty(0, 2));
-                break;
-            case WEST:
-                assertFalse(environnement.isEmpty(2, 0));
-                break;
-            case EAST:
-                assertFalse(environnement.isEmpty(2, 4));
-                break;
-        }
+        assertEquals(Direction.SOUTH, result);
     }
 
     // RUNNING --- PICK UP ---------------------------------------------------------------------------------------------
@@ -212,61 +220,36 @@ public class EnvironnementTest {
     @Test
     @DisplayName("agent shouldn't pick up A when visited full A")
     public void doNotPickUp_A_whenFull_A() {
-        // Agent entouré des blocs A.
+        assertFalse(agent.isHolding());
+
         environnement.insert(agent, 2, 2);
         environnement.insert(new Block(BlockValue.A), 0, 2);
-        environnement.insert(new Block(BlockValue.A), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 4);
-        environnement.insert(new Block(BlockValue.A), 4, 2);
 
         IntStream.rangeClosed(1, T).forEach(index -> agent.visit(new Block(BlockValue.A)));
 
-        assertNull(agent.execute(new StrategyPickUp(), environnement.perception(agent, 2)));
+        assertNull(agent.execute(new StrategyPickUp(Direction.NORTH), environnement.perception(agent, 2)));
         assertEquals(agent, environnement.getEntity(2,2));
         assertFalse(agent.isHolding());
         assertNotNull(environnement.getEntity(0, 2));
-        assertNotNull(environnement.getEntity(2, 2));
-        assertNotNull(environnement.getEntity(2, 4));
-        assertNotNull(environnement.getEntity(4, 2));
     }
 
     @RepeatedTest(10)
-    @DisplayName("agent should pick up any block A when visited full B")
+    @DisplayName("agent should maintain picking up A when visited full B")
     public void pickUp_A_whenMostlyBlocks_B() {
         assertFalse(agent.isHolding());
 
-        // Agent entouré des blocs A.
         environnement.insert(agent, 2, 2);
-        environnement.insert(new Block(BlockValue.A), 0, 2);
-        environnement.insert(new Block(BlockValue.A), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 4);
         environnement.insert(new Block(BlockValue.A), 4, 2);
 
         IntStream.rangeClosed(1, T).forEach(index -> agent.visit(new Block(BlockValue.B)));
 
-        Set<Direction> expected = Arrays.stream(Direction.values()).collect(Collectors.toSet());
-        Direction result = agent.execute(new StrategyPickUp(), environnement.perception(agent, 2));
-        System.out.println("Pick up towards : " + result);
+        Direction result = agent.execute(new StrategyPickUp(Direction.SOUTH), environnement.perception(agent, 2));
+        assertEquals(Direction.SOUTH, result);
 
         environnement.pickUpBlock(agent, result, 2);
         assertEquals(agent, environnement.getEntity(2,2));
         assertTrue(agent.isHolding());
-        assertTrue(expected.contains(result));
-
-        switch (result) {
-            case SOUTH:
-                assertTrue(environnement.isEmpty(4, 2));
-                break;
-            case NORTH:
-                assertTrue(environnement.isEmpty(0, 2));
-                break;
-            case WEST:
-                assertTrue(environnement.isEmpty(2, 0));
-                break;
-            case EAST:
-                assertTrue(environnement.isEmpty(2, 4));
-                break;
-        }
+        assertTrue(environnement.isEmpty(4, 2));
     }
 
     // RUNNING --- PUT DOWN --------------------------------------------------------------------------------------------
