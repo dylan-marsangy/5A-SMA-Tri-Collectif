@@ -27,7 +27,8 @@ public class StrategyPickUp implements Strategy {
     public Direction execute(Agent agent, Map<Direction, Movable> perception) {
         double rand = new Random().nextDouble();
 
-        Map.Entry<BlockValue, Double> preferredBlock = computeProba(agent);
+        Map<BlockValue, Double> probaBlocks = computeProba(agent);
+        Map.Entry<BlockValue, Double> preferredBlock =  Collections.max(probaBlocks.entrySet(), Map.Entry.comparingByValue());
         if (rand <= preferredBlock.getValue()) {
             // Garder seulement les directions dans lesquelles il y a un bloc de valeur préférée
             perception.values().removeIf(movable ->
@@ -55,62 +56,40 @@ public class StrategyPickUp implements Strategy {
     }
 
     /**
-     * Calcule la probabilité de prendre le meilleur type de bloc pour un agent.
+     * Calcule la probabilité d'un agent de prendre chaque type de bloc.
      *
      * @param agent Agent à inspecter
-     * @return Meilleur type de bloc à saisir avec la probabilité de le saisir
+     * @return Probabilité de prendre un bloc
      */
-    public Map.Entry<BlockValue, Double> computeProba(Agent agent) {
-        Map.Entry<BlockValue, Double> preferredBlock = computeF(agent);
+    public Map<BlockValue, Double> computeProba(Agent agent) {
+        Map<BlockValue, Double> fValues = computeF(agent);
 
-        // Calcul de f.
-        double f = preferredBlock.getValue();
-        preferredBlock.setValue(Math.pow((agent.getkPlus() / (agent.getkPlus() + f)), 2));
+        // Calcul de la probabilité de prise.
+        fValues.forEach(((blockValue, fValue) ->
+                fValues.replace(blockValue, Math.pow((agent.getkPlus() / (agent.getkPlus() + fValue)), 2))));
 
-        return preferredBlock;
+        return fValues;
     }
 
     /**
-     * Calcule la proportion du meilleur type de bloc à saisir dans le voisinage récent d'un agent (basé sur sa mémoire).
+     * Calcule la proportion du chaque type de bloc dans la mémoire de l'agent (bruité).
      *
      * @param agent Agent à inspecter
-     * @return Meilleur type de bloc à saisir avec sa proportion dans le voisinage récent
+     * @return Proportion de chaque type de bloc
      */
-    private Map.Entry<BlockValue, Double> computeF(Agent agent) {
-        Map.Entry<BlockValue, Double> preferredBlock = computeBlock(agent);
-        double f = preferredBlock.getValue() / agent.getMemory().size();
-        return new AbstractMap.SimpleEntry<>(preferredBlock.getKey(), f);
+    private Map<BlockValue, Double> computeF(Agent agent) {
+        Map<BlockValue, Double> countedBlocks = countBlocks(agent);
+
+        countedBlocks.forEach(((blockValue, count) ->
+                countedBlocks.replace(blockValue, count / agent.getMemory().size())));
+        return countedBlocks;
     }
 
     /**
-     * Calcule le type de bloc qu'il est préférable de saisir pour un certain agent (incluant l'erreur de perception).
+     * Compte le nombre de blocs de chaque valeur dans la mémoire de l'agent ("0" exclu), bruité (erreur de perception).
      *
      * @param agent Agent à inspecter
-     * @return Type de bloc avec le nombre d'occurences dans la mémoire de l'agent
-     */
-    private Map.Entry<BlockValue, Double> computeBlock(Agent agent) {
-        // Pour saisir un bloc, on préfère le type qui est le moins présent dans le voisinage parcouru par l'agent.
-        Map<BlockValue, Double> nbBlocks = countBlocks(agent);
-
-        // Bruitage (error de perception des agents)
-        if (agent.getError() > 0) {
-            double countBlockA = nbBlocks.get(BlockValue.A);
-            double countBlockB = nbBlocks.get(BlockValue.B);
-            countBlockA += countBlockB * agent.getError();
-            countBlockB += countBlockA * agent.getError();
-
-            nbBlocks.put(BlockValue.A, countBlockA);
-            nbBlocks.put(BlockValue.B, countBlockB);
-        }
-
-        return Collections.min(nbBlocks.entrySet(), Map.Entry.comparingByValue());
-    }
-
-    /**
-     * Compte le nombre de blocs de chaque valeur dans la mémoire de l'agent ("0" exclu).
-     *
-     * @param agent Agent à inspecter
-     * @return Chaque type de bloc avec leur nombre d'occurrence
+     * @return Chaque type de bloc avec leur nombre d'occurrence (bruité)
      */
     private Map<BlockValue, Double> countBlocks(Agent agent) {
         Map<BlockValue, Double> result = new HashMap<>();
@@ -123,6 +102,12 @@ public class StrategyPickUp implements Strategy {
             } else {
                 counterB++;
             }
+        }
+
+        // Bruitage (error de perception des agents)
+        if (agent.getError() > 0) {
+            counterA += counterB * agent.getError();
+            counterB += counterA * agent.getError();
         }
 
         result.put(BlockValue.A, counterA);
