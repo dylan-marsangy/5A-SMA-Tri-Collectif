@@ -4,6 +4,7 @@ import org.polytech.agent.Agent;
 import org.polytech.environnement.Direction;
 import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
+import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
 
 import java.util.Map;
@@ -35,6 +36,7 @@ public class StrategyPutDown implements Strategy {
         if (new Random().nextDouble() <= proba) {
             // Garder seulement les directions dans lesquelles la case but est vide.
             perception.values().removeIf(Objects::nonNull);
+
 
             // Choisir aléatoirement une direction restante.
             if (perception.size() == 0) return null;

@@ -33,6 +33,7 @@ public class StrategyPickUp implements Strategy {
             perception.values().removeIf(movable ->
                     (!(movable instanceof Block)) || ((Block) movable).getValue() != preferredBlock.getKey());
 
+            // Si l'agent n'a pas de bloc à prendre, on ajoute dans sa mémoire "0".
             if (perception.size() == 0) {
                 agent.visit(new Block(BlockValue.ZERO));
                 return null;

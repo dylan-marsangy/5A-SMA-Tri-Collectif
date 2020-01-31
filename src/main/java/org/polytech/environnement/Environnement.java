@@ -134,7 +134,7 @@ public class Environnement implements Runnable {
         Movable entity = getEntity(xGoal, yGoal);
         if (!(entity instanceof Block)) throw new MovableNotFoundException("Il n'y a pas de bloc sur la case cible.");
 
-        agent.pickUp((Block) entity); // Prend le bloc et l'ajoute en mémoire.
+        agent.pickUp((Block) entity); // Prend le bloc.
         remove(xGoal, yGoal);
     }
 

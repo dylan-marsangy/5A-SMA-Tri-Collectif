@@ -118,7 +118,6 @@ public class Agent implements Movable {
         if (isHolding()) throw new CollisionException("L'agent tient déjà un bloc.");
 
         setHolding(block);
-        visit(block);
     }
 
     /**
