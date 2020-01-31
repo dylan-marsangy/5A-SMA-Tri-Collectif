@@ -12,6 +12,6 @@ public class SMAConstants {
     /***
      * Fréquence à laquelle afficher la grille pendant l'exécution de l'application par rapport au nombre d'itérations des actions des agents.
      */
-    public final static double FREQUENCY_DISPLAY_GRID = 0.25;
+    public final static double FREQUENCY_DISPLAY_GRID = 0d;
 
 }

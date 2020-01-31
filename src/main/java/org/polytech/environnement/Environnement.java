@@ -103,7 +103,7 @@ public class Environnement implements Runnable {
         }
 
         if (frequency == 0) {
-            System.out.println(this);
+            System.out.print(this);
             System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
             System.out.println();
         }
