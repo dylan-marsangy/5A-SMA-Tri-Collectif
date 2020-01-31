@@ -33,8 +33,12 @@ public class StrategyPickUp implements Strategy {
             perception.values().removeIf(movable ->
                     (!(movable instanceof Block)) || ((Block) movable).getValue() != preferredBlock.getKey());
 
+            if (perception.size() == 0) {
+                agent.visit(new Block(BlockValue.ZERO));
+                return null;
+            }
+
             // Choisir aléatoirement une direction restante.
-            if (perception.size() == 0) return null;
             Direction result = perception.keySet().stream()
                     .skip(new Random().nextInt(perception.size()))
                     .findFirst()
