@@ -28,7 +28,7 @@ public class Environnement implements Runnable {
      * Fréquence à laquelle afficher la grille lors d'une exécution du monde.
      */
     private double frequencyDiplayGrid;
-    
+
     /**
      * Collection des agents évoluent sur la grille.
      */
@@ -62,7 +62,9 @@ public class Environnement implements Runnable {
     @Override
     public void run() {
         int frequency = (int) (nbIterations * frequencyDiplayGrid);
-        System.out.println(this);
+        System.out.print(this);
+        System.out.println(String.format("0 / %d (0%%)", nbIterations));
+        System.out.println();
 
         int count = 0;
         Agent agent;
@@ -93,10 +95,18 @@ public class Environnement implements Runnable {
             }
 
             // Affichage de la grille résultante si nécessaire.
-            if (frequency != 0d && count % frequency == 0) System.out.println(this);
+            if (frequency != 0d && count % frequency == 0) {
+                System.out.print(this);
+                System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
+                System.out.println();
+            }
         }
 
-        if (frequency == 0) System.out.println(this);
+        if (frequency == 0) {
+            System.out.println(this);
+            System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
+            System.out.println();
+        }
     }
 
     /**
