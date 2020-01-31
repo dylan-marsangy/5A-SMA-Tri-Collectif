@@ -21,6 +21,15 @@ public class Environnement implements Runnable {
     protected Movable[][] grid;
 
     /**
+     * Nombre maximal d'itérations de la boucle des actions des agents.
+     */
+    private int nbIterations;
+    /**
+     * Fréquence à laquelle afficher la grille lors d'une exécution du monde.
+     */
+    private double frequencyDiplayGrid;
+    
+    /**
      * Collection des agents évoluent sur la grille.
      */
     protected Set<Agent> agents;
@@ -30,10 +39,15 @@ public class Environnement implements Runnable {
     private Environnement() {
     }
 
-    public Environnement(int n, int m,
+    public Environnement(int n, int m, int nbIterations, double frequencyDiplayGrid,
                          int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error,
-                         int nbBlocksA, int nbBlocksB) {
+                         int nbBlocksA, int nbBlocksB) throws IllegalArgumentException {
+        if (nbAgents + nbBlocksA + nbBlocksB >= n * m)
+            throw new IllegalArgumentException("Il y a trop d'entités par rapport aux dimensions de la grille.");
+
         this.grid = new Movable[n][m];
+        this.nbIterations = nbIterations;
+        this.frequencyDiplayGrid = frequencyDiplayGrid;
 
         placeAgentsOnGrid(nbAgents, distance, memorySize, kPlus, kMinus, error);
         insertBlocks(nbBlocksA, nbBlocksB);
@@ -45,9 +59,9 @@ public class Environnement implements Runnable {
 
     // EXECUTION -------------------------------------------------------------------------------------------------------
 
-    //TODO
     @Override
     public void run() {
+        int frequency = (int) (nbIterations * frequencyDiplayGrid);
         System.out.println(this);
 
         int count = 0;
@@ -55,7 +69,7 @@ public class Environnement implements Runnable {
         int distance;
         Map<Direction, Movable> perception; // Perception d'un agent.
         Direction result; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
-        while (count < 300000) {
+        while (count < nbIterations) {
             count++;
 
             // Tirage aléatoire d'un agent (simulation du multi-threading).
@@ -77,9 +91,12 @@ public class Environnement implements Runnable {
                 result = agent.execute(new StrategyPickUp(), perception);
                 if (result != null) pickUpBlock(agent, result, distance);
             }
+
+            // Affichage de la grille résultante si nécessaire.
+            if (frequency != 0d && count % frequency == 0) System.out.println(this);
         }
 
-        System.out.println(this);
+        if (frequency == 0) System.out.println(this);
     }
 
     /**

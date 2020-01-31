@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.agent.strategies.StrategyMove;
 import org.polytech.agent.strategies.StrategyPickUp;
@@ -12,7 +13,10 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -39,7 +43,7 @@ public class EnvironnementTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M,
+        environnement = new Environnement(N, M, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                 NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
                 NB_BLOCKS_A, NB_BLOCKS_B);
 

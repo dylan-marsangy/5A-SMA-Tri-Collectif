@@ -1,3 +1,5 @@
+package org.polytech;
+
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 
@@ -16,7 +18,7 @@ public class SMApplicationV1 {
 
     public static void main(String[] args) {
         Environnement environnement = new RandomEnvironnement(
-                GRID_ROWS, GRID_COLUMNS,
+                GRID_ROWS, GRID_COLUMNS, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                 NUMBER_AGENTS, SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR,
                 NUMBER_BLOCKS_A, NUMBER_BLOCS_B);
 

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
@@ -35,7 +36,7 @@ public class RandomEnvironnementTest {
     @BeforeEach
     public void initializeEnvironnement() {
         Agent.cleanID();
-        environnement = new RandomEnvironnement(N, M,
+        environnement = new RandomEnvironnement(N, M, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                 NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
                 NB_BLOCKS_A, NB_BLOCKS_B);
     }

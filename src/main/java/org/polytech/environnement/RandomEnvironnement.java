@@ -4,7 +4,6 @@ import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -15,10 +14,12 @@ public class RandomEnvironnement extends Environnement {
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
-    public RandomEnvironnement(int n, int m,
+    public RandomEnvironnement(int n, int m, int nbIterations, double frequencyDiplayGrid,
                                int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error,
                                int nbBlocksA, int nbBlocksB) {
-        super(n, m, nbAgents, distance, memorySize, kPlus, kMinus, error, nbBlocksA, nbBlocksB);
+        super(n, m, nbIterations, frequencyDiplayGrid,
+                nbAgents, distance, memorySize, kPlus, kMinus, error,
+                nbBlocksA, nbBlocksB);
     }
 
     @Override
