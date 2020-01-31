@@ -51,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>SMApplicationV1</mainClass>
+                            <mainClass>org.polytech.SMApplicationV1</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

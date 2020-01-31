@@ -1,5 +1,8 @@
 package org.polytech.environnement;
 
+/**
+ * Directions possibles de déplacement et de perception sur la grille.
+ */
 public enum Direction {
     SOUTH(1, 0),
     NORTH(-1, 0),
