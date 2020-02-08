@@ -5,12 +5,16 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.polytech.environnement.block.BlockValue;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 
 public class ExcelGenerator {
-    public ExcelGenerator() {
+
+    public ExcelGenerator(List<Evaluation> evaluations) {
+
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Statistiques simulations");
 
@@ -20,46 +24,81 @@ public class ExcelGenerator {
 
         row = sheet.createRow(rownum);
 
-        // EmpNo
+        // Itération
         cell = row.createCell(0, CellType.STRING);
-        cell.setCellValue("EmpNo");
-        // EmpName
+        cell.setCellValue("Itération");
+        // Nombre de blocs A
         cell = row.createCell(1, CellType.STRING);
-        cell.setCellValue("EmpNo");
-        // Salary
+        cell.setCellValue("Nombre de blocs A");
+        // Nombre de blocs B
         cell = row.createCell(2, CellType.STRING);
-        cell.setCellValue("Salary");
-        // Grade
+        cell.setCellValue("Nombre de blocs B");
+        // A voisin avec A
         cell = row.createCell(3, CellType.STRING);
-        cell.setCellValue("Grade");
-        // Bonus
+        cell.setCellValue("A voisin avec A");
+        // A voisin avec B
         cell = row.createCell(4, CellType.STRING);
-        cell.setCellValue("Bonus");
+        cell.setCellValue("A voisin avec B");
+        // B voisin avec B
+        cell = row.createCell(5, CellType.STRING);
+        cell.setCellValue("B voisin avec B");
+        // Nombre de colonies
+        cell = row.createCell(6, CellType.STRING);
+        cell.setCellValue("Nombre de colonies");
+        // Taille moyenne d'une colonie
+        cell = row.createCell(7, CellType.STRING);
+        cell.setCellValue("Taille moyenne d'une colonie");
+        // Proportion de A par colonie
+        cell = row.createCell(8, CellType.STRING);
+        cell.setCellValue("Proportion de A par colonie");
+        // Proportion de B par colonie
+        cell = row.createCell(9, CellType.STRING);
+        cell.setCellValue("Proportion de B par colonie");
+
 
         // Data
-//        for (Employee emp : list) {
-//            rownum++;
-//            row = sheet.createRow(rownum);
-//
-//            // EmpNo (A)
-//            cell = row.createCell(0, CellType.STRING);
-//            cell.setCellValue(emp.getEmpNo());
-//            // EmpName (B)
-//            cell = row.createCell(1, CellType.STRING);
-//            cell.setCellValue(emp.getEmpName());
-//            // Salary (C)
-//            cell = row.createCell(2, CellType.NUMERIC);
-//            cell.setCellValue(emp.getSalary());
-//            // Grade (D)
-//            cell = row.createCell(3, CellType.NUMERIC);
-//            cell.setCellValue(emp.getGrade());
+        for (Evaluation evaluation : evaluations) {
+            rownum++;
+            row = sheet.createRow(rownum);
+
+            // Itération
+            cell = row.createCell(0, CellType.NUMERIC);
+            cell.setCellValue(rownum);
+            // Nombre de A
+            cell = row.createCell(1, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getTotalBlockWithValue(BlockValue.A));
+            // Nombre de B
+            cell = row.createCell(2, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getTotalBlockWithValue(BlockValue.B));
+            // A voisin de A
+            cell = row.createCell(3, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.A));
+            // A voisin de B
+            cell = row.createCell(4, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.B));
+            // B voisin de B
+            cell = row.createCell(5, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.B));
+            // Nombre de colonies
+            cell = row.createCell(6, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getNumberOfColonies());
+            // Taille moyenne d'une colonie
+            cell = row.createCell(7, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getAverageSizeOfColonies());
+            // Proportion de A par colonie
+            cell = row.createCell(8, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getAverageColoniesBlockWithValue(BlockValue.A));
+            // Proportion de B par colonie
+            cell = row.createCell(9, CellType.NUMERIC);
+            cell.setCellValue(evaluation.getAverageColoniesBlockWithValue(BlockValue.B));
 //            // Bonus (E)
 //            String formula = "0.1*C" + (rownum + 1) + "*D" + (rownum + 1);
 //            cell = row.createCell(4, CellType.FORMULA);
 //            cell.setCellFormula(formula);
-//        }
-        File file = new File("../../../../../../demo.xls");
-        file.getParentFile().mkdirs();
+        }
+
+        File file = new File("demo.xls");
+//        file.getParentFile().mkdirs();
 
         try {
             FileOutputStream outFile = new FileOutputStream(file);

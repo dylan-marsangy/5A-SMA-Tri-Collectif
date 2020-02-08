@@ -9,6 +9,8 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
+import org.polytech.statistiques.Evaluation;
+import org.polytech.statistiques.ExcelGenerator;
 import org.polytech.utils.Color;
 
 import java.util.*;
@@ -107,6 +109,11 @@ public class Environnement implements Runnable {
             System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
             System.out.println();
         }
+
+        Evaluation evaluation = new Evaluation(this);
+        List<Evaluation> evaluations = new ArrayList<>();
+        evaluations.add(evaluation);
+        ExcelGenerator excelGenerator = new ExcelGenerator(evaluations);
     }
 
     /**
