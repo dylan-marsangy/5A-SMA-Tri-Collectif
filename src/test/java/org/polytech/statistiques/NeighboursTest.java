@@ -35,10 +35,10 @@ public class NeighboursTest {
         environnement = new Environnement(N, M, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                 NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
                 NB_BLOCKS_A, NB_BLOCKS_B);
-        initializeEvaluation();
+        initializeNeighbours();
     }
 
-    public void initializeEvaluation() {
+    public void initializeNeighbours() {
         this.neighbours = new Neighbours(this.environnement);
     }
 
@@ -95,7 +95,7 @@ public class NeighboursTest {
 
         System.out.println(environnement);
 
-        Map<BlockValue, Integer> neighboursNumber = neighbours.getNeighboursNumber(1, 1);
+        Map<BlockValue, Integer> neighboursNumber = neighbours.getNeighboursNumberAt(1, 1);
         assertEquals(1, neighboursNumber.get(BlockValue.A));
         assertEquals(2, neighboursNumber.get(BlockValue.B));
         assertEquals(4, neighboursNumber.get(BlockValue.ZERO));

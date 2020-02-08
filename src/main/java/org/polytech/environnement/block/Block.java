@@ -12,11 +12,15 @@ public class Block implements Movable {
      * Valeur du bloc.
      */
     private BlockValue value;
+    private int colonyNumber;
 
-    private Block() {}
+    private Block() {
+        colonyNumber = -1;
+    }
 
     public Block(BlockValue value) {
         this.value = value;
+        this.colonyNumber = -1;
     }
 
     public BlockValue getValue() {
@@ -25,6 +29,14 @@ public class Block implements Movable {
 
     public void setValue(BlockValue value) {
         this.value = value;
+    }
+
+    public int getColonyNumber() {
+        return colonyNumber;
+    }
+
+    public void setColonyNumber(int colonyNumber) {
+        this.colonyNumber = colonyNumber;
     }
 
     @Override
