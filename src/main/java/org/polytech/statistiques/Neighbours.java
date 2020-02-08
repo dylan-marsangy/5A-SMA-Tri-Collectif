@@ -9,6 +9,8 @@ import java.util.*;
 
 public class Neighbours {
     private Environnement environnement;
+
+    // nombre de voisins de chaque type, pour chaque valeur possible de Bloc (A ou B)
     private Map<BlockValue, Map<BlockValue, Integer>> neighboursNumberByBlockValue;
 
     public Neighbours(Environnement environnement) {
@@ -20,6 +22,10 @@ public class Neighbours {
     }
 
 
+    /**
+     * Génère une HashMap contenant 0 voisin de chaque type
+     * @return Map<BlockValue, Integer>
+     */
     public Map<BlockValue, Integer> createEmptyNeighbours() {
         Map<BlockValue, Integer> neighbours = new HashMap<>();
         neighbours.put(BlockValue.A, 0);
@@ -29,6 +35,10 @@ public class Neighbours {
         return neighbours;
     }
 
+
+    /**
+     * Calcule les voisins de chaque type de Bloc contenu dans l'environnement
+     */
     public void calculateNeighbours() {
         Movable[][] grid = environnement.getGrid();
 
@@ -41,10 +51,13 @@ public class Neighbours {
                         Map<BlockValue, Integer> currentNeighbours = getNeighboursNumberAt(i, j);
 
                         Map<BlockValue, Integer> totalNeighbours = neighboursNumberByBlockValue.get(block.getValue());
+
+                        // additionne les voisins du bloc aux voisins déjà trouvés pour les blocs de même type
                         Integer totalA = totalNeighbours.get(BlockValue.A) + currentNeighbours.get(BlockValue.A);
                         Integer totalB = totalNeighbours.get(BlockValue.B) + currentNeighbours.get(BlockValue.B);
                         Integer totalZERO = totalNeighbours.get(BlockValue.ZERO) + currentNeighbours.get(BlockValue.ZERO);
 
+                        // met à jour la Map
                         totalNeighbours.put(BlockValue.A, totalA);
                         totalNeighbours.put(BlockValue.B, totalB);
                         totalNeighbours.put(BlockValue.ZERO, totalZERO);
@@ -56,6 +69,13 @@ public class Neighbours {
         }
     }
 
+
+    /**
+     * Récupère les voisins du bloc situé à la position indiquée en paramètre
+     * @param x int
+     * @param y int
+     * @return  Map<BlockValue, Integer>
+     */
     public Map<BlockValue, Integer> getNeighboursNumberAt(int x, int y) {
         Map<BlockValue, Integer> neighbours = createEmptyNeighbours();
 
@@ -75,6 +95,13 @@ public class Neighbours {
         return neighbours;
     }
 
+
+    /**
+     * Récupère la liste des voisins autour de la position en paramètre
+     * @param x int
+     * @param y int
+     * @return  Map<BlockValue, Set<List<Integer>>>
+     */
     public Map<BlockValue, Set<List<Integer>>> getNeighboursAt(int x, int y) {
         Map<BlockValue, Set<List<Integer>>> neighbours = new HashMap<>();
         neighbours.put(BlockValue.A, new HashSet<>(new ArrayList<>()));
@@ -100,18 +127,41 @@ public class Neighbours {
         return neighbours;
     }
 
+
+    /**
+     * Getter de neighboursNumberByBlockValue
+     * @return Map<BlockValue, Map<BlockValue, Integer>>
+     */
     public Map<BlockValue, Map<BlockValue, Integer>> getNeighboursNumberByBlockValue() {
         return neighboursNumberByBlockValue;
     }
 
+
+    /**
+     * Récupère le nombre de voisins de chaque type pour la valeur donnée en paramètre
+     * @param blockValue BlockValue
+     * @return Map<BlockValue, Integer>
+     */
     public Map<BlockValue, Integer> getNeighboursNumberByBlockValue(BlockValue blockValue) {
         return neighboursNumberByBlockValue.get(blockValue);
     }
 
+
+    /**
+     * Retourne le nombre de bloc voisins de valeur neighbourBlockValue situés autour des blocs de valeur centerBlockValue
+     * @param centerBlockValue    BlockValue dont on cherche les voisins
+     * @param neighbourBlockValue BlockValue dans le voisinage
+     * @return Integer
+     */
     public Integer getNeighboursWithValue(BlockValue centerBlockValue, BlockValue neighbourBlockValue) {
         return neighboursNumberByBlockValue.get(centerBlockValue).get(neighbourBlockValue);
     }
 
+
+    /**
+     * Retourne le nombre total de voisins calculés
+     * @return Integer
+     */
     public Integer getTotalOfComputedNeighbours() {
         return neighboursNumberByBlockValue.get(BlockValue.A).get(BlockValue.A) +
                 neighboursNumberByBlockValue.get(BlockValue.A).get(BlockValue.B) * 2 +

@@ -10,6 +10,8 @@ import java.util.*;
 public class Colonies {
     private Environnement environnement;
     private Neighbours neighbours;
+
+    // HashMap associant le numéro de colonie à une HashMap contenant le nombre de blocs A et B contenus dans la colonie
     private HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony;
 
     public Colonies(Environnement environnement, Neighbours neighbours) {
@@ -17,7 +19,9 @@ public class Colonies {
         this.neighbours = neighbours;
     }
 
-
+    /**
+     * Crée les colonies à partir de l'environnement
+     */
     public void createColonies() {
         Movable[][] grid = environnement.getGrid();
         int colonyNumber = 1;
@@ -33,15 +37,17 @@ public class Colonies {
                         for (BlockValue neighbourBlockValue : blockNeighbours.keySet()) {
                             for (List coordinates : blockNeighbours.get(neighbourBlockValue)) {
                                 if (environnement.getEntity((int) coordinates.get(0), (int) coordinates.get(1)) instanceof Block) {
+                                    // récupère les voisins du bloc courant
                                     Block currentNeighbour = (Block) environnement.getEntity((int) coordinates.get(0), (int) coordinates.get(1));
 
+                                    // si l'un des voisins a déjà une colonie attribuée, on assigne la même au bloc courant
                                     if (currentNeighbour.getColonyNumber() != -1) {
                                         block.setColonyNumber(currentNeighbour.getColonyNumber());
                                     }
                                 }
                             }
                         }
-
+                        // si aucun voisin n'a de colonie attribuée, alors il s'agit d'une nouvelle colonie
                         if (block.getColonyNumber() == -1) {
                             block.setColonyNumber(colonyNumber);
                             ++colonyNumber;
@@ -51,13 +57,23 @@ public class Colonies {
             }
         }
 
+        // Compte le nombre de blocs par colonie
         computeNumberOfBlocksPerColony();
     }
 
+
+    /**
+     * Retourne le nombre de colonies dans l'environnement
+     * @return int
+     */
     public int countColonies() {
         return numberOfBlocksPerColony.keySet().size();
     }
 
+
+    /**
+     * Compte le nombre de blocs de chaque type par colonie
+     */
     public void computeNumberOfBlocksPerColony() {
         Movable[][] grid = environnement.getGrid();
         numberOfBlocksPerColony = new HashMap<>();
@@ -89,10 +105,20 @@ public class Colonies {
         }
     }
 
+    /**
+     * Getter de numberOfBlocksPerColony
+     * @return HashMap<Integer, HashMap<BlockValue, Integer>>
+     */
     public HashMap<Integer, HashMap<BlockValue, Integer>> getNumberOfBlocksPerColony() {
         return numberOfBlocksPerColony;
     }
 
+
+    /**
+     * Calcule le nombre moyen de blocs de type BlockValue dans une colonie
+     * @param blockValue BlockValue
+     * @return double
+     */
     public double getAverageColoniesBlockWithValue(BlockValue blockValue) {
 
         List<Double> proportions = new ArrayList<>();
@@ -114,6 +140,11 @@ public class Colonies {
         return sum / proportions.size();
     }
 
+
+    /**
+     * Retourne la taille moyenne des colonies
+     * @return double
+     */
     public double getAverageSizeOfColonies() {
         double totalBlocksInColonies = 0;
 
@@ -121,7 +152,6 @@ public class Colonies {
             HashMap<BlockValue, Integer> colony = numberOfBlocksPerColony.get(colonyNumber);
             totalBlocksInColonies+= colony.get(BlockValue.A) + colony.get(BlockValue.B);
         }
-
 
         return totalBlocksInColonies / numberOfBlocksPerColony.keySet().size();
     }
