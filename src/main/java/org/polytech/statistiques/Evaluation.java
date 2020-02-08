@@ -49,4 +49,8 @@ public class Evaluation {
 
         return searchedNeighbours / totalNeighbours;
     }
+
+    public double getAverageColoniesBlockWithValue(BlockValue blockValue) {
+        return colonies.getAverageColoniesBlockWithValue(blockValue);
+    }
 }

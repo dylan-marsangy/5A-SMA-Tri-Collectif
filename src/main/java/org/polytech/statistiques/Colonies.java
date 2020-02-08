@@ -5,10 +5,7 @@ import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Colonies {
     private Environnement environnement;
@@ -83,6 +80,8 @@ public class Colonies {
                             numberOfBlocksWithValue.putIfAbsent(block.getValue(), 0);
                             numberOfBlocksWithValue.put(block.getValue(), numberOfBlocksPerColony.get(colonyNumber).get(block.getValue()) + 1);
                         }
+                        numberOfBlocksWithValue.putIfAbsent(BlockValue.A, 0);
+                        numberOfBlocksWithValue.putIfAbsent(BlockValue.B, 0);
                         numberOfBlocksPerColony.put(colonyNumber, numberOfBlocksWithValue);
                     }
                 }
@@ -92,5 +91,26 @@ public class Colonies {
 
     public HashMap<Integer, HashMap<BlockValue, Integer>> getNumberOfBlocksPerColony() {
         return numberOfBlocksPerColony;
+    }
+
+    public double getAverageColoniesBlockWithValue(BlockValue blockValue) {
+
+        List<Double> proportions = new ArrayList<>();
+
+        for (Integer colonyNumber : numberOfBlocksPerColony.keySet()) {
+            HashMap<BlockValue, Integer> colony = numberOfBlocksPerColony.get(colonyNumber);
+            double searchedBlocks = colony.get(blockValue);
+            double totalBlocks = colony.get(BlockValue.A) + colony.get(BlockValue.B);
+
+            proportions.add(searchedBlocks / totalBlocks);
+        }
+
+        double sum = 0;
+
+        for (Double proportion : proportions) {
+            sum+= proportion;
+        }
+
+        return sum / proportions.size();
     }
 }

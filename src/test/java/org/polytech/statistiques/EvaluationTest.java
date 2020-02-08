@@ -78,4 +78,11 @@ public class EvaluationTest {
         assertEquals(2.0/4.0, evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.A));
         assertEquals(0, evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.B));
     }
+
+    @Test
+    @DisplayName("Check if the averages of blocks in the colonies are correct")
+    public void getAveragesOfBlocksInColonies() {
+        assertEquals(15.0/40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.A));
+        assertEquals(25.0/40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.B));
+    }
 }
