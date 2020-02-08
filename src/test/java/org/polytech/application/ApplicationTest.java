@@ -7,6 +7,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.polytech.SMAConstants;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
+import org.polytech.statistiques.Evaluation;
+import org.polytech.statistiques.ExcelGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @DisplayName("Application Tests")
@@ -22,119 +27,140 @@ public class ApplicationTest {
     private static final double K_MINUS = 0.3; // k-
     private static final double K_PLUS = 0.1; // k+
     private static final double ERROR = 0d; // e
+    private static final int NB_RUN = 10;
+
+    private static final String RUN_ERROR = "Run Application - Error (e)";
+    private static final String RUN_KPLUS = "Run Application - K+";
+    private static final String RUN_KMINUS = "Run Application - K-";
+    private static final String RUN_SUCCESSIVE_MOVEMENTS = "Run Application - Successive Movements (i)";
+    private static final String RUN_MEMORY_SIZE = "Run Application - Memory Size (t)";
+    private static final String RUN_GRID_COLUMNS = "Run Application - Grid Columns (M)";
+    private static final String RUN_GRID_ROWS = "Run Application - Grid Rows (N)";
+    private static final String RUN_AGENTS = "Run Application - Agents";
+    private static final String RUN_BLOCK_B = "Run Application - Block B";
+    private static final String RUN_BLOCK_A = "Run Application - Block A";
+    private static final String RUN_DEFAULT = "Run Application - Default";
 
     @ParameterizedTest
-    @DisplayName("Run Application - Error (e)")
+    @DisplayName(RUN_ERROR)
     @ValueSource(doubles = {ERROR, 0.1, 0.5, 0.9})
     public void runApplication_numberBlocksA(double error) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, error);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, error, RUN_ERROR);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - K+")
+    @DisplayName(RUN_KPLUS)
     @ValueSource(doubles = {K_PLUS, 0.3, 0.5, 0.9})
     public void runApplication_kPlus(double kPlus) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, kPlus, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, kPlus, ERROR, RUN_KPLUS);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - K-")
+    @DisplayName(RUN_KMINUS)
     @ValueSource(doubles = {0.1, K_MINUS, 0.9})
     public void runApplication_kMinus(double kMinus) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, kMinus, K_PLUS, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, kMinus, K_PLUS, ERROR, RUN_KMINUS);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - Successive Movements (i)")
+    @DisplayName(RUN_SUCCESSIVE_MOVEMENTS)
     @ValueSource(ints = {SUCCESSIVE_MOVEMENTS, 2, 10})
     public void runApplication_successiveMovements(int successiveMovements) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, successiveMovements, K_MINUS, K_PLUS, ERROR);
+                MEMORY_SIZE, successiveMovements, K_MINUS, K_PLUS, ERROR, RUN_SUCCESSIVE_MOVEMENTS);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - Memory Size (t)")
+    @DisplayName(RUN_MEMORY_SIZE)
     @ValueSource(ints = {5, MEMORY_SIZE, 50})
     public void runApplication_memorySize(int memorySize) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                memorySize, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+                memorySize, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_MEMORY_SIZE);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - Grid Columns (M)")
+    @DisplayName(RUN_GRID_COLUMNS)
     @ValueSource(ints = {50, GRID_COLUMNS, 100})
     public void runApplication_gridColumns(int gridColumns) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, gridColumns,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_GRID_COLUMNS);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - Grid Rows (N)")
+    @DisplayName(RUN_GRID_ROWS)
     @ValueSource(ints = {50, GRID_ROWS, 100})
     public void runApplication_gridRows(int gridRows) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 gridRows, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_GRID_ROWS);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - Agents")
+    @DisplayName(RUN_AGENTS)
     @ValueSource(ints = {5, NUMBER_AGENTS, 100})
     public void runApplication_numberAgents(int numberAgents) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, numberAgents,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_AGENTS);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - Block B")
+    @DisplayName(RUN_BLOCK_B)
     @ValueSource(ints = {10, NUMBER_BLOCKS_B, 300})
     public void runApplication_numberBlocksB(int numberBlocksB) {
         runSimulation(NUMBER_BLOCKS_A, numberBlocksB, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_BLOCK_B);
     }
 
     @ParameterizedTest
-    @DisplayName("Run Application - Block A")
+    @DisplayName(RUN_BLOCK_A)
     @ValueSource(ints = {10, NUMBER_BLOCKS_A, 300})
     public void runApplication_numberBlocksA(int numberBlocksA) {
         runSimulation(numberBlocksA, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_BLOCK_A);
     }
 
     @Test
-    @DisplayName("Run Application - Default")
+    @DisplayName(RUN_DEFAULT)
     public void runApplication() {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
-                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+                MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_DEFAULT);
     }
 
     private void runSimulation(int numberBlocksA, int numberBlocksB, int numberAgents,
                                int gridRows, int gridColumns,
-                               int memorySize, int successiveMovements, double kMinus, double kPlus, double error) {
-        Environnement environnement = new RandomEnvironnement(
-                gridRows, gridColumns, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
-                numberAgents, successiveMovements, memorySize, kPlus, kMinus, error,
-                numberBlocksA, numberBlocksB);
+                               int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
+        List<Evaluation> evaluations = new ArrayList<>();
 
-        System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
-                (double) (numberBlocksA + numberBlocksB + numberAgents) / (gridRows * gridColumns) * 100,
-                (double) (numberAgents) / (gridRows * gridColumns) * 100,
-                (double) (numberBlocksA + numberBlocksB) / (gridRows * gridColumns) * 100));
+        for (int i = 0 ; i < NB_RUN ; i++) {
+            Environnement environnement = new RandomEnvironnement(
+                    gridRows, gridColumns, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
+                    numberAgents, successiveMovements, memorySize, kPlus, kMinus, error,
+                    numberBlocksA, numberBlocksB);
 
-        System.out.println();
-        environnement.run(); // Non exécuté en mode Thread, sinon le programme se termine directement.
+            System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
+                    (double) (numberBlocksA + numberBlocksB + numberAgents) / (gridRows * gridColumns) * 100,
+                    (double) (numberAgents) / (gridRows * gridColumns) * 100,
+                    (double) (numberBlocksA + numberBlocksB) / (gridRows * gridColumns) * 100));
+
+            System.out.println();
+            environnement.run(); // Non exécuté en mode Thread, sinon le programme se termine directement.
+
+            Evaluation evaluation = new Evaluation(environnement);
+            evaluations.add(evaluation);
+        }
+        new ExcelGenerator(evaluations, executionName);
     }
 }

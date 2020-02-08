@@ -11,12 +11,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
+/**
+ * Construit un Excel avec les résultat des évaluations faites sur les exécutions de l'algorithme
+ */
 public class ExcelGenerator {
 
-    public ExcelGenerator(List<Evaluation> evaluations) {
+    public ExcelGenerator(List<Evaluation> evaluations, String executionName) {
 
         HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet("Statistiques simulations");
+        HSSFSheet sheet = workbook.createSheet(executionName);
 
         int rownum = 0;
         Cell cell;
@@ -98,10 +101,9 @@ public class ExcelGenerator {
         }
 
         File file = new File("demo.xls");
-//        file.getParentFile().mkdirs();
 
         try {
-            FileOutputStream outFile = new FileOutputStream(file);
+            FileOutputStream outFile = new FileOutputStream(file, true);
             workbook.write(outFile);
             System.out.println("Created file: " + file.getAbsolutePath());
         }

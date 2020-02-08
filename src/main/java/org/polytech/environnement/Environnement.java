@@ -63,57 +63,53 @@ public class Environnement implements Runnable {
 
     @Override
     public void run() {
-        int frequency = (int) (nbIterations * frequencyDiplayGrid);
-        System.out.print(this);
-        System.out.println(String.format("0 / %d (0%%)", nbIterations));
-        System.out.println();
 
-        int count = 0;
-        Agent agent;
-        int distance;
-        Map<Direction, Movable> perception; // Perception d'un agent.
-        Direction result; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
-        while (count < nbIterations) {
-            count++;
+            int frequency = (int) (nbIterations * frequencyDiplayGrid);
+            System.out.print(this);
+            System.out.println(String.format("0 / %d (0%%)", nbIterations));
+            System.out.println();
 
-            // Tirage aléatoire d'un agent (simulation du multi-threading).
-            agent = pickRandomAgent();
-            distance = agent.getDistance(); // Distance de perception d'un agent.
+            int count = 0;
+            Agent agent;
+            int distance;
+            Map<Direction, Movable> perception; // Perception d'un agent.
+            Direction result; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
+            while (count < nbIterations) {
+                count++;
 
-            // Agent perçoit son environnement et détermine une direction dans laquelle se diriger.
-            // L'environnement l'y déplace.
-            perception = perception(agent, distance);
-            result = agent.execute(new StrategyMove(), perception);
-            if (result != null) move(agent, result, distance);
+                // Tirage aléatoire d'un agent (simulation du multi-threading).
+                agent = pickRandomAgent();
+                distance = agent.getDistance(); // Distance de perception d'un agent.
 
-            // S'il tient un bloc, il va chercher à le déposer. Sinon, il cherche à en prendre un.
-            perception = perception(agent, distance);
-            if (agent.isHolding()) {
-                result = agent.execute(new StrategyPutDown(), perception);
-                if (result != null) putDownBlock(agent, result, distance);
-            } else {
-                result = agent.execute(new StrategyPickUp(), perception);
-                if (result != null) pickUpBlock(agent, result, distance);
+                // Agent perçoit son environnement et détermine une direction dans laquelle se diriger.
+                // L'environnement l'y déplace.
+                perception = perception(agent, distance);
+                result = agent.execute(new StrategyMove(), perception);
+                if (result != null) move(agent, result, distance);
+
+                // S'il tient un bloc, il va chercher à le déposer. Sinon, il cherche à en prendre un.
+                perception = perception(agent, distance);
+                if (agent.isHolding()) {
+                    result = agent.execute(new StrategyPutDown(), perception);
+                    if (result != null) putDownBlock(agent, result, distance);
+                } else {
+                    result = agent.execute(new StrategyPickUp(), perception);
+                    if (result != null) pickUpBlock(agent, result, distance);
+                }
+
+                // Affichage de la grille résultante si nécessaire.
+                if (frequency != 0d && count % frequency == 0) {
+                    System.out.print(this);
+                    System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
+                    System.out.println();
+                }
             }
 
-            // Affichage de la grille résultante si nécessaire.
-            if (frequency != 0d && count % frequency == 0) {
+            if (frequency == 0) {
                 System.out.print(this);
-                System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
+                System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
                 System.out.println();
             }
-        }
-
-        if (frequency == 0) {
-            System.out.print(this);
-            System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
-            System.out.println();
-        }
-
-        Evaluation evaluation = new Evaluation(this);
-        List<Evaluation> evaluations = new ArrayList<>();
-        evaluations.add(evaluation);
-        ExcelGenerator excelGenerator = new ExcelGenerator(evaluations);
     }
 
     /**
