@@ -53,4 +53,8 @@ public class Evaluation {
     public double getAverageColoniesBlockWithValue(BlockValue blockValue) {
         return colonies.getAverageColoniesBlockWithValue(blockValue);
     }
+
+    public double getAverageSizeOfColonies() {
+        return colonies.getAverageSizeOfColonies();
+    }
 }

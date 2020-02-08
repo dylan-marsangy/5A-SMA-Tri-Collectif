@@ -85,4 +85,10 @@ public class EvaluationTest {
         assertEquals(15.0/40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.A));
         assertEquals(25.0/40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.B));
     }
+
+    @Test
+    @DisplayName("Check if the average size of the colonies is correct")
+    public void getAverageSizeOfColonies() {
+        assertEquals(1.5, evaluation.getAverageSizeOfColonies());
+    }
 }

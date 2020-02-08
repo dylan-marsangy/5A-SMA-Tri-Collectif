@@ -159,4 +159,29 @@ public class ColoniesTest {
         assertEquals(15.0/40.0, AProportion);
         assertEquals(25.0/40.0, BProportion);
     }
+
+    @Test
+    @DisplayName("Check if the average size of the colonies is correct")
+    public void getAverageSizeOfColonies() {
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
+        environnement.insert(new Block(BlockValue.B), 0, 2);
+
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+
+        environnement.insert(new Block(BlockValue.A), 0, 4);
+        environnement.insert(new Block(BlockValue.A), 1, 4);
+        environnement.insert(new Block(BlockValue.B), 3, 4);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+
+        System.out.println(environnement);
+
+        colonies.createColonies();
+
+        double averageSize = colonies.getAverageSizeOfColonies();
+
+        assertEquals(6.0/4.0, averageSize);
+    }
 }

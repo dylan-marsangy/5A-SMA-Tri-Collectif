@@ -113,4 +113,16 @@ public class Colonies {
 
         return sum / proportions.size();
     }
+
+    public double getAverageSizeOfColonies() {
+        double totalBlocksInColonies = 0;
+
+        for (Integer colonyNumber : numberOfBlocksPerColony.keySet()) {
+            HashMap<BlockValue, Integer> colony = numberOfBlocksPerColony.get(colonyNumber);
+            totalBlocksInColonies+= colony.get(BlockValue.A) + colony.get(BlockValue.B);
+        }
+
+
+        return totalBlocksInColonies / numberOfBlocksPerColony.keySet().size();
+    }
 }
