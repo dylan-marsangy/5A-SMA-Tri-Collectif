@@ -11,9 +11,9 @@ import org.polytech.environnement.block.BlockValue;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Neighbours test")
 public class NeighboursTest {
     private final int N = 5;
     private final int M = 5;
@@ -145,5 +145,25 @@ public class NeighboursTest {
                 }
             }
         }
+    }
+
+    @Test
+    @DisplayName("Block A should have 0 Block B neighbours")
+    public void getTotalComputedNeighbours() {
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
+        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environnement.insert(new Block(BlockValue.ZERO), 1, 0);
+        environnement.insert(new Block(BlockValue.A), 1, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 1, 2);
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+
+        System.out.println(environnement);
+
+        neighbours.calculateNeighbours();
+
+        assertEquals(8, neighbours.getTotalOfComputedNeighbours());
     }
 }

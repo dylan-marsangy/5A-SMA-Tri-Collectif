@@ -9,7 +9,6 @@ import org.polytech.environnement.Environnement;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,6 +34,22 @@ public class EvaluationTest {
         environnement = new Environnement(N, M, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                 NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
                 NB_BLOCKS_A, NB_BLOCKS_B);
+
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
+        environnement.insert(new Block(BlockValue.B), 0, 2);
+
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+
+        environnement.insert(new Block(BlockValue.A), 0, 4);
+        environnement.insert(new Block(BlockValue.A), 1, 4);
+        environnement.insert(new Block(BlockValue.B), 3, 4);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+
+        System.out.println(environnement);
+
         initializeEvaluation();
     }
 
@@ -43,89 +58,24 @@ public class EvaluationTest {
     }
 
     @Test
-    @DisplayName("Colonies should be separated from one another")
-    public void giveColonyNumbers() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
-
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
-
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
-
-        System.out.println(environnement);
-
-        evaluation.createColonies();
-
-        assertEquals(-1, ((Block) environnement.getEntity(0, 1)).getColonyNumber());
-        assertEquals(1, ((Block) environnement.getEntity(0, 2)).getColonyNumber());
-        assertEquals(2, ((Block) environnement.getEntity(0, 4)).getColonyNumber());
-        assertEquals(2, ((Block) environnement.getEntity(1, 4)).getColonyNumber());
-        assertEquals(3, ((Block) environnement.getEntity(2, 0)).getColonyNumber());
-        assertEquals(3, ((Block) environnement.getEntity(2, 1)).getColonyNumber());
-        assertEquals(-1, ((Block) environnement.getEntity(2, 2)).getColonyNumber());
-        assertEquals(4, ((Block) environnement.getEntity(3, 4)).getColonyNumber());
+    @DisplayName("Check if the numbers of blocks in the environment are correct")
+    public void getNumberOfBlocksPerValue() {
+        assertEquals(3, evaluation.getTotalBlockWithValue(BlockValue.B));
+        assertEquals(3, evaluation.getTotalBlockWithValue(BlockValue.A));
     }
 
     @Test
-    @DisplayName("There should be 4 colonies")
-    public void getColonyNumbers() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
-
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
-
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
-
-        System.out.println(environnement);
-
-        evaluation.createColonies();
-
-        int coloniesNumber = evaluation.countColonies();
-
-        assertEquals(4, coloniesNumber);
+    @DisplayName("Check if the number of colonies is correct")
+    public void getNumberOfColonies() {
+        assertEquals(4, evaluation.getNumberOfColonies());
     }
 
     @Test
-    @DisplayName("Check if the numbers of blocks in the colonies are correct")
-    public void getNumberOfBlocksPerColony() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
-
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
-
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
-
-        System.out.println(environnement);
-
-        evaluation.createColonies();
-
-        HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony = evaluation.getNumberOfBlocksPerColony();
-
-        assertEquals(4, numberOfBlocksPerColony.keySet().size());
-        assertNull(numberOfBlocksPerColony.get(1).get(BlockValue.A));
-        assertEquals(1, numberOfBlocksPerColony.get(1).get(BlockValue.B));
-        assertEquals(2, numberOfBlocksPerColony.get(2).get(BlockValue.A));
-        assertNull(numberOfBlocksPerColony.get(2).get(BlockValue.B));
-        assertEquals(1, numberOfBlocksPerColony.get(3).get(BlockValue.A));
-        assertEquals(1, numberOfBlocksPerColony.get(3).get(BlockValue.B));
-
+    @DisplayName("Check if the percentages of neighbours are correct")
+    public void getPercentagesOfComputedNeighbours() {
+        assertEquals(2.0/4.0, evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.A));
+        assertEquals(2.0/4.0, evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.B));
+        assertEquals(2.0/4.0, evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.A));
+        assertEquals(0, evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.B));
     }
 }

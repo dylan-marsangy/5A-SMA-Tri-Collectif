@@ -32,8 +32,8 @@ public class Neighbours {
     public void calculateNeighbours() {
         Movable[][] grid = environnement.getGrid();
 
-        for (int i = 0 ; i < grid.length ; i++) {
-            for (int j = 0 ; j < grid[i].length ; j++) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] instanceof Block) {
                     Block block = (Block) grid[i][j];
 
@@ -59,13 +59,13 @@ public class Neighbours {
     public Map<BlockValue, Integer> getNeighboursNumberAt(int x, int y) {
         Map<BlockValue, Integer> neighbours = createEmptyNeighbours();
 
-        for (int i = x - 1 ; i <= x + 1 ; i++) {
-            for (int j = y - 1 ; j <= y + 1 ; j++) {
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
                 if (environnement.isInside(i, j)) {
                     if (environnement.getEntity(i, j) instanceof Block) {
                         if (i != x || j != y) {
                             BlockValue blockValue = ((Block) environnement.getEntity(i, j)).getValue();
-                            neighbours.put(blockValue, neighbours.get(blockValue)+1);
+                            neighbours.put(blockValue, neighbours.get(blockValue) + 1);
                         }
                     }
                 }
@@ -81,8 +81,8 @@ public class Neighbours {
         neighbours.put(BlockValue.B, new HashSet<>(new ArrayList<>()));
         neighbours.put(BlockValue.ZERO, new HashSet<>(new ArrayList<>()));
 
-        for (int i = x - 1 ; i <= x + 1 ; i++) {
-            for (int j = y - 1 ; j <= y + 1 ; j++) {
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
                 if (environnement.isInside(i, j)) {
                     if (environnement.getEntity(i, j) instanceof Block) {
                         if (i != x || j != y) {
@@ -91,7 +91,6 @@ public class Neighbours {
                             coordinates.add(0, i);
                             coordinates.add(1, j);
                             neighbours.get(blockValue).add(coordinates);
-//                            neighbours.put(blockValue, (neighbours.get(blockValue)).add(coordinates));
                         }
                     }
                 }
@@ -111,5 +110,11 @@ public class Neighbours {
 
     public Integer getNeighboursWithValue(BlockValue centerBlockValue, BlockValue neighbourBlockValue) {
         return neighboursNumberByBlockValue.get(centerBlockValue).get(neighbourBlockValue);
+    }
+
+    public Integer getTotalOfComputedNeighbours() {
+        return neighboursNumberByBlockValue.get(BlockValue.A).get(BlockValue.A) +
+                neighboursNumberByBlockValue.get(BlockValue.A).get(BlockValue.B) * 2 +
+                neighboursNumberByBlockValue.get(BlockValue.B).get(BlockValue.B);
     }
 }
