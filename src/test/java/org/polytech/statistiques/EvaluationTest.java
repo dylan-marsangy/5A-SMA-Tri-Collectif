@@ -6,14 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
-import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import java.util.Map;
+import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Evaluation test")
 public class EvaluationTest {
@@ -97,5 +95,37 @@ public class EvaluationTest {
         int coloniesNumber = evaluation.countColonies();
 
         assertEquals(4, coloniesNumber);
+    }
+
+    @Test
+    @DisplayName("Check if the numbers of blocks in the colonies are correct")
+    public void getNumberOfBlocksPerColony() {
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
+        environnement.insert(new Block(BlockValue.B), 0, 2);
+
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+
+        environnement.insert(new Block(BlockValue.A), 0, 4);
+        environnement.insert(new Block(BlockValue.A), 1, 4);
+        environnement.insert(new Block(BlockValue.B), 3, 4);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+
+        System.out.println(environnement);
+
+        evaluation.createColonies();
+
+        HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony = evaluation.getNumberOfBlocksPerColony();
+
+        assertEquals(4, numberOfBlocksPerColony.keySet().size());
+        assertNull(numberOfBlocksPerColony.get(1).get(BlockValue.A));
+        assertEquals(1, numberOfBlocksPerColony.get(1).get(BlockValue.B));
+        assertEquals(2, numberOfBlocksPerColony.get(2).get(BlockValue.A));
+        assertNull(numberOfBlocksPerColony.get(2).get(BlockValue.B));
+        assertEquals(1, numberOfBlocksPerColony.get(3).get(BlockValue.A));
+        assertEquals(1, numberOfBlocksPerColony.get(3).get(BlockValue.B));
+
     }
 }

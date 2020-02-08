@@ -68,4 +68,35 @@ public class Evaluation {
 
         return colonyNumber;
     }
+
+    public HashMap<Integer, HashMap<BlockValue, Integer>> getNumberOfBlocksPerColony() {
+        Movable[][] grid = environnement.getGrid();
+        HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony = new HashMap<>();
+
+        for (int i = 0 ; i < grid.length ; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] instanceof Block) {
+                    Block block = (Block) grid[i][j];
+                    int colonyNumber = block.getColonyNumber();
+                    HashMap<BlockValue, Integer> numberOfBlocksWithValue;
+
+                    if (colonyNumber != -1) {
+                        if (numberOfBlocksPerColony.get(colonyNumber) == null) {
+                            numberOfBlocksWithValue = new HashMap<>();
+                            numberOfBlocksWithValue.put(block.getValue(), 1);
+                        }
+                        else {
+                            numberOfBlocksWithValue = numberOfBlocksPerColony.get(colonyNumber);
+
+                            numberOfBlocksWithValue.putIfAbsent(block.getValue(), 0);
+                            numberOfBlocksWithValue.put(block.getValue(), numberOfBlocksPerColony.get(colonyNumber).get(block.getValue()) + 1);
+                        }
+                        numberOfBlocksPerColony.put(colonyNumber, numberOfBlocksWithValue);
+                    }
+                }
+            }
+        }
+
+        return numberOfBlocksPerColony;
+    }
 }
