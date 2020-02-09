@@ -7,10 +7,10 @@
 
 # Application
 
-## Variantes implémentées
-- A chaque tour, un agent perçoit son environnement et effectue un déplacement aléatoire dans une direction "vide" (où il n'y a pas un obstacle sur la case de destination, c'est-à-dire soit un autre agent, soit un bloc).
-- Ensuite, s'il ne tient déjà pas un bloc, il perçoit de nouveau son environnement et tente de prendre le meilleur type de bloc à prendre dans son environnement immédiat, dépendamment de sa mémoire (c'est-à-dire le type de bloc le moins présent dans sa mémoire).
-- Sinon (s'il ne tient pas de bloc), il tente de le poser dans une case vide autour de lui (dans son entourage immédiat) après perception de son environnement.
+## Comportement d'un agent
+- A chaque tour, un agent perçoit son environnement et effectue un déplacement aléatoire (en évitant toutefois de rencontrer un autre agent).
+- Si l'agent ne tient pas de bloc et que sa destination est occupée par un bloc, il tente de le prendre. S'il réussit, il le prend et se déplace sur la case anciennement occupée par le bloc. Sinon, il ne fait rien et reste à sa place.
+- S'il tient un bloc et que sa destination est libre, il y bouge en tentant de déposer au passage le bloc qu'il tient sur sa case d'origine. S'il réussit, il le fait. Sinon, il garde son bloc sur lui.
 
 ## Statistiques calculées à l'exécution
 A chaque exécution de l'algorithme, diverses statistiques sont calculées afin d'estimer la qualité des paramètres donnés en entrée.
