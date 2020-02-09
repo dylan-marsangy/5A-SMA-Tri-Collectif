@@ -3,7 +3,7 @@ package org.polytech;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
-import org.polytech.statistiques.ExcelGenerator;
+import org.polytech.statistiques.excel.ExcelGenerator;
 
 import java.util.ArrayList;
 import java.util.List;

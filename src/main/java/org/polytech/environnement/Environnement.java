@@ -9,8 +9,6 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
-import org.polytech.statistiques.Evaluation;
-import org.polytech.statistiques.ExcelGenerator;
 import org.polytech.utils.Color;
 
 import java.util.*;
