@@ -6,6 +6,7 @@ import org.polytech.ExecutionParameters;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.statistiques.Evaluation;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -303,12 +304,14 @@ public class ExcelGenerator {
             XSSFWorkbook workbook = new XSSFWorkbook();
 
             try {
-                FileOutputStream outFile = new FileOutputStream(fileName);
+                File file = new File(fileName);
+                file.getParentFile().mkdirs(); // Créer le dossier si nécessaire
+                FileOutputStream outFile = new FileOutputStream(file);
+
                 workbook.write(outFile);
                 outFile.close();
-            }
-            catch (IOException exc) {
-                System.out.println(exc.getMessage() + ": tentative de création échouée...");
+            } catch (IOException exc) {
+                System.out.println(exc.getMessage() + " : tentative de création échouée...");
             }
     }
 }

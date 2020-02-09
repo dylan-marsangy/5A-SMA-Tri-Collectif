@@ -1,6 +1,7 @@
 package org.polytech.application;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -9,11 +10,16 @@ import org.polytech.SMAConstants;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
+<<<<<<< HEAD
 import org.polytech.statistiques.excel.ExcelGenerator;
+=======
+import org.polytech.statistiques.ExcelGenerator;
+import org.polytech.utils.Color;
+>>>>>>> :lipstick: Outpout console entre itérations amélioré + :truck: Output sim déplacé
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.IntStream;
 
 @DisplayName("Application Tests")
 public class ApplicationTest {
@@ -147,24 +153,49 @@ public class ApplicationTest {
         ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
          gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
 
+<<<<<<< HEAD
         for (int i = 0 ; i < SMAConstants.NB_RUN ; i++) {
+=======
+        for (int i = 0 ; i < NB_RUN ; i++) {
+            // Affichage console pour différencier les différentes itérations.
+            IntStream.rangeClosed(1, 3).forEach(index ->
+                    System.out.println(
+                            Color.CYAN +
+                            "===============================================================================" +
+                            "===============================================================================" +
+                            "===============================================================================" +
+                            Color.RESET));
+            System.out.println(Color.CYAN + String.format("Itération n°%d", i+1) + Color.RESET);
+            System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
+
+            // Instantiation de l'environnement
+>>>>>>> :lipstick: Outpout console entre itérations amélioré + :truck: Output sim déplacé
             Environnement environnement = new RandomEnvironnement(
                     gridRows, gridColumns, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                     numberAgents, successiveMovements, memorySize, kPlus, kMinus, error,
                     numberBlocksA, numberBlocksB);
 
+            // Quelques stats simples sur le remplissage de la grille
             System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
                     (double) (numberBlocksA + numberBlocksB + numberAgents) / (gridRows * gridColumns) * 100,
                     (double) (numberAgents) / (gridRows * gridColumns) * 100,
                     (double) (numberBlocksA + numberBlocksB) / (gridRows * gridColumns) * 100));
 
             System.out.println();
+
+            // Lancement de la simulation
             environnement.run(); // Non exécuté en mode Thread, sinon le programme se termine directement.
 
+<<<<<<< HEAD
             Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
+=======
+            // Evaluation de l'environnement à la fin de la simulation
+            Evaluation evaluation = new Evaluation(environnement);
+>>>>>>> :lipstick: Outpout console entre itérations amélioré + :truck: Output sim déplacé
             evaluations.add(evaluation);
         }
 
+        // Remplissage de la feuille Excel
         excelGenerator.fillExcel(evaluations, executionParameters, executionName);
     }
 }
