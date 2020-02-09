@@ -62,8 +62,11 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Display Grid")
     public void displayGrid() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 1, 0);
+        agent.pickUp(new Block(BlockValue.A));
+        Agent a2 = new Agent(I, T, K_PLUS, K_MINUS, ERROR);
+        a2.pickUp(new Block(BlockValue.B));
+        environnement.insert(agent, 0, 0);
+        environnement.insert(a2, 1, 0);
         environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 2, 0);
         environnement.insert(new Block(BlockValue.A), 2, 3);
         environnement.insert(new Block(BlockValue.B), 4, 2);

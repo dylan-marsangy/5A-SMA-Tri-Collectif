@@ -350,18 +350,25 @@ public class Environnement implements Runnable {
         StringBuilder sb = new StringBuilder();
 
         Movable entity;
+        Agent agent;
         Color format;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 entity = getEntity(i, j);
 
+                format = Color.RESET;
                 if (entity != null) {
                     // Attribuer une couleur d'output selon le type de Movable (Agent ou Bloc A/B).
                     if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.A)
                         format = Color.BLUE_BACKGROUND;
                     else if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.B)
                         format = Color.RED_BACKGROUND;
-                    else format = Color.YELLOW;
+                    else if (entity instanceof Agent) {
+                        agent = (Agent) entity;
+                        if (!agent.isHolding()) format = Color.YELLOW;
+                        else if (agent.getHolding().getValue() == BlockValue.A) format = Color.BLUE;
+                        else if (agent.getHolding().getValue() == BlockValue.B) format = Color.RED;
+                    }
 
                     sb.append(String.format(" %s |", format + entity.toString() + Color.RESET));
                 } else {
