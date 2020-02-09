@@ -17,5 +17,8 @@ public class SMAConstants {
      * Taille du voisinage utilisé pour l'évaluation
      */
     public static final int NEIGHBOURHOOD_SIZE = 1;
-
+    /**
+     * Nombre de fois où un algo est exécuté (exécuter plusieurs fois donne des statistiques plus sûres)
+     */
+    public static final int NB_RUN = 10;
 }

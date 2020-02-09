@@ -28,7 +28,6 @@ public class ApplicationTest {
     private static final double K_MINUS = 0.3; // k-
     private static final double K_PLUS = 0.1; // k+
     private static final double ERROR = 0d; // e
-    private static final int NB_RUN = 10;
 
     private static final String RUN_ERROR = "Error (e)";
     private static final String RUN_KPLUS = "K+";
@@ -148,7 +147,7 @@ public class ApplicationTest {
         ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
          gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
 
-        for (int i = 0 ; i < NB_RUN ; i++) {
+        for (int i = 0 ; i < SMAConstants.NB_RUN ; i++) {
             Environnement environnement = new RandomEnvironnement(
                     gridRows, gridColumns, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                     numberAgents, successiveMovements, memorySize, kPlus, kMinus, error,
