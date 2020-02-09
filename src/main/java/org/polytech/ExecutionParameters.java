@@ -1,5 +1,9 @@
 package org.polytech;
 
+
+/**
+ * Classe spécifiant les paramètres d'exécution utilisés pendant une simulation
+ */
 public class ExecutionParameters {
     private int NUMBER_BLOCKS_A;
     private int NUMBER_BLOCKS_B;

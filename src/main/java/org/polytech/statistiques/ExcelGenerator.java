@@ -3,7 +3,6 @@ package org.polytech.statistiques;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.polytech.ExecutionParameters;
-import org.polytech.environnement.Environnement;
 import org.polytech.environnement.block.BlockValue;
 
 import java.io.FileInputStream;
@@ -31,6 +30,11 @@ public class ExcelGenerator {
         return instance;
     }
 
+    /**
+     * Remplit la ligne numérotée rownum avec les entêtes des paramètres d'exécution
+     * @param sheet  Sheet
+     * @param rownum int
+     */
     private void fillParamsLead(Sheet sheet, int rownum) {
         Row row = sheet.createRow(rownum);
 
@@ -66,6 +70,13 @@ public class ExcelGenerator {
         cell.setCellValue("Erreur");
     }
 
+
+    /**
+     * Remplit la ligne numérotée rownum avec les valeurs d'exécution spécifiées
+     * @param executionParameters ExecutionParameters
+     * @param sheet               Sheet
+     * @param rownum              int
+     */
     private void fillParamsValues(ExecutionParameters executionParameters, Sheet sheet, int rownum) {
         Row row = sheet.createRow(rownum);
 
