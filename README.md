@@ -12,6 +12,31 @@
 - Ensuite, s'il ne tient déjà pas un bloc, il perçoit de nouveau son environnement et tente de prendre le meilleur type de bloc à prendre dans son environnement immédiat, dépendamment de sa mémoire (c'est-à-dire le type de bloc le moins présent dans sa mémoire).
 - Sinon (s'il ne tient pas de bloc), il tente de le poser dans une case vide autour de lui (dans son entourage immédiat) après perception de son environnement.
 
+## Statistiques calculées à l'exécution
+A chaque exécution de l'algorithme, diverses statistiques sont calculées afin d'estimer la qualité des paramètres donnés en entrée.
+Nous nous sommes principalement concentrés sur les voisinages des Blocs posés dans l'environnement à la fin de l'algorithme ainsi que sur les colonies formées.
+Le détail des indicateurs calculés est disponible ci-dessous :
+- Nombre de blocs A posés
+- Nombre de blocs B posés
+- Proportion de A voisins d'autres A
+- Proportion de A voisins de B
+- Proportion de B voisins d'autres B
+- Nombre de colonies
+- Taille moyenne d'une colonie (en nombre de blocs)
+- Proportion de A par colonie
+- Proportion de B par colonie
+
+Ces indicateurs sont bien entendu extrêmement dépendants de la taille de voisinage choisie au départ.
+Cette dernière peut être modifiée en changeant la valeur de la constante ```NEIGHBOURHOOD_SIZE``` de la classe ```SMAConstants```.
+
+Les statistiques sont calculées sur plusieurs exécution de l'algorithme avec les mêmes paramètres. 
+Cela permet de moyenner les résultats obtenus et de réduire le nombre de cas extrêmes pouvant survenir.
+Le nombre d'exécution peut être modifié en changeant la valeur de la constante ```NB_RUN``` de la classe ```SMAConstants```.
+
+L'ensemble des statistiques après le lancement de l'application est enfin sauvegardé dans un fichier Excel au format xlsx nommé ```demo.xlsx```.
+Dans le cas où plusieurs tests sur les paramètres sont lancés (comme dans la classe ```ApplicationTest```), les résultats sont sauvegardés dans des feuilles de calcul différentes pour plus de lisibilité.
+De plus, chaque tableau de résultat possède un entête rappelant les paramètres utilisés au lancement (Nombre de blocs A et B, nombre d'agents, etc.).
+
 # Lancer l'application
 
 ## En mode release

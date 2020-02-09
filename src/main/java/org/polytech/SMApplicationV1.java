@@ -20,7 +20,6 @@ public class SMApplicationV1 {
     private static final double K_MINUS = 0.3; // k-
     private static final double K_PLUS = 0.1; // k+
     private static final double ERROR = 0d; // e
-    private static final int NB_RUN = 10;
 
     public static void main(String[] args) {
         List<Evaluation> evaluations = new ArrayList<>();
@@ -28,7 +27,7 @@ public class SMApplicationV1 {
         ExecutionParameters executionParameters = new ExecutionParameters(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS, MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
 
-        for (int i = 0; i < NB_RUN; i++) {
+        for (int i = 0; i < SMAConstants.NB_RUN; i++) {
             Environnement environnement = new RandomEnvironnement(
                     GRID_ROWS, GRID_COLUMNS, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                     NUMBER_AGENTS, SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR,
