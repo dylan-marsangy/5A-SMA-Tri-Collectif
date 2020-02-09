@@ -12,7 +12,6 @@ import org.polytech.environnement.block.BlockValue;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("Colonies test")
 public class ColoniesTest {
@@ -38,7 +37,7 @@ public class ColoniesTest {
         environnement = new Environnement(N, M, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                 NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
                 NB_BLOCKS_A, NB_BLOCKS_B);
-        this.neighbours = new Neighbours(environnement);
+        this.neighbours = new Neighbours(environnement, 1);
         this.neighbours.calculateNeighbours();
         initializeColonies();
     }
@@ -75,6 +74,40 @@ public class ColoniesTest {
         assertEquals(3, ((Block) environnement.getEntity(2, 1)).getColonyNumber());
         assertEquals(-1, ((Block) environnement.getEntity(2, 2)).getColonyNumber());
         assertEquals(4, ((Block) environnement.getEntity(3, 4)).getColonyNumber());
+    }
+
+    @Test
+    @DisplayName("Colonies should be separated from one another with a neighbourhood size set to 2")
+    public void giveColonyNumbersWithNeighbourhoodSize() {
+        this.neighbours = new Neighbours(environnement, 2);
+        this.neighbours.calculateNeighbours();
+        initializeColonies();
+
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
+        environnement.insert(new Block(BlockValue.B), 0, 2);
+
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+
+        environnement.insert(new Block(BlockValue.A), 0, 4);
+        environnement.insert(new Block(BlockValue.A), 1, 4);
+        environnement.insert(new Block(BlockValue.B), 4, 4);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+
+        System.out.println(environnement);
+
+        colonies.createColonies();
+
+        assertEquals(-1, ((Block) environnement.getEntity(0, 1)).getColonyNumber());
+        assertEquals(1, ((Block) environnement.getEntity(0, 2)).getColonyNumber());
+        assertEquals(1, ((Block) environnement.getEntity(0, 4)).getColonyNumber());
+        assertEquals(1, ((Block) environnement.getEntity(1, 4)).getColonyNumber());
+        assertEquals(1, ((Block) environnement.getEntity(2, 0)).getColonyNumber());
+        assertEquals(1, ((Block) environnement.getEntity(2, 1)).getColonyNumber());
+        assertEquals(-1, ((Block) environnement.getEntity(2, 2)).getColonyNumber());
+        assertEquals(2, ((Block) environnement.getEntity(4, 4)).getColonyNumber());
     }
 
     @Test

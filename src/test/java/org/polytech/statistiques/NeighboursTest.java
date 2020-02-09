@@ -39,7 +39,7 @@ public class NeighboursTest {
     }
 
     public void initializeNeighbours() {
-        this.neighbours = new Neighbours(this.environnement);
+        this.neighbours = new Neighbours(this.environnement, 1);
     }
 
     @Test
@@ -135,6 +135,53 @@ public class NeighboursTest {
                     assertEquals(3, neighboursNumber.get(blockValue).get(BlockValue.A));
                     assertEquals(0, neighboursNumber.get(blockValue).get(BlockValue.B));
                     assertEquals(3, neighboursNumber.get(blockValue).get(BlockValue.ZERO));
+                    break;
+                }
+
+                case ZERO:
+                {
+                    assertNull(neighboursNumber.get(blockValue));
+                    break;
+                }
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("Counts neighbours of all blocks in the environment with neighbourhood size set to 2")
+    public void countAllNeighboursWithNeighbourhoodSize() {
+        neighbours = new Neighbours(environnement, 2);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
+        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environnement.insert(new Block(BlockValue.ZERO), 1, 0);
+        environnement.insert(new Block(BlockValue.A), 1, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 1, 2);
+        environnement.insert(new Block(BlockValue.B), 2, 0);
+        environnement.insert(new Block(BlockValue.A), 2, 1);
+        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+
+        System.out.println(environnement);
+
+        neighbours.calculateNeighbours();
+
+        Map<BlockValue, Map<BlockValue,  Integer>> neighboursNumber = neighbours.getNeighboursNumberByBlockValue();
+
+        for (BlockValue blockValue : neighboursNumber.keySet()) {
+            switch (blockValue) {
+                case A:
+                {
+                    assertEquals(2, neighboursNumber.get(blockValue).get(BlockValue.A));
+                    assertEquals(4, neighboursNumber.get(blockValue).get(BlockValue.B));
+                    assertEquals(8, neighboursNumber.get(blockValue).get(BlockValue.ZERO));
+                    break;
+                }
+
+                case B:
+                {
+                    assertEquals(4, neighboursNumber.get(blockValue).get(BlockValue.A));
+                    assertEquals(2, neighboursNumber.get(blockValue).get(BlockValue.B));
+                    assertEquals(8, neighboursNumber.get(blockValue).get(BlockValue.ZERO));
                     break;
                 }
 
