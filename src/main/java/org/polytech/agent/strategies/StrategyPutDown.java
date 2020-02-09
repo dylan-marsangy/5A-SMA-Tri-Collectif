@@ -74,8 +74,8 @@ public class StrategyPutDown implements Strategy {
      * @return Proportion du type de bloc
      */
     private double computeF(Agent agent, Map<Direction, Movable> perception) {
-        Long countBlocks = countBlocks(agent, perception);
-        return (double) countBlocks / perception.size();
+        double countBlocks = countBlocks(agent, perception);
+        return countBlocks / perception.size();
     }
 
     /**
@@ -85,10 +85,27 @@ public class StrategyPutDown implements Strategy {
      * @param perception Perception de l'agent (voisinage immédiat)
      * @return Nombre de blocs de même valeur
      */
-    private Long countBlocks(Agent agent, Map<Direction, Movable> perception) {
-        return perception.values().stream()
-                .filter(movable -> (movable instanceof Block)
-                        && ((Block) movable).getValue() == agent.getHolding().getValue())
-                .count();
+    private Double countBlocks(Agent agent, Map<Direction, Movable> perception) {
+        double counterA = 0L;
+        double counterB = 0L;
+        Block block;
+        for (Movable movable : perception.values()) {
+            if (movable instanceof Block) {
+                block = (Block) movable;
+                if (block.getValue() == BlockValue.A) {
+                    counterA++;
+                } else {
+                    counterB++;
+                }
+            }
+        }
+
+        // Bruitage (error de perception des agents)
+        if (agent.getError() > 0) {
+            counterA += counterB * agent.getError();
+            counterB += counterA * agent.getError();
+        }
+
+        return agent.getHolding().getValue() == BlockValue.A ? counterA : counterB;
     }
 }
