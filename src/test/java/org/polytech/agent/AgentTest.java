@@ -50,6 +50,4 @@ public class AgentTest {
                 "First element in the memory is not B.");
     }
 
-    // STRATEGY --------------------------------------------------------------------------------------------------------
-
 }

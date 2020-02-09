@@ -61,39 +61,72 @@ public class Environnement implements Runnable {
 
     @Override
     public void run() {
+        int frequency = (int) (nbIterations * frequencyDiplayGrid);
+        System.out.print(this);
+        System.out.println(String.format("0 / %d (0%%)", nbIterations));
+        System.out.println();
 
-            int frequency = (int) (nbIterations * frequencyDiplayGrid);
-            System.out.print(this);
-            System.out.println(String.format("0 / %d (0%%)", nbIterations));
-            System.out.println();
+        int count = 0;
+        Agent agent;
+        Movable obstacle;
+        int distance;
+        Map<Direction, Movable> perception; // Perception d'un agent.
+        Direction goalDirection; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
+        while (count < nbIterations) {
+            count++;
 
-            int count = 0;
-            Agent agent;
-            int distance;
-            Map<Direction, Movable> perception; // Perception d'un agent.
-            Direction result; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
-            while (count < nbIterations) {
-                count++;
+            // Tirage aléatoire d'un agent (simulation du multi-threading).
+            agent = pickRandomAgent();
+            distance = agent.getDistance(); // Distance de perception d'un agent.
 
-                // Tirage aléatoire d'un agent (simulation du multi-threading).
-                agent = pickRandomAgent();
-                distance = agent.getDistance(); // Distance de perception d'un agent.
+            // Agent perçoit son environnement et détermine une direction dans laquelle se diriger (aléatoire).
+            perception = perception(agent, distance);
+            goalDirection = agent.execute(new StrategyMove(), perception);
+            if (goalDirection != null) {
+                obstacle = getEntityAfterMove(agent, goalDirection, distance);
 
-                // Agent perçoit son environnement et détermine une direction dans laquelle se diriger.
-                // L'environnement l'y déplace.
-                perception = perception(agent, distance);
-                result = agent.execute(new StrategyMove(), perception);
-                if (result != null) move(agent, result, distance);
-
-                // S'il tient un bloc, il va chercher à le déposer. Sinon, il cherche à en prendre un.
-                perception = perception(agent, distance);
-                if (agent.isHolding()) {
-                    result = agent.execute(new StrategyPutDown(), perception);
-                    if (result != null) putDownBlock(agent, result, distance);
-                } else {
-                    result = agent.execute(new StrategyPickUp(), perception);
-                    if (result != null) pickUpBlock(agent, result, distance);
+                // Si l'obstacle est un autre agent, l'agent élu ne bouge pas et ne visite donc aucun nouveau bloc.
+                if (obstacle instanceof Agent) {
+                    agent.visit(new Block(BlockValue.ZERO));
                 }
+
+                // Si l'obstacle est un bloc (et que l'agent ne tient rien), il peut tenter de le prendre.
+                else if (obstacle instanceof Block) {
+                    if (!agent.isHolding()) {
+                        /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Pick Up',
+                        cela signifie qu'il prend le bloc. */
+                        if (goalDirection.equals(agent.execute(new StrategyPickUp(goalDirection), perception))) {
+                            pickUpBlock(agent, goalDirection, distance); // Prise
+                            move(agent, goalDirection, distance); // Déplacement
+                        }
+                    }
+                    // Sinon (si l'agent tient un bloc), il reste sur place et ne rencontre donc aucun nouveau bloc.
+                    else {
+                        agent.visit((Block) obstacle);
+                    }
+                }
+
+                // S'il n'y a pas d'obstacle (et que l'agent tient un bloc), il tente de le déposer lors de son déplacement.
+                else if (obstacle == null) {
+                    // Déplacement
+                    move(agent, goalDirection, distance);
+
+                    // Dépôt du bloc sur la position d'origine si possible.
+                    if (agent.isHolding()) {
+                        /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Put Down',
+                        cela signifie qu'il dépose le bloc sur sa position d'origine après le déplacement. */
+                        goalDirection = agent.execute(new StrategyPutDown(goalDirection), perception);
+                        if (goalDirection != null) {
+                            assert goalDirection.contrary() != null; // Une direction a forcément un contraire.
+                            putDownBlock(agent, goalDirection.contrary(), distance);
+                        }
+                    }
+                }
+            }
+            // Si l'agent ne s'est pas déplacé, il n'a rencontré aucun nouveau bloc.
+            else {
+                agent.visit(new Block(BlockValue.ZERO));
+            }
 
                 // Affichage de la grille résultante si nécessaire.
                 if (frequency != 0d && count % frequency == 0) {
@@ -103,11 +136,11 @@ public class Environnement implements Runnable {
                 }
             }
 
-            if (frequency == 0) {
-                System.out.print(this);
-                System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
-                System.out.println();
-            }
+        if (frequency == 0) {
+            System.out.print(this);
+            System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
+            System.out.println();
+        }
     }
 
     /**
@@ -185,6 +218,26 @@ public class Environnement implements Runnable {
         }
 
         return false;
+    }
+
+    /**
+     * Réalise un déplacement fictif pour obtenir l'entité éventuellement présente sur la case cible.
+     *
+     * @param entity    Entité à déplacer virtuellement
+     * @param direction Direction dans laquelle déplacer l'entité
+     * @param d         Distance sur laquelle déplacer l'entité
+     * @return Entité présente sur la case cible (null si elle est vide)
+     */
+    public Movable getEntityAfterMove(Movable entity, Direction direction, int d) throws CollisionException {
+        Pair<Integer, Integer> coordinates = findEntity(entity);
+        int xGoal = coordinates.getKey() + d * direction.x;
+        int yGoal = coordinates.getValue() + d * direction.y;
+
+        if (isInside(xGoal, yGoal)) {
+            return getEntity(xGoal, yGoal);
+        }
+
+        return null;
     }
 
     /**

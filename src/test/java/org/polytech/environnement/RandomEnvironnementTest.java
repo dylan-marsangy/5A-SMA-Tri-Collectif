@@ -22,8 +22,8 @@ public class RandomEnvironnementTest {
     private final int N = 5;
     private final int M = 5;
     private final int NB_AGENTS = 5;
-    private final int NB_BLOCKS_A = 10;
-    private final int NB_BLOCKS_B = 10;
+    private final int NB_BLOCKS_A = 5;
+    private final int NB_BLOCKS_B = 5;
 
     private final int I = 1;
     private final int T = 10;

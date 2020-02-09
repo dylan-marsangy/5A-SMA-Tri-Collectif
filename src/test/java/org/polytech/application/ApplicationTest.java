@@ -10,10 +10,11 @@ import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import org.polytech.utils.Color;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.IntStream;
 
 @DisplayName("Application Tests")
 public class ApplicationTest {
@@ -23,7 +24,7 @@ public class ApplicationTest {
     private static final int NUMBER_AGENTS = 20;
     private static final int GRID_ROWS = 40; // N
     private static final int GRID_COLUMNS = 40; // M
-    private static final int MEMORY_SIZE = 10; // t
+    private static final int MEMORY_SIZE = 15; // t
     private static final int SUCCESSIVE_MOVEMENTS = 1; // i
     private static final double K_MINUS = 0.3; // k-
     private static final double K_PLUS = 0.1; // k+
@@ -145,26 +146,43 @@ public class ApplicationTest {
                                int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
         List<Evaluation> evaluations = new ArrayList<>();
         ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
-         gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
+                gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
 
-        for (int i = 0 ; i < SMAConstants.NB_RUN ; i++) {
+        for (int i = 0; i < SMAConstants.NB_RUN; i++) {
+            // Affichage console pour différencier les différentes itérations.
+            IntStream.rangeClosed(1, 3).forEach(index ->
+                    System.out.println(
+                            Color.CYAN +
+                                    "===============================================================================" +
+                                    "===============================================================================" +
+                                    "===============================================================================" +
+                                    Color.RESET));
+            System.out.println(Color.CYAN + String.format("Itération n°%d", i + 1) + Color.RESET);
+            System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
+
+            // Instantiation de l'environnement
             Environnement environnement = new RandomEnvironnement(
                     gridRows, gridColumns, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
                     numberAgents, successiveMovements, memorySize, kPlus, kMinus, error,
                     numberBlocksA, numberBlocksB);
 
+            // Quelques stats simples sur le remplissage de la grille
             System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
                     (double) (numberBlocksA + numberBlocksB + numberAgents) / (gridRows * gridColumns) * 100,
                     (double) (numberAgents) / (gridRows * gridColumns) * 100,
                     (double) (numberBlocksA + numberBlocksB) / (gridRows * gridColumns) * 100));
 
             System.out.println();
+
+            // Lancement de la simulation
             environnement.run(); // Non exécuté en mode Thread, sinon le programme se termine directement.
 
-            Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
+            // Evaluation de l'environnement à la fin de la simulation
+            Evaluation evaluation = new Evaluation(environnement);
             evaluations.add(evaluation);
         }
 
+        // Remplissage de la feuille Excel
         excelGenerator.fillExcel(evaluations, executionParameters, executionName);
     }
 }
