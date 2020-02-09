@@ -2,6 +2,8 @@ package org.polytech.statistiques;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.polytech.ExecutionParameters;
+import org.polytech.environnement.Environnement;
 import org.polytech.environnement.block.BlockValue;
 
 import java.io.FileInputStream;
@@ -27,6 +29,76 @@ public class ExcelGenerator {
     public static ExcelGenerator getInstance()
     {
         return instance;
+    }
+
+    private void fillParamsLead(Sheet sheet, int rownum) {
+        Row row = sheet.createRow(rownum);
+
+        // Nb Blocs A
+        Cell cell = row.createCell(0, CellType.STRING);
+        cell.setCellValue("Nb Blocs A");
+        // Nb blocs B
+        cell = row.createCell(1, CellType.STRING);
+        cell.setCellValue("Nb Blocs B");
+        // Nb agents
+        cell = row.createCell(2, CellType.STRING);
+        cell.setCellValue("Nb Agents");
+        // Nb lignes
+        cell = row.createCell(3, CellType.STRING);
+        cell.setCellValue("Nb Lignes");
+        // Nb colonnes
+        cell = row.createCell(4, CellType.STRING);
+        cell.setCellValue("Nb Colonnes");
+        // Taille mémoire
+        cell = row.createCell(5, CellType.STRING);
+        cell.setCellValue("Taille  mémoire");
+        // Nb mouvements successifs
+        cell = row.createCell(6, CellType.STRING);
+        cell.setCellValue("Nb Mouvements Successifs");
+        // K -
+        cell = row.createCell(7, CellType.STRING);
+        cell.setCellValue("K -");
+        // K +
+        cell = row.createCell(8, CellType.STRING);
+        cell.setCellValue("K +");
+        // Erreur
+        cell = row.createCell(9, CellType.STRING);
+        cell.setCellValue("Erreur");
+    }
+
+    private void fillParamsValues(ExecutionParameters executionParameters, Sheet sheet, int rownum) {
+        Row row = sheet.createRow(rownum);
+
+        // Nb Blocs A
+        Cell cell = row.createCell(0, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getNumberBlocksA());
+        // Nb blocs B
+        cell = row.createCell(1, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getNumberBlocksB());
+        // Nb agents
+        cell = row.createCell(2, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getNumberAgents());
+        // Nb lignes
+        cell = row.createCell(3, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getGridRows());
+        // Nb colonnes
+        cell = row.createCell(4, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getGridColumns());
+        // Taille mémoire
+        cell = row.createCell(5, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getMemorySize());
+        // Nb mouvements successifs
+        cell = row.createCell(6, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getSuccessiveMovements());
+        // K -
+        cell = row.createCell(7, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getkMinus());
+        // K +
+        cell = row.createCell(8, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getkPlus());
+        // Erreur
+        cell = row.createCell(9, CellType.NUMERIC);
+        cell.setCellValue(executionParameters.getError());
     }
 
     /**
@@ -111,7 +183,7 @@ public class ExcelGenerator {
         cell.setCellValue(evaluation.getAverageColoniesBlockWithValue(BlockValue.B));
     }
 
-    public void fillExcel(List<Evaluation> evaluations, String executionName) {
+    public void fillExcel(List<Evaluation> evaluations, ExecutionParameters executionParameters, String executionName) {
         Workbook workbook;
         FileInputStream file;
         try {
@@ -126,17 +198,25 @@ public class ExcelGenerator {
             // Récupère la feuille existante ou la crée au besoin
             if (workbook.getSheet(executionName) != null) {
                 sheet = workbook.getSheet(executionName);
-                rownum = sheet.getLastRowNum() + 2;
+                rownum = sheet.getLastRowNum() + 4;
             }
             else {
                 sheet = workbook.createSheet(executionName);
                 rownum = 0;
             }
 
-            // Entête
+            // Entête des paramètres
+            fillParamsLead(sheet, rownum);
+            ++rownum;
+
+            // Paramètres utilisés
+            fillParamsValues(executionParameters, sheet, rownum);
+            ++rownum;
+
+            // Entête de l'évaluation
             fillLead(sheet, rownum);
 
-            // Data
+            // Evaluation
             for (Evaluation evaluation : evaluations) {
                 rownum++;
                 fillEvaluationRow(evaluation, sheet, rownum, iteration);

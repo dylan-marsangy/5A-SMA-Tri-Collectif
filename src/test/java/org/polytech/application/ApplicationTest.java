@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.polytech.ExecutionParameters;
 import org.polytech.SMAConstants;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
@@ -144,6 +145,8 @@ public class ApplicationTest {
                                int gridRows, int gridColumns,
                                int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
         List<Evaluation> evaluations = new ArrayList<>();
+        ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
+         gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
 
         for (int i = 0 ; i < NB_RUN ; i++) {
             Environnement environnement = new RandomEnvironnement(
@@ -163,6 +166,6 @@ public class ApplicationTest {
             evaluations.add(evaluation);
         }
 
-        excelGenerator.fillExcel(evaluations, executionName);
+        excelGenerator.fillExcel(evaluations, executionParameters, executionName);
     }
 }

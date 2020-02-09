@@ -25,6 +25,8 @@ public class SMApplicationV1 {
     public static void main(String[] args) {
         List<Evaluation> evaluations = new ArrayList<>();
         ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
+        ExecutionParameters executionParameters = new ExecutionParameters(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
+                GRID_ROWS, GRID_COLUMNS, MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
 
         for (int i = 0; i < NB_RUN; i++) {
             Environnement environnement = new RandomEnvironnement(
@@ -44,6 +46,6 @@ public class SMApplicationV1 {
             evaluations.add(evaluation);
         }
 
-        excelGenerator.fillExcel(evaluations, "SMApplicationV1");
+        excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
     }
 }
