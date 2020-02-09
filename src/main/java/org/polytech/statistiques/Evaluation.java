@@ -27,6 +27,14 @@ public class Evaluation {
     }
 
     /**
+     * Getteur de l'environnement utilisé pour l'évaluation
+     * @return Environnement
+     */
+    public Environnement getEnvironnement() {
+        return environnement;
+    }
+
+    /**
      * Calcule le nombre total de blocs présents dans l'environnement avec la valeur en paramètre
      * @param blockValue: BlockValue à rechercher (A ou B)
      * @return int

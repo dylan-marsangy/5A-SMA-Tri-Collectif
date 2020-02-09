@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.polytech.ExecutionParameters;
 import org.polytech.SMAConstants;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
@@ -32,14 +33,15 @@ public class ApplicationTest {
     private static final String RUN_ERROR = "Run Application - Error (e)";
     private static final String RUN_KPLUS = "Run Application - K+";
     private static final String RUN_KMINUS = "Run Application - K-";
-    private static final String RUN_SUCCESSIVE_MOVEMENTS = "Run Application - Successive Movements (i)";
-    private static final String RUN_MEMORY_SIZE = "Run Application - Memory Size (t)";
-    private static final String RUN_GRID_COLUMNS = "Run Application - Grid Columns (M)";
+    private static final String RUN_SUCCESSIVE_MOVEMENTS = "Run Application - Moves (i)";
+    private static final String RUN_MEMORY_SIZE = "Run Application - Memory (t)";
+    private static final String RUN_GRID_COLUMNS = "Run Application - Grid Cols (M)";
     private static final String RUN_GRID_ROWS = "Run Application - Grid Rows (N)";
     private static final String RUN_AGENTS = "Run Application - Agents";
     private static final String RUN_BLOCK_B = "Run Application - Block B";
     private static final String RUN_BLOCK_A = "Run Application - Block A";
     private static final String RUN_DEFAULT = "Run Application - Default";
+    private ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
 
     @ParameterizedTest
     @DisplayName(RUN_ERROR)
@@ -143,6 +145,8 @@ public class ApplicationTest {
                                int gridRows, int gridColumns,
                                int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
         List<Evaluation> evaluations = new ArrayList<>();
+        ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
+         gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
 
         for (int i = 0 ; i < NB_RUN ; i++) {
             Environnement environnement = new RandomEnvironnement(
@@ -161,6 +165,7 @@ public class ApplicationTest {
             Evaluation evaluation = new Evaluation(environnement);
             evaluations.add(evaluation);
         }
-        new ExcelGenerator(evaluations, executionName);
+
+        excelGenerator.fillExcel(evaluations, executionParameters, executionName);
     }
 }
