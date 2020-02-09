@@ -162,7 +162,7 @@ public class ApplicationTest {
             System.out.println();
             environnement.run(); // Non exécuté en mode Thread, sinon le programme se termine directement.
 
-            Evaluation evaluation = new Evaluation(environnement);
+            Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
             evaluations.add(evaluation);
         }
 

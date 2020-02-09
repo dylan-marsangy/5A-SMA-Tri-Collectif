@@ -13,12 +13,22 @@ public class Evaluation {
     private Environnement environnement;
     private Neighbours neighbours;
     private Colonies colonies;
+    private int NEIGHBOURHOOD_SIZE = 1;
 
     public Evaluation(Environnement environnement) {
         this.environnement = environnement;
+        evaluate();
+    }
 
+    public Evaluation(Environnement environnement, int neighbourhoodSize) {
+        this.environnement = environnement;
+        this.NEIGHBOURHOOD_SIZE = neighbourhoodSize;
+        evaluate();
+    }
+
+    public void evaluate() {
         // calcule les voisins de chaque bloc A et B
-        this.neighbours = new Neighbours(environnement);
+        this.neighbours = new Neighbours(environnement, NEIGHBOURHOOD_SIZE);
         this.neighbours.calculateNeighbours();
 
         // cherche les colonies

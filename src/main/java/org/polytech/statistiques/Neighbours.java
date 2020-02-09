@@ -9,12 +9,14 @@ import java.util.*;
 
 public class Neighbours {
     private Environnement environnement;
+    private int NEIGHBOURHOOD_SIZE;
 
     // nombre de voisins de chaque type, pour chaque valeur possible de Bloc (A ou B)
     private Map<BlockValue, Map<BlockValue, Integer>> neighboursNumberByBlockValue;
 
-    public Neighbours(Environnement environnement) {
+    public Neighbours(Environnement environnement, int neighbourhoodSize) {
         this.environnement = environnement;
+        this.NEIGHBOURHOOD_SIZE = neighbourhoodSize;
 
         this.neighboursNumberByBlockValue = new HashMap<>();
         neighboursNumberByBlockValue.put(BlockValue.A, createEmptyNeighbours());
@@ -79,8 +81,8 @@ public class Neighbours {
     public Map<BlockValue, Integer> getNeighboursNumberAt(int x, int y) {
         Map<BlockValue, Integer> neighbours = createEmptyNeighbours();
 
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
+        for (int i = x - NEIGHBOURHOOD_SIZE; i <= x + NEIGHBOURHOOD_SIZE; i++) {
+            for (int j = y - NEIGHBOURHOOD_SIZE; j <= y + NEIGHBOURHOOD_SIZE; j++) {
                 if (environnement.isInside(i, j)) {
                     if (environnement.getEntity(i, j) instanceof Block) {
                         if (i != x || j != y) {
@@ -108,8 +110,8 @@ public class Neighbours {
         neighbours.put(BlockValue.B, new HashSet<>(new ArrayList<>()));
         neighbours.put(BlockValue.ZERO, new HashSet<>(new ArrayList<>()));
 
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
+        for (int i = x - NEIGHBOURHOOD_SIZE; i <= x + NEIGHBOURHOOD_SIZE; i++) {
+            for (int j = y - NEIGHBOURHOOD_SIZE; j <= y + NEIGHBOURHOOD_SIZE; j++) {
                 if (environnement.isInside(i, j)) {
                     if (environnement.getEntity(i, j) instanceof Block) {
                         if (i != x || j != y) {
