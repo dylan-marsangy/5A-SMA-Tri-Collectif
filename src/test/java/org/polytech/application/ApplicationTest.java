@@ -32,14 +32,15 @@ public class ApplicationTest {
     private static final String RUN_ERROR = "Run Application - Error (e)";
     private static final String RUN_KPLUS = "Run Application - K+";
     private static final String RUN_KMINUS = "Run Application - K-";
-    private static final String RUN_SUCCESSIVE_MOVEMENTS = "Run Application - Successive Movements (i)";
-    private static final String RUN_MEMORY_SIZE = "Run Application - Memory Size (t)";
-    private static final String RUN_GRID_COLUMNS = "Run Application - Grid Columns (M)";
+    private static final String RUN_SUCCESSIVE_MOVEMENTS = "Run Application - Moves (i)";
+    private static final String RUN_MEMORY_SIZE = "Run Application - Memory (t)";
+    private static final String RUN_GRID_COLUMNS = "Run Application - Grid Cols (M)";
     private static final String RUN_GRID_ROWS = "Run Application - Grid Rows (N)";
     private static final String RUN_AGENTS = "Run Application - Agents";
     private static final String RUN_BLOCK_B = "Run Application - Block B";
     private static final String RUN_BLOCK_A = "Run Application - Block A";
     private static final String RUN_DEFAULT = "Run Application - Default";
+    private ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
 
     @ParameterizedTest
     @DisplayName(RUN_ERROR)
@@ -161,6 +162,7 @@ public class ApplicationTest {
             Evaluation evaluation = new Evaluation(environnement);
             evaluations.add(evaluation);
         }
-        new ExcelGenerator(evaluations, executionName);
+
+        excelGenerator.fillExcel(evaluations, executionName);
     }
 }
