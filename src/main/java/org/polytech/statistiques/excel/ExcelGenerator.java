@@ -238,14 +238,27 @@ public class ExcelGenerator {
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), false));
     }
 
+
+    /**
+     * Génère la formule de la moyenne à utiliser
+     * @param columnLetter String désignant la colonne sur laquelle effectuer une moyenne
+     * @param from         int donnant la ligne du premier nombre
+     * @param to           int donnant la ligne du dernier nombre
+     * @return             String
+     */
     public String generateAverageFormula(String columnLetter, int from, int to) {
         return "AVERAGE(" + columnLetter + from + ":" + columnLetter + to + ")";
     }
 
+
+    /**
+     * Remplit une ligne contenant les moyennes des itérations pour un jeu de paramètres
+     * @param sheet     Sheet
+     * @param rownum    int donnant la ligne où écrire
+     */
     public void fillEvaluationAvgRow(Sheet sheet, int rownum) {
         Row row = sheet.createRow(rownum);
         int from = rownum - SMAConstants.NB_RUN + 1;
-        int to = rownum;
 
         // Itération
         Cell cell = row.createCell(0, CellType.STRING);
@@ -253,39 +266,39 @@ public class ExcelGenerator {
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Nombre de A
         cell = row.createCell(1, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("B", from, to));
+        cell.setCellFormula(generateAverageFormula("B", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Nombre de B
         cell = row.createCell(2, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("C", from, to));
+        cell.setCellFormula(generateAverageFormula("C", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // A voisin de A
         cell = row.createCell(3, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("D", from, to));
+        cell.setCellFormula(generateAverageFormula("D", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // A voisin de B
         cell = row.createCell(4, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("E", from, to));
+        cell.setCellFormula(generateAverageFormula("E", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // B voisin de B
         cell = row.createCell(5, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("F", from, to));
+        cell.setCellFormula(generateAverageFormula("F", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Nombre de colonies
         cell = row.createCell(6, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("G", from, to));
+        cell.setCellFormula(generateAverageFormula("G", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Taille moyenne d'une colonie
         cell = row.createCell(7, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("H", from, to));
+        cell.setCellFormula(generateAverageFormula("H", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Proportion de A par colonie
         cell = row.createCell(8, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("I", from, to));
+        cell.setCellFormula(generateAverageFormula("I", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Proportion de B par colonie
         cell = row.createCell(9, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("J", from, to));
+        cell.setCellFormula(generateAverageFormula("J", from, rownum));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
     }
 
