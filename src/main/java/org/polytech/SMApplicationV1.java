@@ -42,7 +42,7 @@ public class SMApplicationV1 {
             System.out.println();
             new Thread(environnement).start();
 
-            Evaluation evaluation = new Evaluation(environnement);
+            Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
             evaluations.add(evaluation);
         }
 
