@@ -19,34 +19,34 @@ import java.util.stream.IntStream;
 @DisplayName("Application Tests")
 public class ApplicationTest {
 
-    private static final int NUMBER_BLOCKS_A = 100;
-    private static final int NUMBER_BLOCKS_B = 100;
-    private static final int NUMBER_AGENTS = 20;
-    private static final int GRID_ROWS = 40; // N
-    private static final int GRID_COLUMNS = 40; // M
-    private static final int MEMORY_SIZE = 15; // t
-    private static final int SUCCESSIVE_MOVEMENTS = 1; // i
-    private static final double K_MINUS = 0.3; // k-
-    private static final double K_PLUS = 0.1; // k+
-    private static final double ERROR = 0d; // e
+    private final int NUMBER_BLOCKS_A = 100;
+    private final int NUMBER_BLOCKS_B = 100;
+    private final int NUMBER_AGENTS = 20;
+    private final int GRID_ROWS = 40; // N
+    private final int GRID_COLUMNS = 40; // M
+    private final int MEMORY_SIZE = 15; // t
+    private final int SUCCESSIVE_MOVEMENTS = 1; // i
+    private final double K_MINUS = 0.3; // k-
+    private final double K_PLUS = 0.1; // k+
+    private final double ERROR = 0d; // e
 
-    private static final String RUN_ERROR = "Error (e)";
-    private static final String RUN_KPLUS = "K+";
-    private static final String RUN_KMINUS = "K-";
-    private static final String RUN_SUCCESSIVE_MOVEMENTS = "Moves (i)";
-    private static final String RUN_MEMORY_SIZE = "Memory (t)";
-    private static final String RUN_GRID_COLUMNS = "Grid Cols (M)";
-    private static final String RUN_GRID_ROWS = "Grid Rows (N)";
-    private static final String RUN_AGENTS = "Agents";
-    private static final String RUN_BLOCK_B = "Block B";
-    private static final String RUN_BLOCK_A = "Block A";
-    private static final String RUN_DEFAULT = "Default";
-    private ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
+    private final String RUN_ERROR = "Error (e)";
+    private final String RUN_KPLUS = "K+";
+    private final String RUN_KMINUS = "K-";
+    private final String RUN_SUCCESSIVE_MOVEMENTS = "Moves (i)";
+    private final String RUN_MEMORY_SIZE = "Memory (t)";
+    private final String RUN_GRID_COLUMNS = "Grid Cols (M)";
+    private final String RUN_GRID_ROWS = "Grid Rows (N)";
+    private final String RUN_AGENTS = "Agents";
+    private final String RUN_BLOCK_B = "Block B";
+    private final String RUN_BLOCK_A = "Block A";
+    private final String RUN_DEFAULT = "Default";
+    private final ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
 
     @ParameterizedTest
     @DisplayName(RUN_ERROR)
-    @ValueSource(doubles = {ERROR, 0.1, 0.5, 0.9})
-    public void runApplication_numberBlocksA(double error) {
+    @ValueSource(doubles = {ERROR, 0.1, 0.2, 0.3, 0.5, 0.9})
+    public void runApplication_error(double error) {
         runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                 GRID_ROWS, GRID_COLUMNS,
                 MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, error, RUN_ERROR);
