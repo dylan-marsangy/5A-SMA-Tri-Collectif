@@ -14,7 +14,7 @@
 
 ## Statistiques calculées à l'exécution
 A chaque exécution de l'algorithme, diverses statistiques sont calculées afin d'estimer la qualité des paramètres donnés en entrée.
-Nous nous sommes principalement concentrés sur les voisinages des Blocs posés dans l'environnement à la fin de l'algorithme ainsi que sur les colonies formées.
+Nous nous sommes principalement concentrés sur les voisinages des blocs posés dans l'environnement à la fin de l'algorithme ainsi que sur les colonies formées.
 Le détail des indicateurs calculés est disponible ci-dessous :
 - Nombre de blocs A posés
 - Nombre de blocs B posés

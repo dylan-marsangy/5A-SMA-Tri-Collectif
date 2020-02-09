@@ -4,4 +4,4 @@ target/
 out/
 
 # Exclure l'output Excel
-sim/
+extern/
