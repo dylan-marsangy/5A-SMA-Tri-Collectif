@@ -17,4 +17,23 @@ public enum Direction {
         this.y = y;
     }
 
+    /**
+     * Renvoie la direction contraire.
+     * @return Direction contraire.
+     */
+    public Direction contrary() {
+        switch (this) {
+            case SOUTH:
+                return NORTH;
+            case NORTH:
+                return SOUTH;
+            case EAST:
+                return WEST;
+            case WEST:
+                return EAST;
+            default:
+                return null;
+        }
+    }
+
 }

@@ -7,7 +7,9 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Stratégie d'un agent pour prendre un bloc.
@@ -27,29 +29,40 @@ public class StrategyPickUp implements Strategy {
 
     /**
      * Maintient ou abandonne la direction cible de l'agent (déterminée lors de l'exécution de la stragtégie 'Move').
+     * Si l'agent abandonne la direction, cela signifie qu'il ne tente pas de prendre le bloc qui s'y trouve et reste
+     * immobile.
      *
      * @param agent      Agent ayant reçu la perception
      * @param perception Perception de laquelle extraire une direction
-     * @return (1) Direction cible de l'agent si un bloc peut être pris ou (2) null sinon.
+     * @return (1) Direction cible de l'agent si le bloc qui s'y trouve est pris (maintient) ou (2) null sinon (abandonne).
      */
     @Override
     public Direction execute(Agent agent, Map<Direction, Movable> perception) {
-        if (agent.getHolding() != null) throw new MovableNotFoundException("L'agent tient déjà un bloc.");
+        if (agent.isHolding()) throw new MovableNotFoundException("L'agent tient déjà un bloc.");
 
         // Vérification qu'un bloc est bien présent dans la direction cible.
+        // Si c'est le cas, tenter de le prendre.
         Movable entity = perception.get(goalDirection);
         if (entity instanceof Block) {
-            // Calculer la proba pour tenter de prendre le bloc cible.
             Block block = (Block) entity;
+
+
+            // Calculer la proba pour tenter de prendre le bloc cible.
             double probaPickUp = computeProba(agent).get(block.getValue());
-            if (new Random().nextDouble() <= probaPickUp) {
-                return goalDirection;
-            }
 
             // L'agent a pris un bloc (ou tenté) donc on l'ajout en mémoire.
             agent.visit(block);
+
+            // Tentative de prise
+            if (new Random().nextDouble() <= probaPickUp) {
+                return goalDirection;
+            } else {
+                return null;
+            }
         }
 
+        // L'agent ne rencontre pas de bloc.
+        agent.visit(new Block(BlockValue.ZERO));
         return null;
     }
 

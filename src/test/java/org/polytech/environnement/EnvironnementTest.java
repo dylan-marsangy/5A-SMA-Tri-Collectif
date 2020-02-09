@@ -13,13 +13,8 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -154,65 +149,25 @@ public class EnvironnementTest {
     // RUNNING --- MOVE ------------------------------------------------------------------------------------------------
 
     @RepeatedTest(10)
-    @DisplayName("agent should randomly move when no holding")
-    public void agentRandomWalk_noAgents() {
+    @DisplayName("agent should randomly move except towards another Agent")
+    public void agentRandomWalk() {
         // Agent entouré des blocs A.
         environnement.insert(agent, 2, 2);
         environnement.insert(new Block(BlockValue.A), 0, 2);
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 4);
+        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 2, 0);
+        environnement.insert(null, 2, 4);
         environnement.insert(new Block(BlockValue.B), 4, 2);
 
         assertEquals(agent, environnement.getEntity(2,2));
         assertFalse(environnement.isEmpty(4, 2));
         assertFalse(environnement.isEmpty(0, 2));
         assertFalse(environnement.isEmpty(2, 0));
-        assertFalse(environnement.isEmpty(2, 4));
+        assertTrue(environnement.isEmpty(2, 4));
 
-        Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
-        assertTrue(Arrays.asList(Direction.values()).contains(result));
-    }
-
-
-    @RepeatedTest(10)
-    @DisplayName("agent shouldn't move towards other agents")
-    public void agentRandomWalk_anyAgents() {
-        // Agent entouré des blocs A.
-        environnement.insert(agent, 2, 2);
-        environnement.insert(new Block(BlockValue.A), 0, 2);
-        environnement.insert(new Agent(I, T, K_MINUS, K_PLUS, ERROR), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 4);
-        environnement.insert(new Block(BlockValue.A), 4, 2);
-
-        assertEquals(agent, environnement.getEntity(2,2));
-        assertFalse(environnement.isEmpty(4, 2));
-        assertFalse(environnement.isEmpty(0, 2));
-        assertFalse(environnement.isEmpty(2, 0));
-        assertFalse(environnement.isEmpty(2, 4));
-
+        // L'agent doit choisir une direction aléatoire ne contenant pas d'agent.
         Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
         assertNotEquals(Direction.WEST, result);
-    }
-
-    @RepeatedTest(10)
-    @DisplayName("agent should randomly move towards empty cases only when holding")
-    public void agentRandomWalk_holding() {
-        agent.setHolding(new Block(BlockValue.B));
-
-        // Agent entouré des blocs A.
-        environnement.insert(agent, 2, 2);
-        environnement.insert(new Block(BlockValue.A), 0, 2);
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 4);
-
-        assertEquals(agent, environnement.getEntity(2,2));
-        assertTrue(environnement.isEmpty(4, 2));
-        assertFalse(environnement.isEmpty(0, 2));
-        assertFalse(environnement.isEmpty(2, 0));
-        assertFalse(environnement.isEmpty(2, 4));
-
-        Direction result = agent.execute(new StrategyMove(), environnement.perception(agent, 2));
-        assertEquals(Direction.SOUTH, result);
+        assertTrue(Arrays.asList(Direction.values()).contains(result));
     }
 
     // RUNNING --- PICK UP ---------------------------------------------------------------------------------------------
@@ -241,68 +196,96 @@ public class EnvironnementTest {
         environnement.insert(agent, 2, 2);
         environnement.insert(new Block(BlockValue.A), 4, 2);
 
-        IntStream.rangeClosed(1, T).forEach(index -> agent.visit(new Block(BlockValue.B)));
+        final List<Direction> results = new ArrayList<>();
+        IntStream.rangeClosed(1, 20).forEach(i -> {
+            IntStream.rangeClosed(1, T).forEach(index -> agent.visit(new Block(BlockValue.B)));
+            Direction result = agent.execute(new StrategyPickUp(Direction.SOUTH), environnement.perception(agent, 2));
+            results.add(result);
+        });
 
-        Direction result = agent.execute(new StrategyPickUp(Direction.SOUTH), environnement.perception(agent, 2));
-        assertEquals(Direction.SOUTH, result);
+        assertFalse(results.contains(Direction.NORTH));
+        assertFalse(results.contains(Direction.WEST));
+        assertFalse(results.contains(Direction.EAST));
 
-        environnement.pickUpBlock(agent, result, 2);
-        assertEquals(agent, environnement.getEntity(2,2));
-        assertTrue(agent.isHolding());
-        assertTrue(environnement.isEmpty(4, 2));
+        // En moyenne, le résultat devrait être très souvent SOUTH et rarement null.
+        long countSouth = new ArrayList<>(results).stream()
+                .filter(direction -> direction == Direction.SOUTH)
+                .count();
+        long countNull = new ArrayList<>(results).stream()
+                .filter(Objects::isNull)
+                .count();
+        assertTrue(countSouth > countNull);
     }
 
     // RUNNING --- PUT DOWN --------------------------------------------------------------------------------------------
 
-    @Test
-    @DisplayName("agent should do nothing")
-    public void doNotPutDown_A_whenFull_Movable() {
-        agent.pickUp(new Block(BlockValue.A));
+    @RepeatedTest(10)
+    @DisplayName("agent shouldn't put down B when surrounded by A in most cases")
+    public void doNotPutDown_B_whenMostly_A() {
+        agent.pickUp(new Block(BlockValue.B));
 
-        // Agent entouré d'autres entités : ne devrait pas pouvoir déposer son bloc.
+        // Agent entouré de blocs de type contraire : ne devrait pas pouvoir déposer son bloc.
         environnement.insert(agent, 2, 2);
         environnement.insert(new Block(BlockValue.A), 0, 2);
         environnement.insert(new Block(BlockValue.A), 2, 0);
         environnement.insert(new Block(BlockValue.A), 2, 4);
-        environnement.insert(new Block(BlockValue.A), 4, 2);
+        environnement.insert(null, 4, 2);
 
-        assertEquals(agent, environnement.getEntity(2,2));
+        assertEquals(agent, environnement.getEntity(2, 2));
         assertNotNull(agent.getHolding());
 
-        assertNull(agent.execute(new StrategyPutDown(), environnement.perception(agent, 2)));
-        assertNotNull(agent.getHolding());
-        assertEquals(agent, environnement.getEntity(2,2));
+        final List<Direction> results = new ArrayList<>();
+        IntStream.rangeClosed(1, 20).forEach(i -> {
+            Direction result = agent.execute(new StrategyPutDown(Direction.SOUTH), environnement.perception(agent, 2));
+            results.add(result);
+        });
+
+        assertFalse(results.contains(Direction.NORTH));
+        assertFalse(results.contains(Direction.WEST));
+        assertFalse(results.contains(Direction.EAST));
+
+        // En moyenne, le résultat devrait être très souvent null et rarement SOUTH.
+        long countSouth = results.stream()
+                .filter(direction -> direction == Direction.SOUTH)
+                .count();
+        long countNull = results.stream()
+                .filter(Objects::isNull)
+                .count();
+        assertTrue(countSouth < countNull);
     }
 
     @RepeatedTest(10)
-    @DisplayName("agent should put down block A on SOUTH or nothing")
+    @DisplayName("agent should put down block A on EAST on most cases")
     public void putDown_A_whenMostlyBlocks_A() {
         agent.pickUp(new Block(BlockValue.A));
+
         environnement.insert(agent, 2, 2);
         environnement.insert(new Block(BlockValue.A), 0, 2);
         environnement.insert(new Block(BlockValue.A), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 4);
+        environnement.insert(null, 2, 4);
+        environnement.insert(new Block(BlockValue.A), 4, 2);
 
-        assertEquals(agent, environnement.getEntity(2,2));
+        assertEquals(agent, environnement.getEntity(2, 2));
         assertNotNull(agent.getHolding());
-        assertTrue(environnement.isEmpty(4, 2));
 
-        Set<Movable> expected = Stream.of(agent.getHolding(), null).collect(Collectors.toSet());
+        final List<Direction> results = new ArrayList<>();
+        IntStream.rangeClosed(1, 20).forEach(i -> {
+            Direction result = agent.execute(new StrategyPutDown(Direction.EAST), environnement.perception(agent, 2));
+            results.add(result);
+        });
 
-        Movable result;
-        Direction direction = agent.execute(new StrategyPutDown(), environnement.perception(agent, 2));
-        if (direction != null) {
-            environnement.putDownBlock(agent, direction, 2);
-            result = environnement.getEntity(4, 2);
-            assertNull(agent.getHolding());
-        } else {
-            result = null;
-            assertNotNull(agent.getHolding());
-        }
+        assertFalse(results.contains(Direction.NORTH));
+        assertFalse(results.contains(Direction.WEST));
+        assertFalse(results.contains(Direction.SOUTH));
 
-        System.out.println("Bloc en (4,2) est : " + result);
-        assertEquals(agent, environnement.getEntity(2,2));
-        assertTrue(expected.contains(result));
+        // En moyenne, le résultat devrait être très souvent EAST et rarement null.
+        long countEast = results.stream()
+                .filter(direction -> direction == Direction.EAST)
+                .count();
+        long countNull = results.stream()
+                .filter(Objects::isNull)
+                .count();
+        assertTrue(countEast > countNull);
     }
 
 }

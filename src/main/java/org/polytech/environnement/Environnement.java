@@ -85,25 +85,46 @@ public class Environnement implements Runnable {
             if (goalDirection != null) {
                 obstacle = getEntityAfterMove(agent, goalDirection, distance);
 
-                // Si l'obstacle est un bloc (et que l'agent ne tient rien), il peut tenter de le prendre.
-                if (obstacle instanceof Block) {
-                    /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Pick Up',
-                    cela signifie qu'il prend le bloc. */
-                    if (goalDirection.equals(agent.execute(new StrategyPickUp(goalDirection), perception))) {
-                        pickUpBlock(agent, goalDirection, distance); // Prise
-                        move(agent, goalDirection, distance); // Déplacement
-                    }
-                } else if (obstacle == null) {
-                    move(agent, goalDirection, distance);
+                // Si l'obstacle est un autre agent, l'agent élu ne bouge pas et ne visite donc aucun nouveau bloc.
+                if (obstacle instanceof Agent) {
                     agent.visit(new Block(BlockValue.ZERO));
+                }
 
-                    if (agent.isHolding()) {
-                        perception = perception(agent, distance);
-                        goalDirection = agent.execute(new StrategyPutDown(), perception);
-                        if (goalDirection != null) putDownBlock(agent, goalDirection, distance);
+                // Si l'obstacle est un bloc (et que l'agent ne tient rien), il peut tenter de le prendre.
+                else if (obstacle instanceof Block) {
+                    if (!agent.isHolding()) {
+                        /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Pick Up',
+                        cela signifie qu'il prend le bloc. */
+                        if (goalDirection.equals(agent.execute(new StrategyPickUp(goalDirection), perception))) {
+                            pickUpBlock(agent, goalDirection, distance); // Prise
+                            move(agent, goalDirection, distance); // Déplacement
+                        }
+                    }
+                    // Sinon (si l'agent tient un bloc), il reste sur place et ne rencontre donc aucun nouveau bloc.
+                    else {
+                        agent.visit((Block) obstacle);
                     }
                 }
-            } else {
+
+                // S'il n'y a pas d'obstacle (et que l'agent tient un bloc), il tente de le déposer lors de son déplacement.
+                else if (obstacle == null) {
+                    // Déplacement
+                    move(agent, goalDirection, distance);
+
+                    // Dépôt du bloc sur la position d'origine si possible.
+                    if (agent.isHolding()) {
+                        /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Put Down',
+                        cela signifie qu'il dépose le bloc sur sa position d'origine après le déplacement. */
+                        goalDirection = agent.execute(new StrategyPutDown(goalDirection), perception);
+                        if (goalDirection != null) {
+                            assert goalDirection.contrary() != null; // Une direction a forcément un contraire.
+                            putDownBlock(agent, goalDirection.contrary(), distance);
+                        }
+                    }
+                }
+            }
+            // Si l'agent ne s'est pas déplacé, il n'a rencontré aucun nouveau bloc.
+            else {
                 agent.visit(new Block(BlockValue.ZERO));
             }
 
