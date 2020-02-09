@@ -1,8 +1,10 @@
 package org.polytech.statistiques.excel;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.polytech.ExecutionParameters;
+import org.polytech.SMAConstants;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.statistiques.Evaluation;
 
@@ -236,6 +238,57 @@ public class ExcelGenerator {
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), false));
     }
 
+    public String generateAverageFormula(String columnLetter, int from, int to) {
+        return "AVERAGE(" + columnLetter + from + ":" + columnLetter + to + ")";
+    }
+
+    public void fillEvaluationAvgRow(Sheet sheet, int rownum) {
+        Row row = sheet.createRow(rownum);
+        int from = rownum - SMAConstants.NB_RUN + 1;
+        int to = rownum;
+
+        // Itération
+        Cell cell = row.createCell(0, CellType.STRING);
+        cell.setCellValue("Moyenne");
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // Nombre de A
+        cell = row.createCell(1, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("B", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // Nombre de B
+        cell = row.createCell(2, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("C", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // A voisin de A
+        cell = row.createCell(3, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("D", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // A voisin de B
+        cell = row.createCell(4, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("E", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // B voisin de B
+        cell = row.createCell(5, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("F", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // Nombre de colonies
+        cell = row.createCell(6, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("G", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // Taille moyenne d'une colonie
+        cell = row.createCell(7, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("H", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // Proportion de A par colonie
+        cell = row.createCell(8, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("I", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+        // Proportion de B par colonie
+        cell = row.createCell(9, CellType.FORMULA);
+        cell.setCellFormula(generateAverageFormula("J", from, to));
+        cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
+    }
+
     public void fillExcel(List<Evaluation> evaluations, ExecutionParameters executionParameters, String executionName) {
         Workbook workbook;
         FileInputStream file;
@@ -277,6 +330,12 @@ public class ExcelGenerator {
                 ++iteration;
             }
 
+            ++rownum;
+
+            // Moyenne des évaluations
+            fillEvaluationAvgRow(sheet, rownum);
+            XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
+
             for (int i = 0 ; i < 10 ; i++) {
                 sheet.autoSizeColumn(i);
             }
@@ -305,9 +364,7 @@ public class ExcelGenerator {
 
             try {
                 File file = new File(fileName);
-                file.getParentFile().mkdirs(); // Créer le dossier si nécessaire
                 FileOutputStream outFile = new FileOutputStream(file);
-
                 workbook.write(outFile);
                 outFile.close();
             } catch (IOException exc) {
