@@ -24,7 +24,7 @@ public class ExcelGenerator {
     private static final ExcelGenerator instance = new ExcelGenerator();
 
     // nom de l'Excel dans lequel écrire les résultats
-    private final String fileName = "demo.xlsx";
+    private final String fileName = "extern/demo.xlsx";
 
     public static ExcelGenerator getInstance()
     {
