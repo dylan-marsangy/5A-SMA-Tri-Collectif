@@ -377,7 +377,9 @@ public class ExcelGenerator {
 
             try {
                 File file = new File(fileName);
+                file.getParentFile().mkdirs(); // Créer le dossier si nécessaire
                 FileOutputStream outFile = new FileOutputStream(file);
+
                 workbook.write(outFile);
                 outFile.close();
             } catch (IOException exc) {
