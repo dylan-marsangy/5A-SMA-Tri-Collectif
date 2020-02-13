@@ -141,7 +141,7 @@ public class ApplicationTest {
                 MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR, RUN_DEFAULT);
     }
 
-    private void runSimulation(int numberBlocksA, int numberBlocksB, int numberAgents,
+    public void runSimulation(int numberBlocksA, int numberBlocksB, int numberAgents,
                                int gridRows, int gridColumns,
                                int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
         List<Evaluation> evaluations = new ArrayList<>();
@@ -157,7 +157,7 @@ public class ApplicationTest {
                                     "===============================================================================" +
                                     "===============================================================================" +
                                     Color.RESET));
-            System.out.println(Color.CYAN + String.format("Itération n°%d", i + 1) + Color.RESET);
+            System.out.println(Color.CYAN + String.format("Execution n°%d", i + 1) + Color.RESET);
             System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
 
             // Instantiation de l'environnement
@@ -175,7 +175,7 @@ public class ApplicationTest {
             System.out.println();
 
             // Lancement de la simulation
-            environnement.run(); // Non exécuté en mode Thread, sinon le programme se termine directement.
+            environnement.run();
 
             // Evaluation de l'environnement à la fin de la simulation
             Evaluation evaluation = new Evaluation(environnement);

@@ -12,7 +12,7 @@ import org.polytech.environnement.exceptions.MovableNotFoundException;
 
 import java.util.*;
 
-public class Environnement implements Runnable {
+public class Environnement {
 
     /**
      * Grille sur laquelle évoluent les agents et les blocs.
@@ -58,7 +58,6 @@ public class Environnement implements Runnable {
 
     // EXECUTION -------------------------------------------------------------------------------------------------------
 
-    @Override
     public void run() {
         int frequency = (int) (nbIterations * frequencyDiplayGrid);
         System.out.print(this);

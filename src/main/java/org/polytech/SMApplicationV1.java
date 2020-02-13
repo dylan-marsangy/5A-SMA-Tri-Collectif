@@ -4,6 +4,7 @@ import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import org.polytech.utils.Color;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -11,6 +12,7 @@ import picocli.CommandLine.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.IntStream;
 
 @Command(name = "sma-tri-collectif",
         version = "SMA Tri Collectif 1.0",
@@ -66,6 +68,17 @@ public class SMApplicationV1 implements Callable<Integer> {
                     GRID_ROWS, GRID_COLUMNS, MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
 
             for (int i = 0; i < SMAConstants.NB_RUN; i++) {
+                // Affichage console pour différencier les différentes itérations.
+                IntStream.rangeClosed(1, 3).forEach(index ->
+                        System.out.println(
+                                Color.CYAN +
+                                        "===============================================================================" +
+                                        "===============================================================================" +
+                                        "===============================================================================" +
+                                        Color.RESET));
+                System.out.println(Color.CYAN + String.format("Execution n°%d", i + 1) + Color.RESET);
+                System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
+
                 Environnement environnement = new RandomEnvironnement(
                         GRID_ROWS, GRID_COLUMNS, iterations, frequency,
                         NUMBER_AGENTS, SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR,
@@ -86,7 +99,6 @@ public class SMApplicationV1 implements Callable<Integer> {
             excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
             return 0;
         } catch (Exception e) {
-            e.printStackTrace();
             System.err.println(e.getMessage());
             return -1;
         }
