@@ -1,16 +1,20 @@
 package org.polytech;
 
+import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import org.polytech.system.SystemMA;
 import org.polytech.utils.Color;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.IntStream;
 
@@ -79,10 +83,16 @@ public class SMApplicationV1 implements Callable<Integer> {
                 System.out.println(Color.CYAN + String.format("Execution n°%d", i + 1) + Color.RESET);
                 System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
 
-                Environnement environnement = new RandomEnvironnement(
-                        GRID_ROWS, GRID_COLUMNS, iterations, frequency,
-                        NUMBER_AGENTS, SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR,
-                        NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
+                // Génération de l'environnement
+                Environnement environnement = new RandomEnvironnement(GRID_ROWS, GRID_COLUMNS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
+
+                // Génération des agents
+                Set<Agent> agents = new HashSet<>();
+                IntStream.rangeClosed(1, NUMBER_AGENTS).forEach(index ->
+                        agents.add(new Agent(SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR)));
+
+                // Génération du système (place les agents dans l'environnement)
+                SystemMA system = new SystemMA(environnement, agents, iterations, frequency);
 
                 System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
                         (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
@@ -90,7 +100,7 @@ public class SMApplicationV1 implements Callable<Integer> {
                         (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B) / (GRID_COLUMNS * GRID_COLUMNS) * 100));
 
                 System.out.println();
-                environnement.run();
+                system.run(); // Exécution du système
 
                 Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
                 evaluations.add(evaluation);
@@ -99,7 +109,8 @@ public class SMApplicationV1 implements Callable<Integer> {
             excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
             return 0;
         } catch (Exception e) {
-            System.err.println("Une erreur imprévue est survenue lors de l'écriture du fichier 'extern/demo.xlsx'.");
+            e.printStackTrace();
+//            System.err.println("Une erreur imprévue est survenue lors de l'écriture du fichier 'extern/demo.xlsx'.");
             return -1;
         }
     }

@@ -1,4 +1,4 @@
-package org.polytech.application;
+package org.polytech;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,18 +6,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.polytech.ExecutionParameters;
 import org.polytech.SMAConstants;
+import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import org.polytech.system.SystemMA;
 import org.polytech.utils.Color;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 @DisplayName("Application Tests")
-public class ApplicationTest {
+public class SMApplicationV1Test {
 
     private final int NUMBER_BLOCKS_A = 100;
     private final int NUMBER_BLOCKS_B = 100;
@@ -161,10 +165,15 @@ public class ApplicationTest {
             System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
 
             // Instantiation de l'environnement
-            Environnement environnement = new RandomEnvironnement(
-                    gridRows, gridColumns, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
-                    numberAgents, successiveMovements, memorySize, kPlus, kMinus, error,
-                    numberBlocksA, numberBlocksB);
+            Environnement environnement = new RandomEnvironnement(GRID_ROWS, GRID_COLUMNS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
+
+            // Génération des agents
+            Set<Agent> agents = new HashSet<>();
+            IntStream.rangeClosed(1, NUMBER_AGENTS).forEach(index ->
+                    agents.add(new Agent(SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR)));
+
+            // Génération du système (place les agents dans l'environnement)
+            SystemMA system = new SystemMA(environnement, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
 
             // Quelques stats simples sur le remplissage de la grille
             System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
@@ -175,7 +184,7 @@ public class ApplicationTest {
             System.out.println();
 
             // Lancement de la simulation
-            environnement.run();
+            system.run();
 
             // Evaluation de l'environnement à la fin de la simulation
             Evaluation evaluation = new Evaluation(environnement);
