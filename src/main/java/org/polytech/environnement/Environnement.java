@@ -6,7 +6,8 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Environnement étant caractérisé par une grille 2D contenant des blocs.
@@ -257,11 +258,7 @@ public class Environnement {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 entity = getEntity(i, j);
-                if (entity != null) {
-                    sb.append(String.format(" %s |", entity));
-                } else {
-                    sb.append(" 0 |");
-                }
+                sb.append(String.format("%s|", entity != null ? entity : "0"));
 
                 if (j == grid[i].length - 1) sb.append("\n");
             }
