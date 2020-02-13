@@ -39,7 +39,7 @@ public class SMApplicationV1 {
                     (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B) / (GRID_COLUMNS * GRID_COLUMNS) * 100));
 
             System.out.println();
-            new Thread(environnement).start();
+            environnement.run();
 
             Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
             evaluations.add(evaluation);
