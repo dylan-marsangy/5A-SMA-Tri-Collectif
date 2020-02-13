@@ -3,7 +3,6 @@ package org.polytech.statistiques;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.block.Block;
@@ -27,7 +26,7 @@ public class ColoniesTest {
     private Environnement environnement;
     private Colonies colonies;
     private Neighbours neighbours;
-    
+
 
     @BeforeEach
     public void initializeEnvironnement() {
@@ -151,7 +150,7 @@ public class ColoniesTest {
 
         colonies.createColonies();
 
-        HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony =colonies.getNumberOfBlocksPerColony();
+        HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony = colonies.getNumberOfBlocksPerColony();
 
         assertEquals(4, numberOfBlocksPerColony.keySet().size());
         assertEquals(0, numberOfBlocksPerColony.get(1).get(BlockValue.A));
@@ -185,8 +184,8 @@ public class ColoniesTest {
         double AProportion = colonies.getAverageColoniesBlockWithValue(BlockValue.A);
         double BProportion = colonies.getAverageColoniesBlockWithValue(BlockValue.B);
 
-        assertEquals(15.0/40.0, AProportion);
-        assertEquals(25.0/40.0, BProportion);
+        assertEquals(15.0 / 40.0, AProportion);
+        assertEquals(25.0 / 40.0, BProportion);
     }
 
     @Test
@@ -211,6 +210,6 @@ public class ColoniesTest {
 
         double averageSize = colonies.getAverageSizeOfColonies();
 
-        assertEquals(6.0/4.0, averageSize);
+        assertEquals(6.0 / 4.0, averageSize);
     }
 }

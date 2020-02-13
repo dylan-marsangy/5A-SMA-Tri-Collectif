@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Agent Tests")
 public class AgentTest {

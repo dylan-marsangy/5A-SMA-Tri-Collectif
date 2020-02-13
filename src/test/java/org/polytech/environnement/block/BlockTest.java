@@ -2,8 +2,7 @@ package org.polytech.environnement.block;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.utils.Color;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,7 +12,7 @@ public class BlockTest {
     @Test
     @DisplayName("Identification by either A or B.")
     public void blocksIdentification() {
-        assertEquals("A", new Block(BlockValue.A).toString(), "Block A is not identified by A.");
-        assertEquals("B", new Block(BlockValue.B).toString(), "Block B is not identified by B.");
+        assertEquals(Color.BLUE_BACKGROUND + "A" + Color.RESET, new Block(BlockValue.A).toString(), "Block A is not identified by A.");
+        assertEquals(Color.RED_BACKGROUND + "B" + Color.RESET, new Block(BlockValue.B).toString(), "Block B is not identified by B.");
     }
 }

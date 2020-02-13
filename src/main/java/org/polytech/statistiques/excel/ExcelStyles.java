@@ -2,7 +2,6 @@ package org.polytech.statistiques.excel;
 
 import org.apache.poi.ss.usermodel.*;
 
-
 /**
  * Classe générant des styles à appliquer dans l'Excel
  */

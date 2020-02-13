@@ -2,19 +2,12 @@ package org.polytech.environnement;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.IntStream;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @DisplayName("Random Environnement Tests")
 public class RandomEnvironnementTest {

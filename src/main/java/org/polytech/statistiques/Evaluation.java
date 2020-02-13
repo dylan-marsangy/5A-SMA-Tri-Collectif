@@ -5,7 +5,6 @@ import org.polytech.environnement.Movable;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-
 /**
  * Classe utilisée pour générer les statistiques liées à une exécution de l'algorithme
  */
