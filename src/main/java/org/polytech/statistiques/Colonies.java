@@ -27,8 +27,8 @@ public class Colonies {
         Movable[][] grid = environnement.getGrid();
         int colonyNumber = 1;
 
-        for (int i = 0 ; i < grid.length ; i++) {
-            for (int j = 0 ; j < grid[i].length ; j++) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] instanceof Block) {
                     Block block = ((Block) grid[i][j]);
 
@@ -65,6 +65,7 @@ public class Colonies {
 
     /**
      * Retourne le nombre de colonies dans l'environnement
+     *
      * @return int
      */
     public int countColonies() {
@@ -79,7 +80,7 @@ public class Colonies {
         Movable[][] grid = environnement.getGrid();
         numberOfBlocksPerColony = new HashMap<>();
 
-        for (int i = 0 ; i < grid.length ; i++) {
+        for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] instanceof Block) {
                     Block block = (Block) grid[i][j];
@@ -90,8 +91,7 @@ public class Colonies {
                         if (numberOfBlocksPerColony.get(colonyNumber) == null) {
                             numberOfBlocksWithValue = new HashMap<>();
                             numberOfBlocksWithValue.put(block.getValue(), 1);
-                        }
-                        else {
+                        } else {
                             numberOfBlocksWithValue = numberOfBlocksPerColony.get(colonyNumber);
 
                             numberOfBlocksWithValue.putIfAbsent(block.getValue(), 0);
@@ -108,7 +108,8 @@ public class Colonies {
 
     /**
      * Getter de numberOfBlocksPerColony
-     * @return HashMap<Integer, HashMap<BlockValue, Integer>>
+     *
+     * @return HashMap<Integer, HashMap < BlockValue, Integer>>
      */
     public HashMap<Integer, HashMap<BlockValue, Integer>> getNumberOfBlocksPerColony() {
         return numberOfBlocksPerColony;
@@ -117,6 +118,7 @@ public class Colonies {
 
     /**
      * Calcule le nombre moyen de blocs de type BlockValue dans une colonie
+     *
      * @param blockValue BlockValue
      * @return double
      */
@@ -135,7 +137,7 @@ public class Colonies {
         double sum = 0;
 
         for (Double proportion : proportions) {
-            sum+= proportion;
+            sum += proportion;
         }
 
         return sum / proportions.size();
@@ -144,6 +146,7 @@ public class Colonies {
 
     /**
      * Retourne la taille moyenne des colonies
+     *
      * @return double
      */
     public double getAverageSizeOfColonies() {
@@ -151,7 +154,7 @@ public class Colonies {
 
         for (Integer colonyNumber : numberOfBlocksPerColony.keySet()) {
             HashMap<BlockValue, Integer> colony = numberOfBlocksPerColony.get(colonyNumber);
-            totalBlocksInColonies+= colony.get(BlockValue.A) + colony.get(BlockValue.B);
+            totalBlocksInColonies += colony.get(BlockValue.A) + colony.get(BlockValue.B);
         }
 
         return totalBlocksInColonies / numberOfBlocksPerColony.keySet().size();

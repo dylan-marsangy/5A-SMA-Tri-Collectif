@@ -26,6 +26,7 @@ public class Neighbours {
 
     /**
      * Génère une HashMap contenant 0 voisin de chaque type
+     *
      * @return Map<BlockValue, Integer>
      */
     public Map<BlockValue, Integer> createEmptyNeighbours() {
@@ -74,9 +75,10 @@ public class Neighbours {
 
     /**
      * Récupère les voisins du bloc situé à la position indiquée en paramètre
+     *
      * @param x int
      * @param y int
-     * @return  Map<BlockValue, Integer>
+     * @return Map<BlockValue, Integer>
      */
     public Map<BlockValue, Integer> getNeighboursNumberAt(int x, int y) {
         Map<BlockValue, Integer> neighbours = createEmptyNeighbours();
@@ -100,9 +102,10 @@ public class Neighbours {
 
     /**
      * Récupère la liste des voisins autour de la position en paramètre
+     *
      * @param x int
      * @param y int
-     * @return  Map<BlockValue, Set<List<Integer>>>
+     * @return Map<BlockValue, Set < List < Integer>>>
      */
     public Map<BlockValue, Set<List<Integer>>> getNeighboursAt(int x, int y) {
         Map<BlockValue, Set<List<Integer>>> neighbours = new HashMap<>();
@@ -132,7 +135,8 @@ public class Neighbours {
 
     /**
      * Getter de neighboursNumberByBlockValue
-     * @return Map<BlockValue, Map<BlockValue, Integer>>
+     *
+     * @return Map<BlockValue, Map < BlockValue, Integer>>
      */
     public Map<BlockValue, Map<BlockValue, Integer>> getNeighboursNumberByBlockValue() {
         return neighboursNumberByBlockValue;
@@ -141,6 +145,7 @@ public class Neighbours {
 
     /**
      * Récupère le nombre de voisins de chaque type pour la valeur donnée en paramètre
+     *
      * @param blockValue BlockValue
      * @return Map<BlockValue, Integer>
      */
@@ -151,6 +156,7 @@ public class Neighbours {
 
     /**
      * Retourne le nombre de bloc voisins de valeur neighbourBlockValue situés autour des blocs de valeur centerBlockValue
+     *
      * @param centerBlockValue    BlockValue dont on cherche les voisins
      * @param neighbourBlockValue BlockValue dans le voisinage
      * @return Integer
@@ -162,6 +168,7 @@ public class Neighbours {
 
     /**
      * Retourne le nombre total de voisins calculés
+     *
      * @return Integer
      */
     public Integer getTotalOfComputedNeighbours() {

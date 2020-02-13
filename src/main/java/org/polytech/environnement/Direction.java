@@ -19,6 +19,7 @@ public enum Direction {
 
     /**
      * Renvoie la direction contraire.
+     *
      * @return Direction contraire.
      */
     public Direction contrary() {

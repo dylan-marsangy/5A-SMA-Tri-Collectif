@@ -13,6 +13,7 @@ import java.util.Map;
 /**
  * Environnement étant caractérisé par une grille 2D contenant des blocs.
  * De manière générale la grille peut contenir des objets qui peuvent s'y déplacer (objets implémentant l'interface Movable).
+ *
  * @see Movable
  */
 public class Environnement {
@@ -44,7 +45,7 @@ public class Environnement {
      */
     public boolean move(Movable entity, Direction direction, int d) throws CollisionException {
         Pair<Integer, Integer> coordinates = findEntity(entity);
-        int x = coordinates.getKey() ;
+        int x = coordinates.getKey();
         int y = coordinates.getValue();
 
         int xGoal = coordinates.getKey() + d * direction.x;
@@ -207,6 +208,7 @@ public class Environnement {
 
     /**
      * Renvoie les coordonnées d'une entité de la grille.
+     *
      * @param entity Entité à rechercher
      * @return Coordonnées x et y de la position de l'entité dans la grille (matrice)
      * @throws MovableNotFoundException Si l'entité n'existe pas sur la grille
@@ -248,6 +250,7 @@ public class Environnement {
 
     /**
      * Renvoie le nombre de lignes de l'environnement.
+     *
      * @return Nombre de lignes de l'environnement
      * @see #grid
      */
@@ -257,6 +260,7 @@ public class Environnement {
 
     /**
      * Renvoie le nombre de colonnes de l'environnement.
+     *
      * @return Nombre de colonnes de l'environnement
      * @see #grid
      */
@@ -266,6 +270,7 @@ public class Environnement {
 
     /**
      * Renvoie le nombre de blocs de chaque type présent dans l'environnement.
+     *
      * @return Associe à chaque type de bloc le nombre de blocs de ce type placés dans la grille de l'environnement
      */
     public Map<BlockValue, Integer> getNbBlocks() {

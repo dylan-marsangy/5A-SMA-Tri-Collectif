@@ -1,7 +1,6 @@
 package org.polytech.environnement.block;
 
 import org.polytech.environnement.Movable;
-import org.polytech.environnement.Direction;
 
 /**
  * Bloc fixe disposé sur l'environnement.

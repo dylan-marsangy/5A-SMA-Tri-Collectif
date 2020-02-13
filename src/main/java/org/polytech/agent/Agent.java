@@ -25,10 +25,13 @@ public class Agent implements Movable {
      **/
     private static Long COUNTER_INSTANTIATIONS = 0L;
     /**
+     * Mémoire de l'agent.
+     */
+    Queue<BlockValue> memory;
+    /**
      * ID de l'agent (auto-incrémenté).
      */
     private Long id;
-
     /**
      * Distance de perception d'un agent.
      */
@@ -41,16 +44,10 @@ public class Agent implements Movable {
      * Constante k- utilisée dans la formule de probabilité de prise et dépôt de bloc.
      */
     private double kMinus;
-    /** Taux d'erreur dans la reconnaissances des objets rencontrés.
-     *
+    /**
+     * Taux d'erreur dans la reconnaissances des objets rencontrés.
      */
     private double error;
-
-    /**
-     * Mémoire de l'agent.
-     */
-    Queue<BlockValue> memory;
-
     /**
      * Prise de l'agent.
      */
@@ -73,6 +70,13 @@ public class Agent implements Movable {
     }
 
     /**
+     * Réinitialise le compteur d'instanciations des agents à 0.
+     */
+    public static void cleanID() {
+        COUNTER_INSTANTIATIONS = 0L;
+    }
+
+    /**
      * Auto-incrémente l'ID des agents.
      */
     private void attributeId() {
@@ -80,8 +84,11 @@ public class Agent implements Movable {
         setID(COUNTER_INSTANTIATIONS);
     }
 
+    // STRATEGY --------------------------------------------------------------------------------------------------------
+
     /**
      * Construit la mémoire des agents (initialise la queue et la remplit de "0").
+     *
      * @param memorySize Taille de la mémoire
      */
     private void buildMemory(int memorySize) {
@@ -92,12 +99,10 @@ public class Agent implements Movable {
             }
         };
 
-        for (int i = 0; i < memorySize ; i++) {
+        for (int i = 0; i < memorySize; i++) {
             memory.add(BlockValue.ZERO);
         }
     }
-
-    // STRATEGY --------------------------------------------------------------------------------------------------------
 
     /**
      * Exécute une stratégie.
@@ -112,6 +117,7 @@ public class Agent implements Movable {
 
     /**
      * Prend un bloc.
+     *
      * @param block Bloc à prendre
      * @throws CollisionException Si l'agent tient déjà un bloc
      */
@@ -123,8 +129,8 @@ public class Agent implements Movable {
 
     /**
      * Dépose un bloc.
-     * @throws MovableNotFoundException Si l'agent ne tient pas de bloc
      *
+     * @throws MovableNotFoundException Si l'agent ne tient pas de bloc
      */
     public void putDown() throws MovableNotFoundException {
         if (!isHolding()) throw new MovableNotFoundException("L'agent ne tient pas de bloc");
@@ -134,21 +140,23 @@ public class Agent implements Movable {
 
     /**
      * Visite un bloc (l'ajoute dans la mémoire de l'agent le type du bloc).
+     *
      * @param block Bloc rencontré
      */
     public void visit(Block block) {
         memory.add(block.getValue());
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Indique si l'agent tient un bloc ou non.
+     *
      * @return (1) True si l'agent tient un bloc, (2) false sinon
      */
     public boolean isHolding() {
         return this.holding != null;
     }
-
-    // -----------------------------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
@@ -178,16 +186,13 @@ public class Agent implements Movable {
         return id.hashCode();
     }
 
-    /**
-     * Réinitialise le compteur d'instanciations des agents à 0.
-     */
-    public static void cleanID() {
-        COUNTER_INSTANTIATIONS = 0L;
+    public Long getID() {
+        return this.id;
     }
 
-    public Long getID() { return this.id; }
-
-    private void setID(Long id) { this.id = id; }
+    private void setID(Long id) {
+        this.id = id;
+    }
 
     public int getDistance() {
         return distance;

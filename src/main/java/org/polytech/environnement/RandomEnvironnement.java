@@ -31,6 +31,7 @@ public class RandomEnvironnement extends Environnement {
 
     /**
      * Insère aléatoirement les blocs A et B dans l'environnement.
+     *
      * @param nbBlocksA Nombre de blocs de type A à placer
      * @param nbBlocksB Nombre de blocs de type B à placer
      */
