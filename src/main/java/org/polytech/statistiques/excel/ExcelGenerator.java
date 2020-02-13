@@ -146,7 +146,7 @@ public class ExcelGenerator {
 
         // Itération
         Cell cell = row.createCell(0, CellType.STRING);
-        cell.setCellValue("Itération");
+        cell.setCellValue("Exécution");
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Nombre de blocs A
         cell = row.createCell(1, CellType.STRING);
@@ -191,14 +191,14 @@ public class ExcelGenerator {
      * @param evaluation Evaluation
      * @param sheet      Sheet où écrire les résultats
      * @param rownum     int correspondant au numéro de ligne où écrire
-     * @param iteration  int correspondant au numéro de l'exécution
+     * @param execution  int correspondant au numéro de l'exécution
      */
-    private void fillEvaluationRow(Evaluation evaluation, Sheet sheet, int rownum, int iteration) {
+    private void fillEvaluationRow(Evaluation evaluation, Sheet sheet, int rownum, int execution) {
         Row row = sheet.createRow(rownum);
 
         // Itération
         Cell cell = row.createCell(0, CellType.NUMERIC);
-        cell.setCellValue(iteration);
+        cell.setCellValue(execution);
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), false));
         // Nombre de A
         cell = row.createCell(1, CellType.NUMERIC);

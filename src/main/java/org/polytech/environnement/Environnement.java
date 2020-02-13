@@ -2,153 +2,87 @@ package org.polytech.environnement;
 
 import javafx.util.Pair;
 import org.polytech.agent.Agent;
-import org.polytech.agent.strategies.StrategyMove;
-import org.polytech.agent.strategies.StrategyPickUp;
-import org.polytech.agent.strategies.StrategyPutDown;
 import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
-import org.polytech.utils.Color;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Environnement implements Runnable {
-
-    /**
-     * Grille sur laquelle évoluent les agents et les blocs.
-     */
-    protected Movable[][] grid;
-
-    /**
-     * Nombre maximal d'itérations de la boucle des actions des agents.
-     */
-    private int nbIterations;
-    /**
-     * Fréquence à laquelle afficher la grille lors d'une exécution du monde.
-     */
-    private double frequencyDiplayGrid;
+/**
+ * Environnement étant caractérisé par une grille 2D contenant des blocs.
+ * De manière générale la grille peut contenir des objets qui peuvent s'y déplacer (objets implémentant l'interface Movable).
+ * @see Movable
+ */
+public class Environnement {
 
     /**
-     * Collection des agents évoluent sur la grille.
+     * Grille sur laquelle évoluent les blocs.
      */
-    protected Set<Agent> agents;
+    private Movable[][] grid;
+
+    /**
+     * Nombre de blocs A dans l'environnement.
+     */
+    private int nbBlocksA;
+
+    /**
+     * Nombre de blocs B dans l'environnement.
+     */
+    private int nbBlocksB;
+
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
     private Environnement() {
     }
 
-    public Environnement(int n, int m, int nbIterations, double frequencyDiplayGrid,
-                         int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error,
-                         int nbBlocksA, int nbBlocksB) throws IllegalArgumentException {
-        if (nbAgents + nbBlocksA + nbBlocksB >= n * m)
+    public Environnement(int n, int m, int nbBlocksA, int nbBlocksB) throws IllegalArgumentException {
+        if (nbBlocksA + nbBlocksB >= n * m)
             throw new IllegalArgumentException("Il y a trop d'entités par rapport aux dimensions de la grille.");
 
         this.grid = new Movable[n][m];
-        this.nbIterations = nbIterations;
-        this.frequencyDiplayGrid = frequencyDiplayGrid;
-
-        placeAgentsOnGrid(nbAgents, distance, memorySize, kPlus, kMinus, error);
         insertBlocks(nbBlocksA, nbBlocksB);
-    }
 
-    public void placeAgentsOnGrid(int nbAgents, int distance, int memorySize, double kPlus, double k, double error) {}
-
-    public void insertBlocks(int nbBlocksA, int nbBlocksB) {}
-
-    // EXECUTION -------------------------------------------------------------------------------------------------------
-
-    @Override
-    public void run() {
-        int frequency = (int) (nbIterations * frequencyDiplayGrid);
-        System.out.print(this);
-        System.out.println(String.format("0 / %d (0%%)", nbIterations));
-        System.out.println();
-
-        int count = 0;
-        Agent agent;
-        Movable obstacle;
-        int distance;
-        Map<Direction, Movable> perception; // Perception d'un agent.
-        Direction goalDirection; // Résultat de l'exécution d'une stratégie de l'agent (déplacement, put down, pick up).
-        while (count < nbIterations) {
-            count++;
-
-            // Tirage aléatoire d'un agent (simulation du multi-threading).
-            agent = pickRandomAgent();
-            distance = agent.getDistance(); // Distance de perception d'un agent.
-
-            // Agent perçoit son environnement et détermine une direction dans laquelle se diriger (aléatoire).
-            perception = perception(agent, distance);
-            goalDirection = agent.execute(new StrategyMove(), perception);
-            if (goalDirection != null) {
-                obstacle = getEntityAfterMove(agent, goalDirection, distance);
-
-                // Si l'obstacle est un autre agent, l'agent élu ne bouge pas et ne visite donc aucun nouveau bloc.
-                if (obstacle instanceof Agent) {
-                    agent.visit(new Block(BlockValue.ZERO));
-                }
-
-                // Si l'obstacle est un bloc (et que l'agent ne tient rien), il peut tenter de le prendre.
-                else if (obstacle instanceof Block) {
-                    if (!agent.isHolding()) {
-                        /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Pick Up',
-                        cela signifie qu'il prend le bloc. */
-                        if (goalDirection.equals(agent.execute(new StrategyPickUp(goalDirection), perception))) {
-                            pickUpBlock(agent, goalDirection, distance); // Prise
-                            move(agent, goalDirection, distance); // Déplacement
-                        }
-                    }
-                    // Sinon (si l'agent tient un bloc), il reste sur place et ne rencontre donc aucun nouveau bloc.
-                    else {
-                        agent.visit((Block) obstacle);
-                    }
-                }
-
-                // S'il n'y a pas d'obstacle (et que l'agent tient un bloc), il tente de le déposer lors de son déplacement.
-                else if (obstacle == null) {
-                    // Déplacement
-                    move(agent, goalDirection, distance);
-
-                    // Dépôt du bloc sur la position d'origine si possible.
-                    if (agent.isHolding()) {
-                        /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Put Down',
-                        cela signifie qu'il dépose le bloc sur sa position d'origine après le déplacement. */
-                        goalDirection = agent.execute(new StrategyPutDown(goalDirection), perception);
-                        if (goalDirection != null) {
-                            assert goalDirection.contrary() != null; // Une direction a forcément un contraire.
-                            putDownBlock(agent, goalDirection.contrary(), distance);
-                        }
-                    }
-                }
-            }
-            // Si l'agent ne s'est pas déplacé, il n'a rencontré aucun nouveau bloc.
-            else {
-                agent.visit(new Block(BlockValue.ZERO));
-            }
-
-                // Affichage de la grille résultante si nécessaire.
-                if (frequency != 0d && count % frequency == 0) {
-                    System.out.print(this);
-                    System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
-                    System.out.println();
-                }
-            }
-
-        if (frequency == 0) {
-            System.out.print(this);
-            System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
-            System.out.println();
-        }
+        this.nbBlocksA = nbBlocksA;
+        this.nbBlocksB = nbBlocksB;
     }
 
     /**
-     * Tire aléatoirement un agent parmi les agents disposés sur la grille.
-     * @return Agent aléatoire
+     * Insère des blocs de type A et B dans l'environnement.
+     * Le comportement d'insertion des blocs est à définir dans les classes filles d'Environnement.
+     * @param nbBlocksA Nombre de blocs A à insérer
+     * @param nbBlocksB Nombre de blocs B à insérer
      */
-    public Agent pickRandomAgent() {
-        return new HashSet<>(agents).stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
+    public void insertBlocks(int nbBlocksA, int nbBlocksB) {}
+
+    // EXÉCUTION DES STRATÉGIES DES AGENTS -----------------------------------------------------------------------------
+
+    /**
+     * Déplace une entité dans une direction donnée sur une distance donnée si possible.
+     *
+     * @param entity    Entité à déplacer
+     * @param direction Direction dans laquelle déplacer l'entité
+     * @param d         Distance sur laquelle déplacer l'entité
+     * @return (1) True si le mouvement a réussi, (2) false sinon.
+     * @throws CollisionException Si le mouvement implique une collision
+     */
+    public boolean move(Movable entity, Direction direction, int d) throws CollisionException {
+        Pair<Integer, Integer> coordinates = findEntity(entity);
+        int x = coordinates.getKey() ;
+        int y = coordinates.getValue();
+
+        int xGoal = coordinates.getKey() + d * direction.x;
+        int yGoal = coordinates.getValue() + d * direction.y;
+
+        // Déplacement
+        if (isInside(xGoal, yGoal)) {
+            insert(entity, xGoal, yGoal);
+            remove(x, y);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -191,55 +125,6 @@ public class Environnement implements Runnable {
         agent.putDown();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Déplace une entité dans une direction donnée sur une distance donnée si possible.
-     *
-     * @param entity    Entité à déplacer
-     * @param direction Direction dans laquelle déplacer l'entité
-     * @param d         Distance sur laquelle déplacer l'entité
-     * @return (1) True si le mouvement a réussi, (2) false sinon.
-     * @throws CollisionException Si le mouvement implique une collision
-     */
-    public boolean move(Movable entity, Direction direction, int d) throws CollisionException {
-        Pair<Integer, Integer> coordinates = findEntity(entity);
-        int x = coordinates.getKey() ;
-        int y = coordinates.getValue();
-
-        int xGoal = coordinates.getKey() + d * direction.x;
-        int yGoal = coordinates.getValue() + d * direction.y;
-
-        // Déplacement
-        if (isInside(xGoal, yGoal)) {
-            insert(entity, xGoal, yGoal);
-            remove(x, y);
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Réalise un déplacement fictif pour obtenir l'entité éventuellement présente sur la case cible.
-     *
-     * @param entity    Entité à déplacer virtuellement
-     * @param direction Direction dans laquelle déplacer l'entité
-     * @param d         Distance sur laquelle déplacer l'entité
-     * @return Entité présente sur la case cible (null si elle est vide)
-     */
-    public Movable getEntityAfterMove(Movable entity, Direction direction, int d) throws CollisionException {
-        Pair<Integer, Integer> coordinates = findEntity(entity);
-        int xGoal = coordinates.getKey() + d * direction.x;
-        int yGoal = coordinates.getValue() + d * direction.y;
-
-        if (isInside(xGoal, yGoal)) {
-            return getEntity(xGoal, yGoal);
-        }
-
-        return null;
-    }
-
     /**
      * Perception d'une entité dans toutes les directions sur une certaine distance.
      * S'il y a un mur dans une direction, elle n'est pas répertoriée dans le résultat.
@@ -266,7 +151,27 @@ public class Environnement implements Runnable {
         return neighbors;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    // GESTION DE LA GRILLE --------------------------------------------------------------------------------------------
+
+    /**
+     * Réalise un déplacement fictif pour obtenir l'entité éventuellement présente sur la case cible.
+     *
+     * @param entity    Entité à déplacer virtuellement
+     * @param direction Direction dans laquelle déplacer l'entité
+     * @param d         Distance sur laquelle déplacer l'entité
+     * @return Entité présente sur la case cible (null si elle est vide)
+     */
+    public Movable getEntityAfterMove(Movable entity, Direction direction, int d) throws CollisionException {
+        Pair<Integer, Integer> coordinates = findEntity(entity);
+        int xGoal = coordinates.getKey() + d * direction.x;
+        int yGoal = coordinates.getValue() + d * direction.y;
+
+        if (isInside(xGoal, yGoal)) {
+            return getEntity(xGoal, yGoal);
+        }
+
+        return null;
+    }
 
     /**
      * Indique si la position appartient à la grille ou non.
@@ -350,31 +255,10 @@ public class Environnement implements Runnable {
         StringBuilder sb = new StringBuilder();
 
         Movable entity;
-        Agent agent;
-        Color format;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 entity = getEntity(i, j);
-
-                format = Color.RESET;
-                if (entity != null) {
-                    // Attribuer une couleur d'output selon le type de Movable (Agent ou Bloc A/B).
-                    if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.A)
-                        format = Color.BLUE_BACKGROUND;
-                    else if (entity instanceof Block && ((Block) entity).getValue() == BlockValue.B)
-                        format = Color.RED_BACKGROUND;
-                    else if (entity instanceof Agent) {
-                        agent = (Agent) entity;
-                        if (!agent.isHolding()) format = Color.YELLOW;
-                        else if (agent.getHolding().getValue() == BlockValue.A) format = Color.BLUE;
-                        else if (agent.getHolding().getValue() == BlockValue.B) format = Color.RED;
-                    }
-
-                    sb.append(String.format(" %s |", format + entity.toString() + Color.RESET));
-                } else {
-                    sb.append(" 0 |");
-                }
-
+                sb.append(String.format("%s|", entity != null ? entity : "0"));
 
                 if (j == grid[i].length - 1) sb.append("\n");
             }
@@ -387,15 +271,29 @@ public class Environnement implements Runnable {
         return grid;
     }
 
-    public void setGrid(Movable[][] grid) {
-        this.grid = grid;
+    /**
+     * Renvoie le nombre de lignes de l'environnement.
+     * @return Nombre de lignes de l'environnement
+     * @see #grid
+     */
+    public int getNbRows() {
+        return this.grid.length;
     }
 
-    public Set<Agent> getAgents() {
-        return agents;
+    /**
+     * Renvoie le nombre de colonnes de l'environnement.
+     * @return Nombre de colonnes de l'environnement
+     * @see #grid
+     */
+    public int getNbColumns() {
+        return this.grid[0].length;
     }
 
-    public void setAgents(Set<Agent> agents) {
-        this.agents = agents;
+    public int getNbBlocksA() {
+        return nbBlocksA;
+    }
+
+    public int getNbBlocksB() {
+        return nbBlocksB;
     }
 }

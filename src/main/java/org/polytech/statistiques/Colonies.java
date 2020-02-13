@@ -8,6 +8,7 @@ import org.polytech.environnement.block.BlockValue;
 import java.util.*;
 
 public class Colonies {
+
     private Environnement environnement;
     private Neighbours neighbours;
 

@@ -14,38 +14,19 @@ public class RandomEnvironnement extends Environnement {
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
-    public RandomEnvironnement(int n, int m, int nbIterations, double frequencyDiplayGrid,
-                               int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error,
-                               int nbBlocksA, int nbBlocksB) {
-        super(n, m, nbIterations, frequencyDiplayGrid,
-                nbAgents, distance, memorySize, kPlus, kMinus, error,
-                nbBlocksA, nbBlocksB);
+    public RandomEnvironnement(int n, int m, int nbBlocksA, int nbBlocksB) {
+        super(n, m, nbBlocksA, nbBlocksB);
     }
 
-    @Override
-    public void placeAgentsOnGrid(int nbAgents, int distance, int memorySize, double kPlus, double kMinus, double error) {
-        Random rand = new Random();
-        int x, y;
-        int n = grid.length;
-        int m = grid[0].length;
-
-        agents = new HashSet<>();
-        for (int i = 0; i < nbAgents; i++) {
-            do {
-                x = rand.nextInt(n);
-                y = rand.nextInt(m);
-            } while (!isEmpty(x, y));
-
-            Agent entity = new Agent(distance, memorySize, kPlus, kMinus, error);
-            insert(entity, x, y);
-            agents.add(entity);
-        }
-    }
-
+    /**
+     * Insère aléatoirement les blocs A et B dans l'environnement.
+     * @param nbBlocksA Nombre de blocs A à insérer
+     * @param nbBlocksB Nombre de blocs B à insérer
+     */
     @Override
     public void insertBlocks(int nbBlocksA, int nbBlocksB) {
-        int n = grid.length;
-        int m = grid[0].length;
+        int n = getNbRows();
+        int m = getNbRows();
 
         Random rand = new Random();
         int x, y;

@@ -8,6 +8,7 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
+import org.polytech.utils.Color;
 
 import java.util.Map;
 import java.util.Queue;
@@ -151,7 +152,15 @@ public class Agent implements Movable {
 
     @Override
     public String toString() {
-        return "X";
+        Color format;
+        if (this.isHolding()) {
+            if (this.getHolding().getValue() == BlockValue.A) format = Color.BLUE;
+            else format = Color.RED;
+        } else {
+            format = Color.YELLOW;
+        }
+
+        return format + "X" + Color.RESET;
     }
 
     @Override

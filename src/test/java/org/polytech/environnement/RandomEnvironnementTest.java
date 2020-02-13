@@ -36,9 +36,7 @@ public class RandomEnvironnementTest {
     @BeforeEach
     public void initializeEnvironnement() {
         Agent.cleanID();
-        environnement = new RandomEnvironnement(N, M, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
-                NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
-                NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new RandomEnvironnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
@@ -64,21 +62,6 @@ public class RandomEnvironnementTest {
         assertEquals(NB_AGENTS, agents);
         assertEquals(NB_BLOCKS_A, blocksA);
         assertEquals(NB_BLOCKS_B, blocksB);
-    }
-
-    // RUNNING ---------------------------------------------------------------------------------------------------------
-
-    @RepeatedTest(10)
-    @DisplayName("Pick Random Agent")
-    public void pickRandomAgent() {
-        Set<Long> picked = new HashSet<>();
-        IntStream.rangeClosed(1, 20).forEach(input -> {
-            Long id = environnement.pickRandomAgent().getID();
-            System.out.println(id);
-            picked.add(id);
-        });
-
-        assertNotEquals(1, picked.size());
     }
 
 }

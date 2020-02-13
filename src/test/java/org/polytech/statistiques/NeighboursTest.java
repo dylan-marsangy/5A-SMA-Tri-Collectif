@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NeighboursTest {
     private final int N = 5;
     private final int M = 5;
-    private final int NB_AGENTS = 0;
     private final int NB_BLOCKS_A = 0;
     private final int NB_BLOCKS_B = 0;
 
@@ -32,9 +31,7 @@ public class NeighboursTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
-                NB_AGENTS, I, T, K_PLUS, K_MINUS, ERROR,
-                NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
         initializeNeighbours();
     }
 
