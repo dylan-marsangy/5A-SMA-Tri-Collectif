@@ -4,11 +4,14 @@ import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class SMApplicationV1 {
+public class SMApplicationV1 implements Callable<Integer> {
 
     private static final int NUMBER_BLOCKS_A = 50;
     private static final int NUMBER_BLOCKS_B = 50;
@@ -21,15 +24,33 @@ public class SMApplicationV1 {
     private static final double K_PLUS = 0.1; // k+
     private static final double ERROR = 0d; // e
 
-    public static void main(String[] args) {
-        List<Evaluation> evaluations = new ArrayList<>();
-        ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
-        ExecutionParameters executionParameters = new ExecutionParameters(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
-                GRID_ROWS, GRID_COLUMNS, MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+    @Option(names = {"-f", "--frequency"},
+            description = "fréquence d'affichage de l'environnement (default : ${DEFAULT-VALUE})",
+            defaultValue = "0.25"
+    )
+    private double frequency;
 
-        for (int i = 0; i < SMAConstants.NB_RUN; i++) {
+    @Option(names = {"-i", "--iteration"},
+            description = "nombre d'itérations de l'algorithme de tri (default : ${DEFAULT-VALUE})",
+            defaultValue = "570000"
+    )
+    private Integer iterations;
+
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new SMApplicationV1()).execute(args);
+        System.exit(exitCode);
+    }
+
+    @Override
+    public Integer call() {
+        try {
+            List<Evaluation> evaluations = new ArrayList<>();
+            ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
+            ExecutionParameters executionParameters = new ExecutionParameters(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
+                    GRID_ROWS, GRID_COLUMNS, MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+
             Environnement environnement = new RandomEnvironnement(
-                    GRID_ROWS, GRID_COLUMNS, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID,
+                    GRID_ROWS, GRID_COLUMNS, iterations, frequency,
                     NUMBER_AGENTS, SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR,
                     NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
 
@@ -43,8 +64,12 @@ public class SMApplicationV1 {
 
             Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
             evaluations.add(evaluation);
-        }
 
-        excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
+            excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
+            return 0;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return -1;
+        }
     }
 }

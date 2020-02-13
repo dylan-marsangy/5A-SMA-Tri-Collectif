@@ -57,6 +57,8 @@ Si vous souhaitez modifier le nombre d'itérations de l'environnement ou la fré
 Exécutez le jar de l'application en exécutant la commande `java -jar SMA-Tri-Collectif-1.0-SNAPSHOT.jar` dans un terminal de commande.
 Ce projet se situe dans le dossier `target/artifact` à la racine du projet.
 
+/!\ https://superuser.com/questions/413073/windows-console-with-ansi-colors-handling/1300251#1300251
+
 ## En mode test
 Le mode test permet de jouer avec les différents paramètres.
 

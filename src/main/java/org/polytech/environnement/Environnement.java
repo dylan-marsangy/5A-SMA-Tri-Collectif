@@ -9,7 +9,6 @@ import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
-import org.polytech.utils.Color;
 
 import java.util.*;
 
@@ -136,7 +135,7 @@ public class Environnement implements Runnable {
                 }
             }
 
-        if (frequency == 0) {
+        if (frequency == 0 || count % frequency != 0) {
             System.out.print(this);
             System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
             System.out.println();
@@ -350,19 +349,14 @@ public class Environnement implements Runnable {
         StringBuilder sb = new StringBuilder();
 
         Movable entity;
-        Agent agent;
-        Color format;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 entity = getEntity(i, j);
-
-                format = Color.RESET;
                 if (entity != null) {
                     sb.append(String.format(" %s |", entity));
                 } else {
                     sb.append(" 0 |");
                 }
-
 
                 if (j == grid[i].length - 1) sb.append("\n");
             }
