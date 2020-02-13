@@ -39,17 +39,23 @@ De plus, chaque tableau de résultat possède un entête rappelant les paramètr
 
 # Lancer l'application
 
-## En mode release
+## En mode main
+
+Le mode 'main' permet de faire exécuter l'algorithme une fois avec les paramètres par défaut donnés dans l'énoncé du projet.
+Cela permet surtout de s'assurer de son bon fonctionnement.
+
+Pour manipuler plus en détails l'algorithme, passez à la section [En mode test](#en-mode-test).
 
 ### Depuis les sources
-Exécutez la fonction `main` de la classe `SMApplicationV1` à la racine du package `org/polytech` dans le dossier des sources `src`.
+Exécutez la fonction `main` de la classe `SMApplicationV1` à la racine du package `org/polytech` dans le dossier des sources `src/main`.
 Cette classe est pourvue de nombreux attributs servant à initialiser l'environnement et les agents (dimensions de la grille, nombre d'agents, constantes pour les formules de prise et dépôt de bloc, etc).
 Modifiez-les à votre guise.
 
-Si vous souhaitez modifier le nombre d'itérations de l'environnement ou la fréquence d'affichage de la grille pendant l'exécution de l'application, modifiez les attributs correspondants dans la classe `SMAConstants` également à la racine du package `org/polytech` dans le dossier `src`.
+Si vous souhaitez modifier le nombre d'itérations de l'environnement ou la fréquence d'affichage de la grille pendant l'exécution de l'application, modifiez les attributs correspondants dans la classe `SMAConstants` également à la racine du package `org/polytech` dans le dossier `src/main`.
 
 ### Avec le JAR (conseillé)
-Exécutez le jar de l'application en exécutant la commande `java -jar SMA-Tri-MARSANGY-PHILIBERT.java` dans un terminal de commande.
+Exécutez le jar de l'application en exécutant la commande `java -jar SMA-Tri-Collectif-1.0-SNAPSHOT.jar` dans un terminal de commande.
+Ce projet se situe dans le dossier `target/artifact` à la racine du projet.
 
 ## En mode test
 Le mode test permet de jouer avec les différents paramètres.
