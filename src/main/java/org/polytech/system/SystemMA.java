@@ -57,7 +57,7 @@ public class SystemMA {
         placeAgentsOnGrid(agents);
     }
 
-    // INITIALIZATION
+    // INITIALIZATION --------------------------------------------------------------------------------------------------
 
     /**
      * Place aléatoirement des agents dans l'environnement.
@@ -79,12 +79,14 @@ public class SystemMA {
         });
     }
 
-
     // EXECUTION -------------------------------------------------------------------------------------------------------
 
+    /**
+     * Exécute l'algorithme de tri collectif (exécution du système).
+     */
     public void run() {
         int frequency = (int) (nbIterations * frequencyDiplayGrid);
-        java.lang.System.out.print(this);
+        java.lang.System.out.print(environnement);
         java.lang.System.out.println(String.format("0 / %d (0%%)", nbIterations));
         java.lang.System.out.println();
 
@@ -152,14 +154,14 @@ public class SystemMA {
 
             // Affichage de la grille résultante si nécessaire.
             if (frequency != 0d && count % frequency == 0) {
-                java.lang.System.out.print(this);
+                java.lang.System.out.print(environnement);
                 java.lang.System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
                 java.lang.System.out.println();
             }
         }
 
         if (frequency == 0 || count % frequency != 0) {
-            java.lang.System.out.print(this);
+            java.lang.System.out.print(environnement);
             java.lang.System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
             java.lang.System.out.println();
         }
@@ -173,8 +175,4 @@ public class SystemMA {
         return new HashSet<>(agents).stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
     }
 
-    @Override
-    public String toString() {
-        return environnement.toString();
-    }
 }
