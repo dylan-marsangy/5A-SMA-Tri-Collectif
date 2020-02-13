@@ -3,6 +3,7 @@ package org.polytech.environnement;
 import javafx.util.Pair;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
+import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
 
@@ -21,40 +22,14 @@ public class Environnement {
      */
     private Movable[][] grid;
 
-    /**
-     * Nombre de blocs A dans l'environnement.
-     */
-    private int nbBlocksA;
-
-    /**
-     * Nombre de blocs B dans l'environnement.
-     */
-    private int nbBlocksB;
-
-
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
     private Environnement() {
     }
 
-    public Environnement(int n, int m, int nbBlocksA, int nbBlocksB) throws IllegalArgumentException {
-        if (nbBlocksA + nbBlocksB >= n * m)
-            throw new IllegalArgumentException("Il y a trop d'entités par rapport aux dimensions de la grille.");
-
+    public Environnement(int n, int m) throws IllegalArgumentException {
         this.grid = new Movable[n][m];
-        insertBlocks(nbBlocksA, nbBlocksB);
-
-        this.nbBlocksA = nbBlocksA;
-        this.nbBlocksB = nbBlocksB;
     }
-
-    /**
-     * Insère des blocs de type A et B dans l'environnement.
-     * Le comportement d'insertion des blocs est à définir dans les classes filles d'Environnement.
-     * @param nbBlocksA Nombre de blocs A à insérer
-     * @param nbBlocksB Nombre de blocs B à insérer
-     */
-    public void insertBlocks(int nbBlocksA, int nbBlocksB) {}
 
     // EXÉCUTION DES STRATÉGIES DES AGENTS -----------------------------------------------------------------------------
 
@@ -289,11 +264,31 @@ public class Environnement {
         return this.grid[0].length;
     }
 
-    public int getNbBlocksA() {
-        return nbBlocksA;
+    /**
+     * Renvoie le nombre de blocs de chaque type présent dans l'environnement.
+     * @return Associe à chaque type de bloc le nombre de blocs de ce type placés dans la grille de l'environnement
+     */
+    public Map<BlockValue, Integer> getNbBlocks() {
+        int blocksA = 0;
+        int blocksB = 0;
+
+        Movable entity;
+        Block block;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                entity = getEntity(i, j);
+                if (entity instanceof Block) {
+                    block = (Block) entity;
+                    if (block.getValue() == BlockValue.A) ++blocksA;
+                    else ++blocksB;
+                }
+            }
+        }
+
+        Map<BlockValue, Integer> count = new HashMap<>();
+        count.put(BlockValue.A, blocksA);
+        count.put(BlockValue.B, blocksB);
+        return count;
     }
 
-    public int getNbBlocksB() {
-        return nbBlocksB;
-    }
 }

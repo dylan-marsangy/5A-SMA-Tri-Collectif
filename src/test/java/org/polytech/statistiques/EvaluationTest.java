@@ -16,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EvaluationTest {
     private final int N = 5;
     private final int M = 5;
-    private final int NB_BLOCKS_A = 0;
-    private final int NB_BLOCKS_B = 0;
 
     private final int I = 1;
     private final int T = 10;
@@ -30,7 +28,7 @@ public class EvaluationTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M);
 
         environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
         environnement.insert(new Block(BlockValue.ZERO), 0, 1);

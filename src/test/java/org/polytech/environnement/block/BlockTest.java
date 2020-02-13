@@ -1,4 +1,4 @@
-package org.polytech.environnement;
+package org.polytech.environnement.block;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

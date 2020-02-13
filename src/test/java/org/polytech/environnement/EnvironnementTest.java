@@ -23,8 +23,6 @@ public class EnvironnementTest {
 
     private final int N = 5;
     private final int M = 5;
-    private final int NB_BLOCKS_A = 5;
-    private final int NB_BLOCKS_B = 5;
 
     private final int I = 1;
     private final int T = 10;
@@ -37,7 +35,7 @@ public class EnvironnementTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M);
 
         Agent.cleanID();
         agent = new Agent(I, T, K_MINUS, K_PLUS, ERROR);

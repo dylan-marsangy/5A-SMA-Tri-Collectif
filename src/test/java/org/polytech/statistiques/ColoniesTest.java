@@ -17,8 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ColoniesTest {
     private final int N = 5;
     private final int M = 5;
-    private final int NB_BLOCKS_A = 0;
-    private final int NB_BLOCKS_B = 0;
 
     private final int I = 1;
     private final int T = 10;
@@ -33,7 +31,8 @@ public class ColoniesTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M);
+
         this.neighbours = new Neighbours(environnement, 1);
         this.neighbours.calculateNeighbours();
         initializeColonies();
