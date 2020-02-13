@@ -65,25 +65,28 @@ public class SMApplicationV1 implements Callable<Integer> {
             ExecutionParameters executionParameters = new ExecutionParameters(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                     GRID_ROWS, GRID_COLUMNS, MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
 
-            Environnement environnement = new RandomEnvironnement(
-                    GRID_ROWS, GRID_COLUMNS, iterations, frequency,
-                    NUMBER_AGENTS, SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR,
-                    NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
+            for (int i = 0; i < SMAConstants.NB_RUN; i++) {
+                Environnement environnement = new RandomEnvironnement(
+                        GRID_ROWS, GRID_COLUMNS, iterations, frequency,
+                        NUMBER_AGENTS, SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR,
+                        NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
 
-            System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
-                    (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
-                    (double) (NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
-                    (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B) / (GRID_COLUMNS * GRID_COLUMNS) * 100));
+                System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
+                        (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
+                        (double) (NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
+                        (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B) / (GRID_COLUMNS * GRID_COLUMNS) * 100));
 
-            System.out.println();
-            environnement.run();
+                System.out.println();
+                environnement.run();
 
-            Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
-            evaluations.add(evaluation);
+                Evaluation evaluation = new Evaluation(environnement, SMAConstants.NEIGHBOURHOOD_SIZE);
+                evaluations.add(evaluation);
+            }
 
             excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
             return 0;
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println(e.getMessage());
             return -1;
         }

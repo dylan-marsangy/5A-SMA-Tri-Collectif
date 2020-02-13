@@ -27,5 +27,5 @@ public class SMAConstants {
      * Nombre de fois où un algorithme est exécuté.
      * Exécuter plusieurs fois donne des statistiques plus sûres.
      */
-    public static final int NB_RUN = 5;
+    public static final int NB_RUN = 1;
 }

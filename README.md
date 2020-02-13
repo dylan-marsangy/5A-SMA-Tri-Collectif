@@ -74,7 +74,7 @@ L'affichage fonctionne correctement, sans configuration supplémentaire, sous Li
 ## En mode test
 Le mode test permet de jouer avec les différents paramètres.
 
-Pour ce faire, exécutez la classe `ApplicationTest` dans le package `org/polytech/` du dossier des tests `test`.
+Pour ce faire, exécutez la classe `ApplicationTest` dans le package `org/polytech/` du dossier des tests `src/test`.
 Cela va résulter en l'exécution de différents tests paramétrés écrits avec `JUnit 5`.
 
 Chaque test paramétré ressemble à ceci :
@@ -82,7 +82,7 @@ Chaque test paramétré ressemble à ceci :
 @ParameterizedTest
 @DisplayName("Run Application - Error (e)")
 @ValueSource(doubles = {ERROR, 0.1, 0.5, 0.9})
-public void runApplication_numberBlocksA(double error) {
+public void runApplication_error(double error) {
     runSimulation(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                   GRID_ROWS, GRID_COLUMNS,
                   MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, error);
