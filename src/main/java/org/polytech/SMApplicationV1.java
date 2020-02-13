@@ -99,7 +99,7 @@ public class SMApplicationV1 implements Callable<Integer> {
             excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
             return 0;
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            System.err.println("Une erreur imprévue est survenue lors de l'écriture du fichier 'extern/demo.xlsx'.");
             return -1;
         }
     }
