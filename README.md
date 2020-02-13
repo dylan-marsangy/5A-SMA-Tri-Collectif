@@ -57,7 +57,21 @@ Si vous souhaitez modifier le nombre d'itérations de l'environnement ou la fré
 Exécutez le jar de l'application en exécutant la commande `java -jar SMA-Tri-Collectif-1.0-SNAPSHOT.jar` dans un terminal de commande.
 Ce projet se situe dans le dossier `target/artifact` à la racine du projet.
 
-/!\ https://superuser.com/questions/413073/windows-console-with-ansi-colors-handling/1300251#1300251
+Si vous souhaitez modifier le nombre d'itérations de l'environnement ou la fréquence d'affichage de la grille pendant l'exécution de l'application, vous pouvez compléter la commande d'exécution du jar avec deux options.
+
+|      OPTION     |             DESCRIPTION             | REQUIS | DÉFAUT |
+|:---------------:|:-----------------------------------:|:------:|:------:|
+| -i, --iteration | Nombre d'itérations de l'algorithme | Non    | 16000  |
+| -f, --frequency | Fréquence d'affichage de la grille  | Non    | 0.25   |
+
+Par exemple, exécutez la commande `java -jar SMA-Tri-Collectif-1.0-SNAPSHOT.jar` revient à exécuter la commande `java -jar SMA-Tri-Collectif-1.0-SNAPSHOT.jar -i=16000 -f=0.25`.
+Cela signifie qu'il y aura 16 000 itérations et que la grille de l'environnement sera affichée toutes les 16 000 * 0.25 = 4 000 itérations.
+
+**Windows n'est pas votre ami !**
+> Par défaut, le codage ANSI n'est pas activé dans la console Windows. Or l'affichage est basé sur ce codage (affichage couleur).
+> Pour l'activer, suivez ce [tutoriel](https://superuser.com/questions/413073/windows-console-with-ansi-colors-handling/1300251#1300251).
+
+L'affichage fonctionne correctement, sans configuration supplémentaire, sous Linux.
 
 ## En mode test
 Le mode test permet de jouer avec les différents paramètres.
