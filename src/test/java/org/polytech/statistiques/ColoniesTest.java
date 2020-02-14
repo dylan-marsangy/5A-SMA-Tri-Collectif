@@ -3,7 +3,6 @@ package org.polytech.statistiques;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.block.Block;
@@ -17,8 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ColoniesTest {
     private final int N = 5;
     private final int M = 5;
-    private final int NB_BLOCKS_A = 0;
-    private final int NB_BLOCKS_B = 0;
 
     private final int I = 1;
     private final int T = 10;
@@ -29,11 +26,12 @@ public class ColoniesTest {
     private Environnement environnement;
     private Colonies colonies;
     private Neighbours neighbours;
-    
+
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M);
+
         this.neighbours = new Neighbours(environnement, 1);
         this.neighbours.calculateNeighbours();
         initializeColonies();
@@ -152,7 +150,7 @@ public class ColoniesTest {
 
         colonies.createColonies();
 
-        HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony =colonies.getNumberOfBlocksPerColony();
+        HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony = colonies.getNumberOfBlocksPerColony();
 
         assertEquals(4, numberOfBlocksPerColony.keySet().size());
         assertEquals(0, numberOfBlocksPerColony.get(1).get(BlockValue.A));
@@ -186,8 +184,8 @@ public class ColoniesTest {
         double AProportion = colonies.getAverageColoniesBlockWithValue(BlockValue.A);
         double BProportion = colonies.getAverageColoniesBlockWithValue(BlockValue.B);
 
-        assertEquals(15.0/40.0, AProportion);
-        assertEquals(25.0/40.0, BProportion);
+        assertEquals(15.0 / 40.0, AProportion);
+        assertEquals(25.0 / 40.0, BProportion);
     }
 
     @Test
@@ -212,6 +210,6 @@ public class ColoniesTest {
 
         double averageSize = colonies.getAverageSizeOfColonies();
 
-        assertEquals(6.0/4.0, averageSize);
+        assertEquals(6.0 / 4.0, averageSize);
     }
 }

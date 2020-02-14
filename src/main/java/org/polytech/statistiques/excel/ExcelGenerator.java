@@ -20,22 +20,21 @@ import java.util.List;
  */
 public class ExcelGenerator {
 
+    private static final ExcelGenerator instance = new ExcelGenerator();
+    // nom de l'Excel dans lequel écrire les résultats
+    private final String fileName = "extern/demo.xlsx";
+
     private ExcelGenerator() {
         cleanExcel();
     }
 
-    private static final ExcelGenerator instance = new ExcelGenerator();
-
-    // nom de l'Excel dans lequel écrire les résultats
-    private final String fileName = "extern/demo.xlsx";
-
-    public static ExcelGenerator getInstance()
-    {
+    public static ExcelGenerator getInstance() {
         return instance;
     }
 
     /**
      * Remplit la ligne numérotée rownum avec les entêtes des paramètres d'exécution
+     *
      * @param sheet  Sheet
      * @param rownum int
      */
@@ -87,6 +86,7 @@ public class ExcelGenerator {
 
     /**
      * Remplit la ligne numérotée rownum avec les valeurs d'exécution spécifiées
+     *
      * @param executionParameters ExecutionParameters
      * @param sheet               Sheet
      * @param rownum              int
@@ -138,6 +138,7 @@ public class ExcelGenerator {
 
     /**
      * Remplit l'entête de la feuille en paramètre au numéro de ligne indiqué
+     *
      * @param sheet  Sheet
      * @param rownum int
      */
@@ -188,6 +189,7 @@ public class ExcelGenerator {
 
     /**
      * Remplit une ligne de l'Excel avec les résultats d'une évaluation
+     *
      * @param evaluation Evaluation
      * @param sheet      Sheet où écrire les résultats
      * @param rownum     int correspondant au numéro de ligne où écrire
@@ -241,10 +243,11 @@ public class ExcelGenerator {
 
     /**
      * Génère la formule de la moyenne à utiliser
+     *
      * @param columnLetter String désignant la colonne sur laquelle effectuer une moyenne
      * @param from         int donnant la ligne du premier nombre
      * @param to           int donnant la ligne du dernier nombre
-     * @return             String
+     * @return String
      */
     public String generateAverageFormula(String columnLetter, int from, int to) {
         return "AVERAGE(" + columnLetter + from + ":" + columnLetter + to + ")";
@@ -253,8 +256,9 @@ public class ExcelGenerator {
 
     /**
      * Remplit une ligne contenant les moyennes des itérations pour un jeu de paramètres
-     * @param sheet     Sheet
-     * @param rownum    int donnant la ligne où écrire
+     *
+     * @param sheet  Sheet
+     * @param rownum int donnant la ligne où écrire
      */
     public void fillEvaluationAvgRow(Sheet sheet, int rownum) {
         Row row = sheet.createRow(rownum);
@@ -319,8 +323,7 @@ public class ExcelGenerator {
             if (workbook.getSheet(executionName) != null) {
                 sheet = workbook.getSheet(executionName);
                 rownum = sheet.getLastRowNum() + 4;
-            }
-            else {
+            } else {
                 sheet = workbook.createSheet(executionName);
                 rownum = 0;
             }
@@ -349,7 +352,7 @@ public class ExcelGenerator {
             fillEvaluationAvgRow(sheet, rownum);
             XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
 
-            for (int i = 0 ; i < 10 ; i++) {
+            for (int i = 0; i < 10; i++) {
                 sheet.autoSizeColumn(i);
             }
 
@@ -373,17 +376,17 @@ public class ExcelGenerator {
      * Supprime les données présentes dans l'Excel en vue d'une nouvelle exécution
      */
     public void cleanExcel() {
-            XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFWorkbook workbook = new XSSFWorkbook();
 
-            try {
-                File file = new File(fileName);
-                file.getParentFile().mkdirs(); // Créer le dossier si nécessaire
-                FileOutputStream outFile = new FileOutputStream(file);
+        try {
+            File file = new File(fileName);
+            file.getParentFile().mkdirs(); // Créer le dossier si nécessaire
+            FileOutputStream outFile = new FileOutputStream(file);
 
-                workbook.write(outFile);
-                outFile.close();
-            } catch (IOException exc) {
-                System.out.println(exc.getMessage() + " : tentative de création échouée...");
-            }
+            workbook.write(outFile);
+            outFile.close();
+        } catch (IOException exc) {
+            System.out.println(exc.getMessage() + " : tentative de création échouée...");
+        }
     }
 }

@@ -5,7 +5,8 @@ package org.polytech.environnement.exceptions;
  */
 public class MovableNotFoundException extends RuntimeException {
 
-    public MovableNotFoundException() { }
+    public MovableNotFoundException() {
+    }
 
     public MovableNotFoundException(Throwable e) {
         super(e);

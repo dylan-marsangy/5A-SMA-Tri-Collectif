@@ -3,21 +3,17 @@ package org.polytech.statistiques;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.block.Block;
 import org.polytech.environnement.block.BlockValue;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Evaluation test")
 public class EvaluationTest {
     private final int N = 5;
     private final int M = 5;
-    private final int NB_BLOCKS_A = 0;
-    private final int NB_BLOCKS_B = 0;
 
     private final int I = 1;
     private final int T = 10;
@@ -30,7 +26,7 @@ public class EvaluationTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M);
 
         environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
         environnement.insert(new Block(BlockValue.ZERO), 0, 1);
@@ -70,17 +66,17 @@ public class EvaluationTest {
     @Test
     @DisplayName("Check if the percentages of neighbours are correct")
     public void getPercentagesOfComputedNeighbours() {
-        assertEquals(2.0/4.0, evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.A));
-        assertEquals(2.0/4.0, evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.B));
-        assertEquals(2.0/4.0, evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.A));
+        assertEquals(2.0 / 4.0, evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.A));
+        assertEquals(2.0 / 4.0, evaluation.getNeighborhoodPercentage(BlockValue.A, BlockValue.B));
+        assertEquals(2.0 / 4.0, evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.A));
         assertEquals(0, evaluation.getNeighborhoodPercentage(BlockValue.B, BlockValue.B));
     }
 
     @Test
     @DisplayName("Check if the averages of blocks in the colonies are correct")
     public void getAveragesOfBlocksInColonies() {
-        assertEquals(15.0/40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.A));
-        assertEquals(25.0/40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.B));
+        assertEquals(15.0 / 40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.A));
+        assertEquals(25.0 / 40.0, evaluation.getAverageColoniesBlockWithValue(BlockValue.B));
     }
 
     @Test

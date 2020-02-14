@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.agent.strategies.StrategyMove;
 import org.polytech.agent.strategies.StrategyPickUp;
@@ -23,8 +22,6 @@ public class EnvironnementTest {
 
     private final int N = 5;
     private final int M = 5;
-    private final int NB_BLOCKS_A = 5;
-    private final int NB_BLOCKS_B = 5;
 
     private final int I = 1;
     private final int T = 10;
@@ -37,7 +34,7 @@ public class EnvironnementTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M);
 
         Agent.cleanID();
         agent = new Agent(I, T, K_MINUS, K_PLUS, ERROR);
@@ -77,7 +74,7 @@ public class EnvironnementTest {
     @DisplayName("Insert Entity Inside Grid")
     public void insertEntity_insideGrid() {
         environnement.insert(agent, 1, 1);
-        assertEquals(agent, environnement.getEntity(1 ,1));
+        assertEquals(agent, environnement.getEntity(1, 1));
     }
 
     @Test
@@ -93,8 +90,8 @@ public class EnvironnementTest {
     @DisplayName("Remove Entity From Grid")
     public void removeEntity() {
         environnement.insert(agent, 1, 1);
-        environnement.remove(1 ,1);
-        assertNull(environnement.getEntity(1 ,1));
+        environnement.remove(1, 1);
+        assertNull(environnement.getEntity(1, 1));
     }
 
     // MOVE ------------------------------------------------------------------------------------------------------------
@@ -102,7 +99,7 @@ public class EnvironnementTest {
     @Test
     @DisplayName("Move Entity Inside Grid")
     public void moveEntity() {
-        environnement.insert(agent, 1,1);
+        environnement.insert(agent, 1, 1);
         environnement.move(agent, Direction.NORTH, 1);
         assertNull(environnement.getEntity(1, 1));
         assertEquals(agent, environnement.getEntity(0, 1));
@@ -158,7 +155,7 @@ public class EnvironnementTest {
         environnement.insert(null, 2, 4);
         environnement.insert(new Block(BlockValue.B), 4, 2);
 
-        assertEquals(agent, environnement.getEntity(2,2));
+        assertEquals(agent, environnement.getEntity(2, 2));
         assertFalse(environnement.isEmpty(4, 2));
         assertFalse(environnement.isEmpty(0, 2));
         assertFalse(environnement.isEmpty(2, 0));
@@ -183,7 +180,7 @@ public class EnvironnementTest {
         IntStream.rangeClosed(1, T).forEach(index -> agent.visit(new Block(BlockValue.A)));
 
         assertNull(agent.execute(new StrategyPickUp(Direction.NORTH), environnement.perception(agent, 2)));
-        assertEquals(agent, environnement.getEntity(2,2));
+        assertEquals(agent, environnement.getEntity(2, 2));
         assertFalse(agent.isHolding());
         assertNotNull(environnement.getEntity(0, 2));
     }

@@ -4,8 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.polytech.ExecutionParameters;
-import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.RandomEnvironnement;
@@ -146,8 +144,8 @@ public class SMApplicationV1Test {
     }
 
     public void runSimulation(int numberBlocksA, int numberBlocksB, int numberAgents,
-                               int gridRows, int gridColumns,
-                               int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
+                              int gridRows, int gridColumns,
+                              int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
         List<Evaluation> evaluations = new ArrayList<>();
         ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
                 gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);

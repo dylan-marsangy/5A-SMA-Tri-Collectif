@@ -3,7 +3,6 @@ package org.polytech.statistiques;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.Environnement;
 import org.polytech.environnement.block.Block;
@@ -11,14 +10,13 @@ import org.polytech.environnement.block.BlockValue;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("Neighbours test")
 public class NeighboursTest {
     private final int N = 5;
     private final int M = 5;
-    private final int NB_BLOCKS_A = 0;
-    private final int NB_BLOCKS_B = 0;
 
     private final int I = 1;
     private final int T = 10;
@@ -31,7 +29,8 @@ public class NeighboursTest {
 
     @BeforeEach
     public void initializeEnvironnement() {
-        environnement = new Environnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        environnement = new Environnement(N, M);
+
         initializeNeighbours();
     }
 
@@ -115,28 +114,25 @@ public class NeighboursTest {
 
         neighbours.calculateNeighbours();
 
-        Map<BlockValue, Map<BlockValue,  Integer>> neighboursNumber = neighbours.getNeighboursNumberByBlockValue();
+        Map<BlockValue, Map<BlockValue, Integer>> neighboursNumber = neighbours.getNeighboursNumberByBlockValue();
 
         for (BlockValue blockValue : neighboursNumber.keySet()) {
             switch (blockValue) {
-                case A:
-                {
+                case A: {
                     assertEquals(2, neighboursNumber.get(blockValue).get(BlockValue.A));
                     assertEquals(3, neighboursNumber.get(blockValue).get(BlockValue.B));
                     assertEquals(7, neighboursNumber.get(blockValue).get(BlockValue.ZERO));
                     break;
                 }
 
-                case B:
-                {
+                case B: {
                     assertEquals(3, neighboursNumber.get(blockValue).get(BlockValue.A));
                     assertEquals(0, neighboursNumber.get(blockValue).get(BlockValue.B));
                     assertEquals(3, neighboursNumber.get(blockValue).get(BlockValue.ZERO));
                     break;
                 }
 
-                case ZERO:
-                {
+                case ZERO: {
                     assertNull(neighboursNumber.get(blockValue));
                     break;
                 }
@@ -162,28 +158,25 @@ public class NeighboursTest {
 
         neighbours.calculateNeighbours();
 
-        Map<BlockValue, Map<BlockValue,  Integer>> neighboursNumber = neighbours.getNeighboursNumberByBlockValue();
+        Map<BlockValue, Map<BlockValue, Integer>> neighboursNumber = neighbours.getNeighboursNumberByBlockValue();
 
         for (BlockValue blockValue : neighboursNumber.keySet()) {
             switch (blockValue) {
-                case A:
-                {
+                case A: {
                     assertEquals(2, neighboursNumber.get(blockValue).get(BlockValue.A));
                     assertEquals(4, neighboursNumber.get(blockValue).get(BlockValue.B));
                     assertEquals(8, neighboursNumber.get(blockValue).get(BlockValue.ZERO));
                     break;
                 }
 
-                case B:
-                {
+                case B: {
                     assertEquals(4, neighboursNumber.get(blockValue).get(BlockValue.A));
                     assertEquals(2, neighboursNumber.get(blockValue).get(BlockValue.B));
                     assertEquals(8, neighboursNumber.get(blockValue).get(BlockValue.ZERO));
                     break;
                 }
 
-                case ZERO:
-                {
+                case ZERO: {
                     assertNull(neighboursNumber.get(blockValue));
                     break;
                 }

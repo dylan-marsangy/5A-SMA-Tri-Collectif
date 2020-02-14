@@ -3,6 +3,7 @@ package org.polytech.environnement;
 import javafx.util.Pair;
 import org.polytech.agent.Agent;
 import org.polytech.environnement.block.Block;
+import org.polytech.environnement.block.BlockValue;
 import org.polytech.environnement.exceptions.CollisionException;
 import org.polytech.environnement.exceptions.MovableNotFoundException;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 /**
  * Environnement étant caractérisé par une grille 2D contenant des blocs.
  * De manière générale la grille peut contenir des objets qui peuvent s'y déplacer (objets implémentant l'interface Movable).
+ *
  * @see Movable
  */
 public class Environnement {
@@ -21,40 +23,14 @@ public class Environnement {
      */
     private Movable[][] grid;
 
-    /**
-     * Nombre de blocs A dans l'environnement.
-     */
-    private int nbBlocksA;
-
-    /**
-     * Nombre de blocs B dans l'environnement.
-     */
-    private int nbBlocksB;
-
-
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
     private Environnement() {
     }
 
-    public Environnement(int n, int m, int nbBlocksA, int nbBlocksB) throws IllegalArgumentException {
-        if (nbBlocksA + nbBlocksB >= n * m)
-            throw new IllegalArgumentException("Il y a trop d'entités par rapport aux dimensions de la grille.");
-
+    public Environnement(int n, int m) throws IllegalArgumentException {
         this.grid = new Movable[n][m];
-        insertBlocks(nbBlocksA, nbBlocksB);
-
-        this.nbBlocksA = nbBlocksA;
-        this.nbBlocksB = nbBlocksB;
     }
-
-    /**
-     * Insère des blocs de type A et B dans l'environnement.
-     * Le comportement d'insertion des blocs est à définir dans les classes filles d'Environnement.
-     * @param nbBlocksA Nombre de blocs A à insérer
-     * @param nbBlocksB Nombre de blocs B à insérer
-     */
-    public void insertBlocks(int nbBlocksA, int nbBlocksB) {}
 
     // EXÉCUTION DES STRATÉGIES DES AGENTS -----------------------------------------------------------------------------
 
@@ -69,7 +45,7 @@ public class Environnement {
      */
     public boolean move(Movable entity, Direction direction, int d) throws CollisionException {
         Pair<Integer, Integer> coordinates = findEntity(entity);
-        int x = coordinates.getKey() ;
+        int x = coordinates.getKey();
         int y = coordinates.getValue();
 
         int xGoal = coordinates.getKey() + d * direction.x;
@@ -232,6 +208,7 @@ public class Environnement {
 
     /**
      * Renvoie les coordonnées d'une entité de la grille.
+     *
      * @param entity Entité à rechercher
      * @return Coordonnées x et y de la position de l'entité dans la grille (matrice)
      * @throws MovableNotFoundException Si l'entité n'existe pas sur la grille
@@ -273,6 +250,7 @@ public class Environnement {
 
     /**
      * Renvoie le nombre de lignes de l'environnement.
+     *
      * @return Nombre de lignes de l'environnement
      * @see #grid
      */
@@ -282,6 +260,7 @@ public class Environnement {
 
     /**
      * Renvoie le nombre de colonnes de l'environnement.
+     *
      * @return Nombre de colonnes de l'environnement
      * @see #grid
      */
@@ -289,11 +268,32 @@ public class Environnement {
         return this.grid[0].length;
     }
 
-    public int getNbBlocksA() {
-        return nbBlocksA;
+    /**
+     * Renvoie le nombre de blocs de chaque type présent dans l'environnement.
+     *
+     * @return Associe à chaque type de bloc le nombre de blocs de ce type placés dans la grille de l'environnement
+     */
+    public Map<BlockValue, Integer> getNbBlocks() {
+        int blocksA = 0;
+        int blocksB = 0;
+
+        Movable entity;
+        Block block;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                entity = getEntity(i, j);
+                if (entity instanceof Block) {
+                    block = (Block) entity;
+                    if (block.getValue() == BlockValue.A) ++blocksA;
+                    else ++blocksB;
+                }
+            }
+        }
+
+        Map<BlockValue, Integer> count = new HashMap<>();
+        count.put(BlockValue.A, blocksA);
+        count.put(BlockValue.B, blocksB);
+        return count;
     }
 
-    public int getNbBlocksB() {
-        return nbBlocksB;
-    }
 }

@@ -22,16 +22,15 @@ import java.util.Set;
 public class SystemMA {
 
     /**
-     * Environnement composé de blocs à trier sur une grille.
-     */
-    private Environnement environnement;
-
-    /**
      * Collection des agents évoluant dans l'environnement.
+     *
      * @see #environnement
      */
     protected Set<Agent> agents;
-
+    /**
+     * Environnement composé de blocs à trier sur une grille.
+     */
+    private Environnement environnement;
     /**
      * Nombre d'itérations de l'exécution de l'algorithme (nombre de fois où un agent exécute une action dans l'environnement).
      */
@@ -43,9 +42,10 @@ public class SystemMA {
     private double frequencyDiplayGrid;
 
     public SystemMA(Environnement environnement,
-                  Set<Agent> agents,
-                  int nbIterations, double frequencyDiplayGrid) {
-        if (agents.size() + environnement.getNbBlocksA() + environnement.getNbBlocksB()
+                    Set<Agent> agents,
+                    int nbIterations, double frequencyDiplayGrid) throws IllegalArgumentException {
+        Map<BlockValue, Integer> countBlocks = environnement.getNbBlocks();
+        if (agents.size() + countBlocks.get(BlockValue.A) + countBlocks.get(BlockValue.B)
                 >= environnement.getNbRows() * environnement.getNbColumns())
             throw new IllegalArgumentException("Il y a trop d'entités par rapport aux dimensions de la grille.");
 
@@ -61,6 +61,7 @@ public class SystemMA {
 
     /**
      * Place aléatoirement des agents dans l'environnement.
+     *
      * @param agents Agents à placer
      */
     public void placeAgentsOnGrid(Set<Agent> agents) {
@@ -68,7 +69,7 @@ public class SystemMA {
         int n = environnement.getNbRows();
         int m = environnement.getNbColumns();
 
-        agents.forEach(agent ->  {
+        agents.forEach(agent -> {
             int x, y;
             do {
                 x = rand.nextInt(n);
@@ -169,6 +170,7 @@ public class SystemMA {
 
     /**
      * Tire aléatoirement un agent parmi les agents disposés dans l'environnement.
+     *
      * @return Agent aléatoire
      */
     public Agent pickRandomAgent() {

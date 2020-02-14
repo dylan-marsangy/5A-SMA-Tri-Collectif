@@ -5,7 +5,8 @@ package org.polytech.environnement.exceptions;
  */
 public class CollisionException extends RuntimeException {
 
-    public CollisionException() { }
+    public CollisionException() {
+    }
 
     public CollisionException(Throwable e) {
         super(e);
