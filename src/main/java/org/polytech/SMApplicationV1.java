@@ -24,8 +24,8 @@ import java.util.stream.IntStream;
         mixinStandardHelpOptions = true)
 public class SMApplicationV1 implements Callable<Integer> {
 
-    private static final int NUMBER_BLOCKS_A = 200;
-    private static final int NUMBER_BLOCKS_B = 200;
+    private static final int NUMBER_BLOCKS_A = 100;
+    private static final int NUMBER_BLOCKS_B = 100;
     private static final int NUMBER_AGENTS = 20;
     private static final int GRID_ROWS = 50; // N
     private static final int GRID_COLUMNS = 50; // M
@@ -37,7 +37,7 @@ public class SMApplicationV1 implements Callable<Integer> {
 
     @Option(names = {"-f", "--frequency"},
             description = "frequence d'affichage de l'environnement (default : ${DEFAULT-VALUE})",
-            defaultValue = "0.25"
+            defaultValue = "1"
     )
     private double frequency;
 
