@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.GridPane?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.polytech.view.ControllerSystemMA"
+            fx:id="scroll"
+            prefHeight="800" prefWidth="800">
+    <GridPane fx:id="grid" alignment="center">
+    </GridPane>
+</ScrollPane>

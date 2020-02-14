@@ -37,7 +37,7 @@ public class SMApplicationV1 implements Callable<Integer> {
 
     @Option(names = {"-f", "--frequency"},
             description = "frequence d'affichage de l'environnement (default : ${DEFAULT-VALUE})",
-            defaultValue = "1"
+            defaultValue = "0.25"
     )
     private double frequency;
 

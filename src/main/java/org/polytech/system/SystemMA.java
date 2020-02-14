@@ -177,4 +177,20 @@ public class SystemMA {
         return new HashSet<>(agents).stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
     }
 
+    public Set<Agent> getAgents() {
+        return agents;
+    }
+
+    public Environnement getEnvironnement() {
+        return environnement;
+    }
+
+    public int getNbIterations() {
+        return nbIterations;
+    }
+
+    public double getFrequencyDiplayGrid() {
+        return frequencyDiplayGrid;
+    }
+
 }
