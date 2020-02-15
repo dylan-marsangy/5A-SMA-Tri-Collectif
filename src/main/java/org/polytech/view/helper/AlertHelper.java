@@ -14,9 +14,9 @@ public class AlertHelper {
         alert.show();
     }
 
-    public static void showAlertError(Window owner, String message) {
+    public static void showAlertError(Window owner, String title, String message) {
         showAlert(Alert.AlertType.ERROR, owner,
-                "Erreur",
+                title,
                 "Une erreur imprévue est survenue...",
                 message);
     }
