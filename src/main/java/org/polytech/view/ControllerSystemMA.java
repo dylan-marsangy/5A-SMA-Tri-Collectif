@@ -1,14 +1,13 @@
 package org.polytech.view;
 
-import javafx.embed.swing.SwingFXUtils;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
@@ -17,10 +16,6 @@ import org.polytech.view.helper.AlertHelper;
 import org.polytech.view.helper.ImageWriterHelper;
 import org.polytech.view.helper.NodeHelper;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -142,7 +137,24 @@ public class ControllerSystemMA implements Initializable {
     @FXML
     public void save(ActionEvent actionEvent) {
         Window owner = saveButton.getScene().getWindow();
-        ImageWriterHelper.save(grid, owner);
+        saveAsPng(owner);
+    }
+
+    /**
+     * Sauvegarde la grille de l'environnement dans son état actuel dans un fichier png.
+     *
+     * @param owner Fenêtre dans laquelle éventuellement afficher une alerte d'erreur
+     * @see ImageWriterHelper
+     */
+    private void saveAsPng(Window owner) {
+        // Sauvegarde de l'image sur un Thread en background.
+        Platform.runLater(new Thread(new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ImageWriterHelper.save(grid, owner);
+                return null;
+            }
+        }));
     }
 }
 
