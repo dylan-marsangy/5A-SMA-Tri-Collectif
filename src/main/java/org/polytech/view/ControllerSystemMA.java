@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
+import org.polytech.system.SystemMA;
 import org.polytech.view.helper.AlertHelper;
 import org.polytech.view.helper.NodeHelper;
 
@@ -29,13 +30,13 @@ public class ControllerSystemMA implements Initializable {
     @FXML
     private Button startButton;
 
+    @FXML
+    public Button cancelButton;
+
     // INITIALIZATION --------------------------------------------------------------------------------------------------
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initTask();
-        initGrid();
-
         // Statistiques sommaires du système
         System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
                 (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
@@ -53,18 +54,22 @@ public class ControllerSystemMA implements Initializable {
         task.valueProperty().addListener(((observable, oldValue, newValue) -> {
             // A chaque fois que la tâche envoie une notification, mise à jour de l'UI
             if (newValue != null) {
-                clean();
-                initGrid();
+                refresh(newValue);
             }
         }));
+
+        task.setOnSucceeded((event) ->  {
+            startButton.setDisable(false);
+            cancelButton.setDisable(true);
+        });
     }
 
-    private void initGrid() {
+    private void initGrid(SystemMA system) {
         Node node;
-        for (int i = 0; i < task.getSystem().getEnvironment().getNbRows(); i++) {
-            for (int j = 0; j < task.getSystem().getEnvironment().getNbColumns(); j++) {
+        for (int i = 0; i < system.getEnvironment().getNbRows(); i++) {
+            for (int j = 0; j < system.getEnvironment().getNbColumns(); j++) {
                 // Instantie un node selon le contenu de la case dans l'environnement
-                node = NodeHelper.instantiateNode(root, task.getSystem(), j, i);
+                node = NodeHelper.instantiateNode(root, system, j, i);
 
                 // Index du noeud dans la grille
                 GridPane.setRowIndex(node, i);
@@ -81,13 +86,33 @@ public class ControllerSystemMA implements Initializable {
         grid.getChildren().clear();
     }
 
+    private void refresh(SystemMA system) {
+        clean();
+        initGrid(system);
+    }
+
     @FXML
     public void start(ActionEvent mouseEvent) {
-        // Autoriser le clic sur le bouton une seule fois.
         startButton.setDisable(true);
+        cancelButton.setDisable(false);
 
+        initTask();
+        initGrid(task.getSystem());
         try {
             new Thread(task).start();
+        } catch (Exception e) {
+            Window owner = startButton.getScene().getWindow();
+            AlertHelper.showAlertError(owner, e.getMessage());
+        }
+    }
+
+    @FXML
+    public void cancel(ActionEvent actionEvent) {
+        startButton.setDisable(false);
+        cancelButton.setDisable(true);
+
+        try {
+            task.cancel();
         } catch (Exception e) {
             Window owner = startButton.getScene().getWindow();
             AlertHelper.showAlertError(owner, e.getMessage());

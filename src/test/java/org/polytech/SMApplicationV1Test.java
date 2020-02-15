@@ -10,6 +10,7 @@ import org.polytech.environment.RandomEnvironment;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
 import org.polytech.system.SystemMA;
+import org.polytech.system.SystemMAFactory;
 import org.polytech.utils.Color;
 
 import java.util.ArrayList;
@@ -162,16 +163,10 @@ public class SMApplicationV1Test {
             System.out.println(Color.CYAN + String.format("Execution n°%d", i + 1) + Color.RESET);
             System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
 
-            // Instantiation de l'environnement
-            Environment environment = new RandomEnvironment(GRID_ROWS, GRID_COLUMNS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
-
-            // Génération des agents
-            Set<Agent> agents = new HashSet<>();
-            IntStream.rangeClosed(1, NUMBER_AGENTS).forEach(index ->
-                    agents.add(new Agent(SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR)));
-
             // Génération du système (place les agents dans l'environnement)
-            SystemMA system = new SystemMA(environment, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
+            SystemMA system = SystemMAFactory.instantiateRandom(
+                    GRID_ROWS, GRID_COLUMNS, NUMBER_AGENTS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B,
+                    SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR);
 
             // Quelques stats simples sur le remplissage de la grille
             System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
@@ -185,7 +180,7 @@ public class SMApplicationV1Test {
             system.run();
 
             // Evaluation de l'environnement à la fin de la simulation
-            Evaluation evaluation = new Evaluation(environment);
+            Evaluation evaluation = new Evaluation(system.getEnvironment());
             evaluations.add(evaluation);
         }
 

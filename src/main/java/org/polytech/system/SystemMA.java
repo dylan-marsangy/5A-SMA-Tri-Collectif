@@ -9,19 +9,13 @@ import org.polytech.environment.Environment;
 import org.polytech.environment.Movable;
 import org.polytech.environment.block.Block;
 import org.polytech.environment.block.BlockValue;
-import org.polytech.view.ViewSystemObservable;
-import org.polytech.view.ViewSystemObserver;
 
 import java.util.*;
 
 /**
  * Système étant principalement caractérisé par un environnement (avec les blocs à trier) et les agents y évoluant.
- * Les agents sont placés aléatoirement dans l'environnement lors de l'instanciation d'un système.
- * <p>
- * La classe implémente le design pattern Observer/Observable et est un observable.
- * Ainsi elle peut être observée par un observeur pour lui transmettre éventuellement le progrès de son exécution.
  */
-public class SystemMA implements ViewSystemObservable {
+public class SystemMA {
 
     /**
      * Collection des agents évoluant dans l'environnement.
@@ -44,11 +38,6 @@ public class SystemMA implements ViewSystemObservable {
      */
     private double frequencyDiplayGrid;
 
-    /**
-     * Collections des observeurs de l'exécution du système.
-     */
-    private List<ViewSystemObserver> observers = new ArrayList<>();
-
     public SystemMA(Environment environment,
                     Set<Agent> agents,
                     int nbIterations, double frequencyDiplayGrid) throws IllegalArgumentException {
@@ -62,7 +51,6 @@ public class SystemMA implements ViewSystemObservable {
         this.frequencyDiplayGrid = frequencyDiplayGrid;
 
         this.agents = agents;
-        placeAgentsOnGrid(agents);
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
@@ -92,7 +80,6 @@ public class SystemMA implements ViewSystemObservable {
 
     /**
      * Exécute l'algorithme de tri collectif (exécution du système) sur plusieurs itérations.
-     * Les {@link #observers} seront notifiés si nécessaire de la progression de l'exécution de l'algorithme.
      */
     public void run() {
         int frequency = (int) (nbIterations * frequencyDiplayGrid);
@@ -111,10 +98,6 @@ public class SystemMA implements ViewSystemObservable {
                 java.lang.System.out.print(environment);
                 java.lang.System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
                 java.lang.System.out.println();
-
-                // Notifer les observers
-                observers.forEach(System.out::println);
-                notifyViewSystemObservers(observers.toArray(new ViewSystemObserver[0]));
             }
         }
 
@@ -192,42 +175,14 @@ public class SystemMA implements ViewSystemObservable {
         return new HashSet<>(agents).stream().skip(new Random().nextInt(agents.size())).findFirst().orElse(null);
     }
 
-    // OBSERVABLE ------------------------------------------------------------------------------------------------------
-
-    @Override
-    public void notifyViewSystemObservers(ViewSystemObserver... observers) {
-        for (ViewSystemObserver observer : observers) {
-            observer.updateViewSystemObserver();
-        }
-    }
-
-    /**
-     * Ajoute un observeur dans la collection des {@link #observers observeurs}.
-     * Ainsi il sera notifié de la progression de l'exécution de l'algorithme.
-     *
-     * @param observer Observeur à notifier
-     */
-    public void addObserver(ViewSystemObserver observer) {
-        this.observers.add(observer);
-    }
-
-    /**
-     * Ajoute plusieurs observeurs dans la collection des {@link #observers observeurs}.
-     * Ainsi il sera notifié de la progression de l'exécution de l'algorithme.
-     *
-     * @param observers Observeurs à notifier
-     */
-    public void addAllObservers(ViewSystemObserver... observers) {
-        Collections.addAll(this.observers, observers);
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Creates a copy of the current object.
+     *
      * @return Copy of the object
      */
-    public SystemMA save() {
+    public SystemMA copy() {
         return new SystemMA(environment.save(),
                 new HashSet<>(agents),
                 nbIterations, frequencyDiplayGrid);

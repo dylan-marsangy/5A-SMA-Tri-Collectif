@@ -24,7 +24,7 @@
     <right>
         <VBox styleClass="sidebar-section">
             <Button fx:id="startButton" text="Start" onAction="#start"/>
-            <Label text="Sidebar Item2"/>
+            <Button fx:id="cancelButton" text="Cancel" onAction="#cancel" disable="true"/>
             <Label text="Sidebar Item3"/>
             <Label text="Sidebar Item4"/>
         </VBox>
