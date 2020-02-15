@@ -41,8 +41,6 @@ public class SystemMAFactory {
                 agents.add(new Agent(i, t, kPlus, kMinus, error)));
 
         // Génération du système (place les agents dans l'environnement)
-        SystemMA system = new SystemMA(environment, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
-        system.placeAgentsOnGrid(agents);
-        return system;
+        return new SystemMA(environment, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
     }
 }

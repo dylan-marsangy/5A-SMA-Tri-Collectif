@@ -13,12 +13,12 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
 import org.polytech.system.SystemMA;
 import org.polytech.view.helper.AlertHelper;
+import org.polytech.view.helper.ImageWriterHelper;
 import org.polytech.view.helper.NodeHelper;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,7 +44,7 @@ public class ControllerSystemMA implements Initializable {
     @FXML
     public Button cancelButton;
 
-    private final String FILE_NAME = "extern/snapshots/snapshot.png";
+
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ public class ControllerSystemMA implements Initializable {
             new Thread(task).start();
         } catch (Exception e) {
             Window owner = startButton.getScene().getWindow();
-            AlertHelper.showAlertError(owner, "Exécution de l'algorithme", e.getMessage());
+            AlertHelper.showError(owner, "Exécution de l'algorithme", e.getMessage());
         }
     }
 
@@ -129,27 +129,14 @@ public class ControllerSystemMA implements Initializable {
             task.cancel();
         } catch (Exception e) {
             Window owner = cancelButton.getScene().getWindow();
-            AlertHelper.showAlertError(owner, "Interruption de l'algorithme", e.getMessage());
+            AlertHelper.showError(owner, "Interruption de l'algorithme", e.getMessage());
         }
     }
 
     @FXML
     public void save(ActionEvent actionEvent) {
-        WritableImage snapshot = grid.snapshot(new SnapshotParameters(), null);
-        BufferedImage image = SwingFXUtils.fromFXImage(snapshot, null);
-        try {
-            File output = new File(FILE_NAME);
-//            output.getParentFile().mkdirs(); // Créer le dossier si nécessaire
-
-            // Enregistre l'image
-            ImageIO.write(image, "png", output);
-        } catch (IOException e) {
-            Window owner = saveButton.getScene().getWindow();
-            AlertHelper.showAlertError(owner, "Sauvegarde du système", e.getMessage());
-        } catch (Exception e) {
-            Window owner = saveButton.getScene().getWindow();
-            AlertHelper.showAlertError(owner, "Sauvegarde du système", e.getMessage());
-        }
+        Window owner = saveButton.getScene().getWindow();
+        ImageWriterHelper.save(grid, owner);
     }
 }
 

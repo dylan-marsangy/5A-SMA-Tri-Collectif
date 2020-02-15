@@ -14,8 +14,12 @@ import org.polytech.environment.block.Block;
 import org.polytech.environment.block.BlockValue;
 import org.polytech.system.SystemMA;
 
+/**
+ * Classe utilitaire pour l'instanciations d'objets {@link Node} afin de remplir la grille de la vue JavaFX.
+ */
 public class NodeHelper {
 
+    //TODO: Appliquer le style depuis le CSS plutôt que dans le code
     public static Node instantiateNode(Pane parent, SystemMA system, int i, int j) {
         Rectangle rectangle = new Rectangle();
 

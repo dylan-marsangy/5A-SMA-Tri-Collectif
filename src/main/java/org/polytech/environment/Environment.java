@@ -229,11 +229,11 @@ public class Environment {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a copy of the current Environment's object.
+     * Crée une copie de l'objet actuel.
      *
-     * @return Copy of the object
+     * @return Copie de l'objet
      */
-    public Environment save() {
+    public Environment copy() {
         Environment environment = new Environment();
         environment.grid = Arrays.stream(this.grid).map(Movable[]::clone).toArray(Movable[][]::new);
         return environment;

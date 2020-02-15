@@ -14,6 +14,7 @@ import java.util.*;
 
 /**
  * Système étant principalement caractérisé par un environnement (avec les blocs à trier) et les agents y évoluant.
+ * Les agents sont placés aléatoirement dans l'environnement lors de l'instanciation d'un système.
  */
 public class SystemMA {
 
@@ -38,6 +39,8 @@ public class SystemMA {
      */
     private double frequencyDiplayGrid;
 
+    private SystemMA() {}
+
     public SystemMA(Environment environment,
                     Set<Agent> agents,
                     int nbIterations, double frequencyDiplayGrid) throws IllegalArgumentException {
@@ -51,16 +54,15 @@ public class SystemMA {
         this.frequencyDiplayGrid = frequencyDiplayGrid;
 
         this.agents = agents;
+        placeAgentsOnGrid();
     }
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
 
     /**
-     * Place aléatoirement des agents dans l'environnement.
-     *
-     * @param agents Agents à placer
+     * Place aléatoirement les {@link #agents} dans l'environnement.
      */
-    public void placeAgentsOnGrid(Set<Agent> agents) {
+    public void placeAgentsOnGrid() {
         Random rand = new Random();
         int n = environment.getNbRows();
         int m = environment.getNbColumns();
@@ -83,11 +85,10 @@ public class SystemMA {
      */
     public void run() {
         int frequency = (int) (nbIterations * frequencyDiplayGrid);
-        java.lang.System.out.print(environment);
-        java.lang.System.out.println(String.format("0 / %d (0%%)", nbIterations));
-        java.lang.System.out.println();
-
         int count = 0;
+
+        displayProgress(count);
+
         while (count < nbIterations) {
             count++;
 
@@ -95,16 +96,12 @@ public class SystemMA {
 
             // Affichage de la grille résultante si nécessaire.
             if (frequency != 0d && count % frequency == 0) {
-                java.lang.System.out.print(environment);
-                java.lang.System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
-                java.lang.System.out.println();
+                displayProgress(count);
             }
         }
 
         if (frequency == 0 || count % frequency != 0) {
-            java.lang.System.out.print(environment);
-            java.lang.System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
-            java.lang.System.out.println();
+            displayProgress(count);
         }
     }
 
@@ -167,6 +164,16 @@ public class SystemMA {
     }
 
     /**
+     * Affiche en console le progrès de l'exécution de l'algorithme.
+     * @param count Étape actuelle de l'algorithme
+     */
+    private void displayProgress(int count) {
+        System.out.print(environment);
+        System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
+        System.out.println();
+    }
+
+    /**
      * Tire aléatoirement un agent parmi les {@link #agents agents disposés dans l'environnement}.
      *
      * @return Agent aléatoire
@@ -178,14 +185,17 @@ public class SystemMA {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Creates a copy of the current object.
+     * Crée une copie de l'objet actuel.
      *
-     * @return Copy of the object
+     * @return Copie de l'objet
      */
     public SystemMA copy() {
-        return new SystemMA(environment.save(),
-                new HashSet<>(agents),
-                nbIterations, frequencyDiplayGrid);
+        SystemMA copy = new SystemMA();
+        copy.environment = this.environment.copy();
+        copy.agents = new HashSet<>(agents);
+        copy.nbIterations = this.nbIterations;
+        copy.frequencyDiplayGrid = this.frequencyDiplayGrid;
+        return copy;
     }
 
     public Set<Agent> getAgents() {
