@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -29,7 +30,7 @@ public class ControllerSystemMA implements Initializable {
     private SystemMA system;
 
     @FXML
-    public ScrollPane scroll;
+    public BorderPane root;
 
     @FXML
     public GridPane grid;
@@ -60,9 +61,10 @@ public class ControllerSystemMA implements Initializable {
         Node node;
         for (int i = 0; i < system.getEnvironnement().getNbRows(); i++) {
             for (int j = 0; j < system.getEnvironnement().getNbColumns(); j++) {
-                node = NodeHelper.instantiateNode(scroll, system, i, j); // Instantie un node selon le contenu de la case dans l'environnement
+                // Instantie un node selon le contenu de la case dans l'environnement
+                node = NodeHelper.instantiateNode(root, system, i, j);
 
-                // Index
+                // Index du noeud dans la grille
                 GridPane.setRowIndex(node, i);
                 GridPane.setColumnIndex(node, j);
 

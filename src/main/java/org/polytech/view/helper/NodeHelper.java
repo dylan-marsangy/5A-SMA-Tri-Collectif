@@ -3,6 +3,7 @@ package org.polytech.view.helper;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -16,15 +17,15 @@ import org.polytech.system.SystemMA;
 
 public class NodeHelper {
 
-    public static Node instantiateNode(ScrollPane scroll, SystemMA system, int i, int j) {
+    public static Node instantiateNode(Pane parent, SystemMA system, int i, int j) {
         Rectangle rectangle = new Rectangle();
 
         // Quadrillage
         rectangle.setStroke(Color.BLACK);
         rectangle.setStrokeType(StrokeType.INSIDE);
         // Automatic square size.
-        rectangle.widthProperty().bind(scroll.widthProperty().divide(system.getEnvironnement().getNbColumns()));
-        rectangle.heightProperty().bind(scroll.heightProperty().divide(system.getEnvironnement().getNbColumns()));
+        rectangle.widthProperty().bind(parent.widthProperty().divide(system.getEnvironnement().getNbColumns()));
+        rectangle.heightProperty().bind(parent.heightProperty().divide(system.getEnvironnement().getNbColumns()));
 
         // Remplissage selon le type d'entityé
         Movable entity = system.getEnvironnement().getEntity(i, j);

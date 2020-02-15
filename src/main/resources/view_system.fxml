@@ -1,10 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.GridPane?>
-<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.polytech.view.ControllerSystemMA"
-            fx:id="scroll"
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.polytech.view.ControllerSystemMA"
+            fx:id="root"
             prefHeight="800" prefWidth="800">
-    <GridPane fx:id="grid" alignment="center">
-    </GridPane>
-</ScrollPane>
+    <top>
+        <BorderPane styleClass="header-section">
+            <left>
+                <Label id="header-text" text="SMA Tri collectif"/>
+            </left>
+        </BorderPane>
+    </top>
+
+    <center>
+        <ScrollPane>
+            <GridPane fx:id="grid" alignment="center">
+            </GridPane>
+        </ScrollPane>
+    </center>
+
+    <right>
+        <VBox styleClass="sidebar-section">
+            <Label text="Sidebar Item1"/>
+            <Label text="Sidebar Item2"/>
+            <Label text="Sidebar Item3"/>
+            <Label text="Sidebar Item4"/>
+        </VBox>
+    </right>
+
+    <bottom>
+        <HBox id="footer-section">
+            <Label text="Dylan MARSANGY - Laura PHILIBERT"/>
+        </HBox>
+    </bottom>
+
+    <stylesheets>
+        <URL value="@view_system.css"/>
+    </stylesheets>
+</BorderPane>
