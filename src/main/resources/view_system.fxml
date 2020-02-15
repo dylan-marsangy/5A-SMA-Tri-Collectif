@@ -5,7 +5,7 @@
 <?import java.net.URL?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.polytech.view.ControllerSystemMA"
             fx:id="root"
-            prefHeight="800" prefWidth="800">
+            prefHeight="900" prefWidth="1000">
     <top>
         <BorderPane styleClass="header-section">
             <left>
@@ -23,7 +23,7 @@
 
     <right>
         <VBox styleClass="sidebar-section">
-            <Label text="Sidebar Item1"/>
+            <Button fx:id="startButton" text="Start" onAction="#start"/>
             <Label text="Sidebar Item2"/>
             <Label text="Sidebar Item3"/>
             <Label text="Sidebar Item4"/>
@@ -32,7 +32,7 @@
 
     <bottom>
         <HBox id="footer-section">
-            <Label text="Dylan MARSANGY - Laura PHILIBERT"/>
+            <Label text="© Dylan MARSANGY - Laura PHILIBERT (5A Polytech 2020 Informatique)"/>
         </HBox>
     </bottom>
 

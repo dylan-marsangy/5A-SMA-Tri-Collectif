@@ -1,23 +1,17 @@
 package org.polytech.view;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
-import javafx.scene.text.Text;
-import org.polytech.agent.Agent;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import javafx.stage.Window;
 import org.polytech.system.SystemMA;
 import org.polytech.system.SystemMAFactory;
+import org.polytech.view.helper.AlertHelper;
 import org.polytech.view.helper.NodeHelper;
 
 import java.net.URL;
@@ -27,28 +21,25 @@ import static org.polytech.SMApplicationV1.*;
 
 public class ControllerSystemMA implements Initializable {
 
-    private SystemMA system;
+    private TaskSystemMA task;
 
     @FXML
-    public BorderPane root;
+    private BorderPane root;
 
     @FXML
-    public GridPane grid;
+    private GridPane grid;
+
+    @FXML
+    private Button startButton;
+
+    // INITIALIZATION --------------------------------------------------------------------------------------------------
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initSystemMA();
-
+        initTask();
         initGrid();
-    }
 
-    private void initSystemMA() {
-        // Génération du système
-        system = SystemMAFactory.instantiateRandom(
-                GRID_ROWS, GRID_COLUMNS, NUMBER_AGENTS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B,
-                SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR);
-
-        // Statistiques sommaires
+        // Statistiques sommaires du système
         System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
                 (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
                 (double) (NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
@@ -57,12 +48,24 @@ public class ControllerSystemMA implements Initializable {
         System.out.println();
     }
 
+    private void initTask() {
+        // Instanciation de la tâche
+        task = new TaskSystemMA();
+
+        // Configuration de la tâche
+        task.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            // A chaque fois que la tâche envoie une notification, mise à jour de l'UI
+            clean();
+            initGrid();
+        }));
+    }
+
     private void initGrid() {
         Node node;
-        for (int i = 0; i < system.getEnvironnement().getNbRows(); i++) {
-            for (int j = 0; j < system.getEnvironnement().getNbColumns(); j++) {
+        for (int i = 0; i < task.getSystem().getEnvironnement().getNbRows(); i++) {
+            for (int j = 0; j < task.getSystem().getEnvironnement().getNbColumns(); j++) {
                 // Instantie un node selon le contenu de la case dans l'environnement
-                node = NodeHelper.instantiateNode(root, system, i, j);
+                node = NodeHelper.instantiateNode(root, task.getSystem(), i, j);
 
                 // Index du noeud dans la grille
                 GridPane.setRowIndex(node, i);
@@ -73,6 +76,23 @@ public class ControllerSystemMA implements Initializable {
         }
     }
 
+    // ACTION ----------------------------------------------------------------------------------------------------------
 
+    public void clean() {
+        grid.getChildren().clear();
+    }
+
+    @FXML
+    public void start(ActionEvent mouseEvent) {
+        // Autoriser le clic sur le bouton une seule fois.
+        startButton.setDisable(true);
+
+        try {
+            task.call();
+        } catch (Exception e) {
+            Window owner = startButton.getScene().getWindow();
+            AlertHelper.showAlertError(owner, e.getMessage());
+        }
+    }
 }
 
