@@ -39,8 +39,15 @@ public class NodeHelper {
             } else if (entity instanceof Agent) {
                 rectangle.setFill(Color.WHITE);
 
+                Agent agent = (Agent) entity;
                 // On ajoute en plus un label désignant l'ID de l'agent
                 Text text = new Text(((Agent) entity).getID().toString());
+                text.setFill(
+                        agent.isHolding() ?
+                                agent.getHolding().getValue() == BlockValue.A ?
+                                        Color.BLUE
+                                        : Color.RED
+                                : Color.BLACK);
 
                 // On intègre le tout dans un pane pour permettre l'alignement central
                 StackPane pane = new StackPane();
