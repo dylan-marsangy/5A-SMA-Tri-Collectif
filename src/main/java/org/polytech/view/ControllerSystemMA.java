@@ -4,13 +4,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
-import org.polytech.system.SystemMA;
-import org.polytech.system.SystemMAFactory;
 import org.polytech.view.helper.AlertHelper;
 import org.polytech.view.helper.NodeHelper;
 
@@ -55,17 +52,19 @@ public class ControllerSystemMA implements Initializable {
         // Configuration de la tâche
         task.valueProperty().addListener(((observable, oldValue, newValue) -> {
             // A chaque fois que la tâche envoie une notification, mise à jour de l'UI
-            clean();
-            initGrid();
+            if (newValue != null) {
+                clean();
+                initGrid();
+            }
         }));
     }
 
     private void initGrid() {
         Node node;
-        for (int i = 0; i < task.getSystem().getEnvironnement().getNbRows(); i++) {
-            for (int j = 0; j < task.getSystem().getEnvironnement().getNbColumns(); j++) {
+        for (int i = 0; i < task.getSystem().getEnvironment().getNbRows(); i++) {
+            for (int j = 0; j < task.getSystem().getEnvironment().getNbColumns(); j++) {
                 // Instantie un node selon le contenu de la case dans l'environnement
-                node = NodeHelper.instantiateNode(root, task.getSystem(), i, j);
+                node = NodeHelper.instantiateNode(root, task.getSystem(), j, i);
 
                 // Index du noeud dans la grille
                 GridPane.setRowIndex(node, i);
@@ -88,7 +87,7 @@ public class ControllerSystemMA implements Initializable {
         startButton.setDisable(true);
 
         try {
-            task.call();
+            new Thread(task).start();
         } catch (Exception e) {
             Window owner = startButton.getScene().getWindow();
             AlertHelper.showAlertError(owner, e.getMessage());

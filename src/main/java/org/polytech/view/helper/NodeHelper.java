@@ -2,7 +2,6 @@ package org.polytech.view.helper;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -10,9 +9,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 import org.polytech.system.SystemMA;
 
 public class NodeHelper {
@@ -24,11 +23,11 @@ public class NodeHelper {
         rectangle.setStroke(Color.BLACK);
         rectangle.setStrokeType(StrokeType.INSIDE);
         // Automatic square size.
-        rectangle.widthProperty().bind(parent.widthProperty().divide(system.getEnvironnement().getNbColumns()));
-        rectangle.heightProperty().bind(parent.heightProperty().divide(system.getEnvironnement().getNbColumns()));
+        rectangle.widthProperty().bind(parent.widthProperty().divide(system.getEnvironment().getNbColumns()));
+        rectangle.heightProperty().bind(parent.heightProperty().divide(system.getEnvironment().getNbColumns()));
 
         // Remplissage selon le type d'entityé
-        Movable entity = system.getEnvironnement().getEntity(i, j);
+        Movable entity = system.getEnvironment().getEntity(i, j);
         if (entity != null) {
             if (entity instanceof Block) {
                 if (((Block) entity).getValue() == BlockValue.A) rectangle.setFill(Color.BLUE);

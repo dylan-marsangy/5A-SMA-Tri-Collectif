@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Environment;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,33 +21,33 @@ public class EvaluationTest {
     private final double K_PLUS = 0.1;
     private final double ERROR = 0;
 
-    private Environnement environnement;
+    private Environment environment;
     private Evaluation evaluation;
 
     @BeforeEach
-    public void initializeEnvironnement() {
-        environnement = new Environnement(N, M);
+    public void initializeEnvironment() {
+        environment = new Environment(N, M);
 
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
 
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+        environment.insert(new Block(BlockValue.A), 0, 4);
+        environment.insert(new Block(BlockValue.A), 1, 4);
+        environment.insert(new Block(BlockValue.B), 3, 4);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         initializeEvaluation();
     }
 
     public void initializeEvaluation() {
-        this.evaluation = new Evaluation(this.environnement);
+        this.evaluation = new Evaluation(this.environment);
     }
 
     @Test

@@ -12,6 +12,7 @@ public class TaskSystemMA extends Task<SystemMA> implements ViewSystemObserver {
     private SystemMA system;
 
     public TaskSystemMA() {
+
         // Génération du système
         this.system = SystemMAFactory.instantiateRandom(
                 GRID_ROWS, GRID_COLUMNS, NUMBER_AGENTS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B,
@@ -26,13 +27,32 @@ public class TaskSystemMA extends Task<SystemMA> implements ViewSystemObserver {
         return system;
     }
 
+    @Override
+    protected void succeeded() {
+        super.succeeded();
+
+        System.out.println("Algorithme terminé !");
+    }
+
+    @Override protected void cancelled() {
+        super.cancelled();
+
+        updateMessage("Algorithme interrompu !");
+    }
+
+    @Override protected void failed() {
+        super.failed();
+
+        updateMessage("Une erreur imprévue est survenue !");
+    }
+
     public SystemMA getSystem() {
         return system;
     }
 
     @Override
     public void updateViewSystemObserver() {
-        System.out.println("prout");
-        updateValue(system);
+        updateValue(system.save());
     }
+
 }

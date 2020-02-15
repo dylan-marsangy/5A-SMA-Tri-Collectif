@@ -3,8 +3,8 @@ package org.polytech.agent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,11 +1,11 @@
 package org.polytech.agent.strategies;
 
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Direction;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
-import org.polytech.environnement.exceptions.MovableNotFoundException;
+import org.polytech.environment.Direction;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
+import org.polytech.environment.exceptions.MovableNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,8 +2,8 @@ package org.polytech.system;
 
 import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.RandomEnvironnement;
+import org.polytech.environment.Environment;
+import org.polytech.environment.RandomEnvironment;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +33,7 @@ public class SystemMAFactory {
     public static SystemMA instantiateRandom(int n, int m, int nbAgents, int nbBlocksA, int nbBlocksB,
                                        int i, int t, double kPlus, double kMinus, double error) {
         // Génération de l'environnement
-        Environnement environnement = new RandomEnvironnement(n, m, nbBlocksA, nbBlocksB);
+        Environment environment = new RandomEnvironment(n, m, nbBlocksA, nbBlocksB);
 
         // Génération des agents
         Set<Agent> agents = new HashSet<>();
@@ -41,6 +41,6 @@ public class SystemMAFactory {
                 agents.add(new Agent(i, t, kPlus, kMinus, error)));
 
         // Génération du système (place les agents dans l'environnement)
-        return new SystemMA(environnement, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
+        return new SystemMA(environment, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
     }
 }

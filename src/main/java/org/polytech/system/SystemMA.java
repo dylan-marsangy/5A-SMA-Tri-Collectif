@@ -4,11 +4,11 @@ import org.polytech.agent.Agent;
 import org.polytech.agent.strategies.StrategyMove;
 import org.polytech.agent.strategies.StrategyPickUp;
 import org.polytech.agent.strategies.StrategyPutDown;
-import org.polytech.environnement.Direction;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Direction;
+import org.polytech.environment.Environment;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 import org.polytech.view.ViewSystemObservable;
 import org.polytech.view.ViewSystemObserver;
 
@@ -26,13 +26,13 @@ public class SystemMA implements ViewSystemObservable {
     /**
      * Collection des agents évoluant dans l'environnement.
      *
-     * @see #environnement
+     * @see #environment
      */
     protected Set<Agent> agents;
     /**
      * Environnement composé de blocs à trier sur une grille.
      */
-    private Environnement environnement;
+    private Environment environment;
 
     /**
      * Nombre d'itérations de l'exécution de l'algorithme (nombre de fois où un agent exécute une action dans l'environnement).
@@ -49,15 +49,15 @@ public class SystemMA implements ViewSystemObservable {
      */
     private List<ViewSystemObserver> observers = new ArrayList<>();
 
-    public SystemMA(Environnement environnement,
+    public SystemMA(Environment environment,
                     Set<Agent> agents,
                     int nbIterations, double frequencyDiplayGrid) throws IllegalArgumentException {
-        Map<BlockValue, Integer> countBlocks = environnement.getNbBlocks();
+        Map<BlockValue, Integer> countBlocks = environment.getNbBlocks();
         if (agents.size() + countBlocks.get(BlockValue.A) + countBlocks.get(BlockValue.B)
-                >= environnement.getNbRows() * environnement.getNbColumns())
+                >= environment.getNbRows() * environment.getNbColumns())
             throw new IllegalArgumentException("Il y a trop d'entités par rapport aux dimensions de la grille.");
 
-        this.environnement = environnement;
+        this.environment = environment;
         this.nbIterations = nbIterations;
         this.frequencyDiplayGrid = frequencyDiplayGrid;
 
@@ -74,17 +74,17 @@ public class SystemMA implements ViewSystemObservable {
      */
     public void placeAgentsOnGrid(Set<Agent> agents) {
         Random rand = new Random();
-        int n = environnement.getNbRows();
-        int m = environnement.getNbColumns();
+        int n = environment.getNbRows();
+        int m = environment.getNbColumns();
 
         agents.forEach(agent -> {
             int x, y;
             do {
                 x = rand.nextInt(n);
                 y = rand.nextInt(m);
-            } while (!environnement.isEmpty(x, y));
+            } while (!environment.isEmpty(x, y));
 
-            environnement.insert(agent, x, y);
+            environment.insert(agent, x, y);
         });
     }
 
@@ -96,7 +96,7 @@ public class SystemMA implements ViewSystemObservable {
      */
     public void run() {
         int frequency = (int) (nbIterations * frequencyDiplayGrid);
-        java.lang.System.out.print(environnement);
+        java.lang.System.out.print(environment);
         java.lang.System.out.println(String.format("0 / %d (0%%)", nbIterations));
         java.lang.System.out.println();
 
@@ -108,17 +108,18 @@ public class SystemMA implements ViewSystemObservable {
 
             // Affichage de la grille résultante si nécessaire.
             if (frequency != 0d && count % frequency == 0) {
-                java.lang.System.out.print(environnement);
+                java.lang.System.out.print(environment);
                 java.lang.System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
                 java.lang.System.out.println();
 
                 // Notifer les observers
+                observers.forEach(System.out::println);
                 notifyViewSystemObservers(observers.toArray(new ViewSystemObserver[0]));
             }
         }
 
         if (frequency == 0 || count % frequency != 0) {
-            java.lang.System.out.print(environnement);
+            java.lang.System.out.print(environment);
             java.lang.System.out.println(String.format("%d / %d (100%%)", count, nbIterations));
             java.lang.System.out.println();
         }
@@ -133,10 +134,10 @@ public class SystemMA implements ViewSystemObservable {
         int distance = agent.getDistance(); // Distance de perception d'un agent.
 
         // Agent perçoit son environnement et détermine une direction dans laquelle se diriger (aléatoire).
-        Map<Direction, Movable> perception = environnement.perception(agent, distance);
+        Map<Direction, Movable> perception = environment.perception(agent, distance);
         Direction goalDirection = agent.execute(new StrategyMove(), perception);
         if (goalDirection != null) {
-            Movable obstacle = environnement.getEntityAfterMove(agent, goalDirection, distance);
+            Movable obstacle = environment.getEntityAfterMove(agent, goalDirection, distance);
 
             // Si l'obstacle est un autre agent, l'agent élu ne bouge pas et ne visite donc aucun nouveau bloc.
             if (obstacle instanceof Agent) {
@@ -149,8 +150,8 @@ public class SystemMA implements ViewSystemObservable {
                         /* Si l'agent maintient la direction cible après l'exécution de la stratégie 'Pick Up',
                         cela signifie qu'il prend le bloc. */
                     if (goalDirection.equals(agent.execute(new StrategyPickUp(goalDirection), perception))) {
-                        environnement.pickUpBlock(agent, goalDirection, distance); // Prise
-                        environnement.move(agent, goalDirection, distance); // Déplacement
+                        environment.pickUpBlock(agent, goalDirection, distance); // Prise
+                        environment.move(agent, goalDirection, distance); // Déplacement
                     }
                 }
                 // Sinon (si l'agent tient un bloc), il reste sur place et ne rencontre donc aucun nouveau bloc.
@@ -162,7 +163,7 @@ public class SystemMA implements ViewSystemObservable {
             // S'il n'y a pas d'obstacle (et que l'agent tient un bloc), il tente de le déposer lors de son déplacement.
             else if (obstacle == null) {
                 // Déplacement
-                environnement.move(agent, goalDirection, distance);
+                environment.move(agent, goalDirection, distance);
 
                 // Dépôt du bloc sur la position d'origine si possible.
                 if (agent.isHolding()) {
@@ -171,7 +172,7 @@ public class SystemMA implements ViewSystemObservable {
                     goalDirection = agent.execute(new StrategyPutDown(goalDirection), perception);
                     if (goalDirection != null) {
                         assert goalDirection.contrary() != null; // Une direction a forcément un contraire.
-                        environnement.putDownBlock(agent, goalDirection.contrary(), distance);
+                        environment.putDownBlock(agent, goalDirection.contrary(), distance);
                     }
                 }
             }
@@ -222,13 +223,23 @@ public class SystemMA implements ViewSystemObservable {
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Creates a copy of the current object.
+     * @return Copy of the object
+     */
+    public SystemMA save() {
+        return new SystemMA(environment.save(),
+                new HashSet<>(agents),
+                nbIterations, frequencyDiplayGrid);
+    }
+
     public Set<Agent> getAgents() {
         return agents;
     }
 
 
-    public Environnement getEnvironnement() {
-        return environnement;
+    public Environment getEnvironment() {
+        return environment;
     }
 
     public int getNbIterations() {

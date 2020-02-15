@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Environment;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 import java.util.Map;
 
@@ -24,18 +24,18 @@ public class NeighboursTest {
     private final double K_PLUS = 0.1;
     private final double ERROR = 0;
 
-    private Environnement environnement;
+    private Environment environment;
     private Neighbours neighbours;
 
     @BeforeEach
-    public void initializeEnvironnement() {
-        environnement = new Environnement(N, M);
+    public void initializeEnvironment() {
+        environment = new Environment(N, M);
 
         initializeNeighbours();
     }
 
     public void initializeNeighbours() {
-        this.neighbours = new Neighbours(this.environnement, 1);
+        this.neighbours = new Neighbours(this.environment, 1);
     }
 
     @Test
@@ -79,17 +79,17 @@ public class NeighboursTest {
     @Test
     @DisplayName("Block A in (1, 1) should have 1 A neighbour, 2 B neighbours and 4 ZERO neighbours")
     public void countNeighboursFromPosition() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 0);
-        environnement.insert(new Block(BlockValue.A), 1, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 2);
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Block(BlockValue.ZERO), 1, 0);
+        environment.insert(new Block(BlockValue.A), 1, 1);
+        environment.insert(new Block(BlockValue.ZERO), 1, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         Map<BlockValue, Integer> neighboursNumber = neighbours.getNeighboursNumberAt(1, 1);
         assertEquals(1, neighboursNumber.get(BlockValue.A));
@@ -100,17 +100,17 @@ public class NeighboursTest {
     @Test
     @DisplayName("Counts neighbours of all blocks in the environment")
     public void countAllNeighbours() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 0);
-        environnement.insert(new Block(BlockValue.A), 1, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 2);
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Block(BlockValue.ZERO), 1, 0);
+        environment.insert(new Block(BlockValue.A), 1, 1);
+        environment.insert(new Block(BlockValue.ZERO), 1, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         neighbours.calculateNeighbours();
 
@@ -143,18 +143,18 @@ public class NeighboursTest {
     @Test
     @DisplayName("Counts neighbours of all blocks in the environment with neighbourhood size set to 2")
     public void countAllNeighboursWithNeighbourhoodSize() {
-        neighbours = new Neighbours(environnement, 2);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 0);
-        environnement.insert(new Block(BlockValue.A), 1, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 2);
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        neighbours = new Neighbours(environment, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Block(BlockValue.ZERO), 1, 0);
+        environment.insert(new Block(BlockValue.A), 1, 1);
+        environment.insert(new Block(BlockValue.ZERO), 1, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         neighbours.calculateNeighbours();
 
@@ -187,17 +187,17 @@ public class NeighboursTest {
     @Test
     @DisplayName("Block A should have 0 Block B neighbours")
     public void getTotalComputedNeighbours() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 0);
-        environnement.insert(new Block(BlockValue.A), 1, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 1, 2);
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Block(BlockValue.ZERO), 1, 0);
+        environment.insert(new Block(BlockValue.A), 1, 1);
+        environment.insert(new Block(BlockValue.ZERO), 1, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         neighbours.calculateNeighbours();
 

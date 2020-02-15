@@ -1,4 +1,4 @@
-package org.polytech.environnement.exceptions;
+package org.polytech.environment.exceptions;
 
 /**
  * Exception renvoyée lorsque l'environnement tente de manipuler une entité qui n'existe pas sur la grille.

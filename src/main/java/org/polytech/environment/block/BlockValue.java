@@ -1,4 +1,4 @@
-package org.polytech.environnement.block;
+package org.polytech.environment.block;
 
 import org.polytech.utils.Color;
 

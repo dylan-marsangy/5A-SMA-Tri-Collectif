@@ -1,12 +1,13 @@
-package org.polytech.environnement;
+package org.polytech.environment;
 
 import javafx.util.Pair;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
-import org.polytech.environnement.exceptions.CollisionException;
-import org.polytech.environnement.exceptions.MovableNotFoundException;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
+import org.polytech.environment.exceptions.CollisionException;
+import org.polytech.environment.exceptions.MovableNotFoundException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import java.util.Map;
  *
  * @see Movable
  */
-public class Environnement {
+public class Environment {
 
     /**
      * Grille sur laquelle évoluent les blocs.
@@ -25,10 +26,10 @@ public class Environnement {
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
-    private Environnement() {
+    private Environment() {
     }
 
-    public Environnement(int n, int m) throws IllegalArgumentException {
+    public Environment(int n, int m) throws IllegalArgumentException {
         this.grid = new Movable[n][m];
     }
 
@@ -226,6 +227,17 @@ public class Environnement {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Creates a copy of the current Environment's object.
+     *
+     * @return Copy of the object
+     */
+    public Environment save() {
+        Environment environment = new Environment();
+        environment.grid = Arrays.stream(this.grid).map(Movable[]::clone).toArray(Movable[][]::new);
+        return environment;
+    }
 
     @Override
     public String toString() {

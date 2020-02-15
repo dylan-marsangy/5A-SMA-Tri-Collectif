@@ -5,7 +5,7 @@ import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.polytech.ExecutionParameters;
 import org.polytech.SMAConstants;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.block.BlockValue;
 import org.polytech.statistiques.Evaluation;
 
 import java.io.File;

@@ -8,13 +8,13 @@
 # Application
 
 ## Comportement d'un agent
-- A chaque tour, un agent perçoit son environnement et effectue un déplacement aléatoire (en évitant toutefois de rencontrer un autre agent).
+- A chaque tour, un agent perçoit son environment et effectue un déplacement aléatoire (en évitant toutefois de rencontrer un autre agent).
 - Si l'agent ne tient pas de bloc et que sa destination est occupée par un bloc, il tente de le prendre. S'il réussit, il le prend et se déplace sur la case anciennement occupée par le bloc. Sinon, il ne fait rien et reste à sa place.
 - S'il tient un bloc et que sa destination est libre, il y bouge en tentant de déposer au passage le bloc qu'il tient sur sa case d'origine. S'il réussit, il le fait. Sinon, il garde son bloc sur lui.
 
 ## Statistiques calculées à l'exécution
 A chaque exécution de l'algorithme, diverses statistiques sont calculées afin d'estimer la qualité des paramètres donnés en entrée.
-Nous nous sommes principalement concentrés sur les voisinages des blocs posés dans l'environnement à la fin de l'algorithme ainsi que sur les colonies formées.
+Nous nous sommes principalement concentrés sur les voisinages des blocs posés dans l'environment à la fin de l'algorithme ainsi que sur les colonies formées.
 Le détail des indicateurs calculés est disponible ci-dessous :
 - Nombre de blocs A posés
 - Nombre de blocs B posés
@@ -48,7 +48,7 @@ Pour manipuler plus en détails l'algorithme, passez à la section [En mode test
 
 ### Depuis les sources
 Exécutez la fonction `main` de la classe `SMApplicationV1` à la racine du package `org/polytech` dans le dossier des sources `src/main`.
-Cette classe est pourvue de nombreux attributs servant à initialiser l'environnement et les agents (dimensions de la grille, nombre d'agents, constantes pour les formules de prise et dépôt de bloc, etc).
+Cette classe est pourvue de nombreux attributs servant à initialiser l'environment et les agents (dimensions de la grille, nombre d'agents, constantes pour les formules de prise et dépôt de bloc, etc).
 Modifiez-les à votre guise.
 
 ### Avec le JAR (conseillé)
@@ -63,7 +63,7 @@ Si vous souhaitez modifier le nombre d'itérations de l'algorithme ou la fréque
 | -f, --frequency | Fréquence d'affichage de la grille  | Non    | 0.25     |
 
 Par exemple, exécutez la commande `java -jar SMA-Tri-Collectif-1.0-SNAPSHOT.jar` revient à exécuter la commande `java -jar SMA-Tri-Collectif-1.0-SNAPSHOT.jar -i=1600000 -f=0.25`.
-Cela signifie qu'il y aura 1 600 000 itérations pour une exécution et que la grille de l'environnement sera affichée toutes les 1 600 000 * 0.25 = 400 000 itérations.
+Cela signifie qu'il y aura 1 600 000 itérations pour une exécution et que la grille de l'environment sera affichée toutes les 1 600 000 * 0.25 = 400 000 itérations.
 
 **Windows n'est pas votre ami !**
 > Par défaut, le codage ANSI n'est pas activé dans la console Windows. Or l'affichage est basé sur ce codage (affichage couleur).

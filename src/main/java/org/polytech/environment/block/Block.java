@@ -1,6 +1,6 @@
-package org.polytech.environnement.block;
+package org.polytech.environment.block;
 
-import org.polytech.environnement.Movable;
+import org.polytech.environment.Movable;
 
 /**
  * Bloc fixe disposé sur l'environnement.

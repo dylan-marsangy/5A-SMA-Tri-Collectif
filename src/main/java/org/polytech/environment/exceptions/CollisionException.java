@@ -1,4 +1,4 @@
-package org.polytech.environnement.exceptions;
+package org.polytech.environment.exceptions;
 
 /**
  * Exception renvoyée lorsqu'une collision se produit entre deux entités sur la grille.

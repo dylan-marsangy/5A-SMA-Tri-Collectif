@@ -1,14 +1,14 @@
-package org.polytech.environnement;
+package org.polytech.environment;
 
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 import java.util.Random;
 
 /**
  * Environnement aléatoire (génération aléatoire des agents et blocs sur la grille).
  */
-public class RandomEnvironnement extends Environnement {
+public class RandomEnvironment extends Environment {
 
     // CONSTRUCTORS ----------------------------------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ public class RandomEnvironnement extends Environnement {
      * @param nbBlocksB Nombre de blocs de type B à placer
      * @throws IllegalArgumentException S'il y a trop de blocs sur la grille
      */
-    public RandomEnvironnement(int n, int m, int nbBlocksA, int nbBlocksB) throws IllegalArgumentException {
+    public RandomEnvironment(int n, int m, int nbBlocksA, int nbBlocksB) throws IllegalArgumentException {
         super(n, m);
 
         if (nbBlocksA + nbBlocksB >= n * m)

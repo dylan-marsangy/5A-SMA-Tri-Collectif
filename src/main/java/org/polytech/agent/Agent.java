@@ -2,12 +2,12 @@ package org.polytech.agent;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.polytech.agent.strategies.Strategy;
-import org.polytech.environnement.Direction;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
-import org.polytech.environnement.exceptions.CollisionException;
-import org.polytech.environnement.exceptions.MovableNotFoundException;
+import org.polytech.environment.Direction;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
+import org.polytech.environment.exceptions.CollisionException;
+import org.polytech.environment.exceptions.MovableNotFoundException;
 import org.polytech.utils.Color;
 
 import java.util.Map;

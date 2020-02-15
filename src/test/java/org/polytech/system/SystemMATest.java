@@ -5,8 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.RandomEnvironnement;
+import org.polytech.environment.Environment;
+import org.polytech.environment.RandomEnvironment;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,11 +32,11 @@ public class SystemMATest {
     private SystemMA system;
 
     @BeforeEach
-    public void initializeEnvironnement() {
+    public void initializeEnvironment() {
         Agent.cleanID();
 
         // Génération de l'environnement
-        Environnement environnement = new RandomEnvironnement(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
+        Environment environment = new RandomEnvironment(N, M, NB_BLOCKS_A, NB_BLOCKS_B);
 
         // Génération des agents
         Set<Agent> agents = new HashSet<>();
@@ -44,7 +44,7 @@ public class SystemMATest {
                 agents.add(new Agent(I, T, K_PLUS, K_MINUS, ERROR)));
 
         // Génération du système (place les agents dans l'environnement)
-        system = new SystemMA(environnement, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
+        system = new SystemMA(environment, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
 
     }
 

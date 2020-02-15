@@ -1,4 +1,4 @@
-package org.polytech.environnement;
+package org.polytech.environment;
 
 /**
  * Directions possibles de déplacement et de perception sur la grille.

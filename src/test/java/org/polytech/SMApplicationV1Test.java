@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.RandomEnvironnement;
+import org.polytech.environment.Environment;
+import org.polytech.environment.RandomEnvironment;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
 import org.polytech.system.SystemMA;
@@ -163,7 +163,7 @@ public class SMApplicationV1Test {
             System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
 
             // Instantiation de l'environnement
-            Environnement environnement = new RandomEnvironnement(GRID_ROWS, GRID_COLUMNS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
+            Environment environment = new RandomEnvironment(GRID_ROWS, GRID_COLUMNS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
 
             // Génération des agents
             Set<Agent> agents = new HashSet<>();
@@ -171,7 +171,7 @@ public class SMApplicationV1Test {
                     agents.add(new Agent(SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR)));
 
             // Génération du système (place les agents dans l'environnement)
-            SystemMA system = new SystemMA(environnement, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
+            SystemMA system = new SystemMA(environment, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
 
             // Quelques stats simples sur le remplissage de la grille
             System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
@@ -185,7 +185,7 @@ public class SMApplicationV1Test {
             system.run();
 
             // Evaluation de l'environnement à la fin de la simulation
-            Evaluation evaluation = new Evaluation(environnement);
+            Evaluation evaluation = new Evaluation(environment);
             evaluations.add(evaluation);
         }
 

@@ -1,9 +1,9 @@
-package org.polytech.environnement;
+package org.polytech.environment;
 
 /**
  * Une entité implémentant cette interface peut interagir dans un environnement.
  *
- * @see Environnement
+ * @see Environment
  */
 public interface Movable {
 }
