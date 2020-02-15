@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -34,6 +35,9 @@ public class ControllerSystemMA implements Initializable {
 
     @FXML
     private GridPane grid;
+
+    @FXML
+    public ProgressBar progressBar;
 
     @FXML
     private Button startButton;
@@ -70,6 +74,8 @@ public class ControllerSystemMA implements Initializable {
                 refresh(newValue);
             }
         }));
+
+        progressBar.progressProperty().bind(task.progressProperty());
 
         task.setOnSucceeded((event) ->  {
             startButton.setDisable(false);

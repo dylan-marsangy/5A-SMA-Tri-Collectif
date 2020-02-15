@@ -23,35 +23,40 @@ public class TaskSystemMA extends Task<SystemMA> {
     @Override
     protected SystemMA call() throws Exception {
         int frequency = (int) (system.getNbIterations() * system.getFrequencyDiplayGrid());
-        java.lang.System.out.print(system.getEnvironment());
-        java.lang.System.out.println(String.format("0 / %d (0%%)", system.getNbIterations()));
-        java.lang.System.out.println();
-
         int count = 0;
+
+        displayProgress(count);
+
         while (count < system.getNbIterations()) {
             if (isCancelled()) return null;
             count++;
 
             system.execute();
+            updateProgress(count, system.getNbIterations());
 
             // Affichage de la grille résultante si nécessaire.
             if (frequency != 0d && count % frequency == 0) {
-                java.lang.System.out.print(system.getEnvironment());
-                java.lang.System.out.println(String.format("%d / %d (%.0f%%)",
-                        count, system.getNbIterations(), (double) count / system.getNbIterations() * 100));
-                java.lang.System.out.println();
-
+                displayProgress(count);
                 updateValue(system.copy());
             }
         }
 
         if (frequency == 0 || count % frequency != 0) {
-            java.lang.System.out.print(system.getEnvironment());
-            java.lang.System.out.println(String.format("%d / %d (100%%)", count, system.getNbIterations()));
-            java.lang.System.out.println();
+            displayProgress(count);
         }
 
         return system;
+    }
+
+    /**
+     * Affiche en console l'avancement de l'exécution de l'algorithme.
+     *
+     * @param workDone Étape actuelle de l'algorithme
+     */
+    private void displayProgress(long workDone) {
+        System.out.print(system.getEnvironment());
+        System.out.println(String.format("%d / %d (%.0f%%)", workDone, system.getNbIterations(), (double) workDone / system.getNbIterations() * 100));
+        System.out.println();
     }
 
     @Override

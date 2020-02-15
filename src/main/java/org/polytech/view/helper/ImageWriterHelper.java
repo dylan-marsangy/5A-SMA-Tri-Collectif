@@ -33,7 +33,7 @@ public class ImageWriterHelper {
      * @param owner Fenêtre dans laquelle afficher un éventuel message d'erreur
      */
     public static void save(Node node, Window owner) {
-        WritableImage snapshot = node.snapshot(new SnapshotParameters(), null);
+       WritableImage snapshot = node.snapshot(new SnapshotParameters(), null);
         BufferedImage image = SwingFXUtils.fromFXImage(snapshot, null);
         try {
             File output = new File(FILE_NAME);

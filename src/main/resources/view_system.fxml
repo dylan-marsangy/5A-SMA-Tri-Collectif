@@ -11,11 +11,16 @@
             <left>
                 <Label id="header-text" text="SMA Tri collectif"/>
             </left>
+
+            <right>
+                <ProgressBar fx:id="progressBar" progress="0">
+                </ProgressBar>
+            </right>
         </BorderPane>
     </top>
 
     <center>
-        <ScrollPane>
+        <ScrollPane styleClass="content-section">
             <GridPane fx:id="grid" alignment="center">
             </GridPane>
         </ScrollPane>
