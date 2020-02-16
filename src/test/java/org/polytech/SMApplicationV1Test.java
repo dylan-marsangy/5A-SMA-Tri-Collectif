@@ -9,7 +9,7 @@ import org.polytech.statistiques.excel.ExcelGenerator;
 import org.polytech.statistiques.excel.ExecutionParameters;
 import org.polytech.system.SystemMA;
 import org.polytech.system.SystemMAFactory;
-import org.polytech.utils.Color;
+import org.polytech.utils.ColorConsole;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,13 +154,13 @@ public class SMApplicationV1Test {
             // Affichage console pour différencier les différentes itérations.
             IntStream.rangeClosed(1, 3).forEach(index ->
                     System.out.println(
-                            Color.CYAN +
+                            ColorConsole.CYAN +
                                     "===============================================================================" +
                                     "===============================================================================" +
                                     "===============================================================================" +
-                                    Color.RESET));
-            System.out.println(Color.CYAN + String.format("Execution n°%d", i + 1) + Color.RESET);
-            System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
+                                    ColorConsole.RESET));
+            System.out.println(ColorConsole.CYAN + String.format("Execution n°%d", i + 1) + ColorConsole.RESET);
+            System.out.println(ColorConsole.CYAN + "-----------------------" + ColorConsole.RESET);
 
             // Génération du système (place les agents dans l'environnement)
             SystemMA system = SystemMAFactory.instantiateRandom(

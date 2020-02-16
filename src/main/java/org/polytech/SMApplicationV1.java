@@ -5,32 +5,21 @@ import org.polytech.statistiques.excel.ExcelGenerator;
 import org.polytech.statistiques.excel.ExecutionParameters;
 import org.polytech.system.SystemMA;
 import org.polytech.system.SystemMAFactory;
-import org.polytech.utils.Color;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.IntStream;
+
+import static org.polytech.SMAConstants.*;
 
 @Command(name = "sma-tri-collectif",
         version = "SMA Tri Collectif 1.0",
         description = "Effectue un tri collectif par un SMA de blocs de 2 types de valeur.",
         mixinStandardHelpOptions = true)
 public class SMApplicationV1 implements Callable<Integer> {
-
-    private static final int NUMBER_BLOCKS_A = 100;
-    private static final int NUMBER_BLOCKS_B = 100;
-    private static final int NUMBER_AGENTS = 20;
-    private static final int GRID_ROWS = 50; // N
-    private static final int GRID_COLUMNS = 50; // M
-    private static final int MEMORY_SIZE = 10; // t
-    private static final int SUCCESSIVE_MOVEMENTS = 1; // i
-    private static final double K_MINUS = 0.3; // k-
-    private static final double K_PLUS = 0.1; // k+
-    private static final double ERROR = 0d; // e
 
     @Option(names = {"-f", "--frequency"},
             description = "frequence d'affichage de l'environnement (default : ${DEFAULT-VALUE})",
@@ -62,48 +51,33 @@ public class SMApplicationV1 implements Callable<Integer> {
         }
 
         try {
-            List<Evaluation> evaluations = new ArrayList<>();
-
             ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
             ExecutionParameters executionParameters = new ExecutionParameters(
-                    SMAConstants.NB_RUN,
+                    1,
                     NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
                     GRID_ROWS, GRID_COLUMNS,
                     MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
 
-            for (int i = 0; i < SMAConstants.NB_RUN; i++) {
-                // Affichage console pour différencier les différentes itérations.
-                IntStream.rangeClosed(1, 3).forEach(index ->
-                        System.out.println(
-                                Color.CYAN +
-                                        "===============================================================================" +
-                                        "===============================================================================" +
-                                        "===============================================================================" +
-                                        Color.RESET));
-                System.out.println(Color.CYAN + String.format("Execution n°%d", i + 1) + Color.RESET);
-                System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
+            // Génération du système
+            SystemMA system = SystemMAFactory.instantiateRandom(
+                    GRID_ROWS, GRID_COLUMNS, NUMBER_AGENTS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B,
+                    SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR);
 
-                // Génération du système
-                SystemMA system = SystemMAFactory.instantiateRandom(
-                        GRID_ROWS, GRID_COLUMNS, NUMBER_AGENTS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B,
-                        SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR);
+            System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
+                    (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
+                    (double) (NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
+                    (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B) / (GRID_COLUMNS * GRID_COLUMNS) * 100));
 
-                System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
-                        (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
-                        (double) (NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
-                        (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B) / (GRID_COLUMNS * GRID_COLUMNS) * 100));
+            System.out.println();
+            system.run(iterations, frequency); // Exécution du système
 
-                System.out.println();
-                system.run(); // Exécution du système
-
-                Evaluation evaluation = new Evaluation(system.getEnvironment(), SMAConstants.NEIGHBOURHOOD_SIZE);
-                evaluations.add(evaluation);
-            }
+            Evaluation evaluation = new Evaluation(system.getEnvironment(), SMAConstants.NEIGHBOURHOOD_SIZE);
+            List<Evaluation> evaluations = Collections.singletonList(evaluation);
 
             excelGenerator.save(evaluations, executionParameters, "SMApplicationV1");
             return 0;
         } catch (Exception e) {
-            System.err.println("Une erreur imprévue est survenue lors de l'écriture du fichier 'extern/demo.xlsx'.");
+            System.err.println(e.getMessage());
             return -1;
         }
     }

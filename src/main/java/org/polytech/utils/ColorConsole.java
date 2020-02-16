@@ -1,6 +1,6 @@
 package org.polytech.utils;
 
-public enum Color {
+public enum ColorConsole {
     RESET("\033[0m"),
 
     // Regular Colors
@@ -75,7 +75,7 @@ public enum Color {
 
     private final String code;
 
-    Color(String code) {
+    ColorConsole(String code) {
         this.code = code;
     }
 

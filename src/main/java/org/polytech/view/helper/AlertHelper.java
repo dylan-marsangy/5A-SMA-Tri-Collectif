@@ -46,7 +46,8 @@ public class AlertHelper {
 
     /**
      * Affiche une alerte de confirmation.
-     *  @param owner   Fenêtre dans laquelle afficher l'erreur
+     *
+     * @param owner   Fenêtre dans laquelle afficher l'erreur
      * @param title   Titre de l'alerte
      * @param message Message de l'alerte
      * @return True si la confirmation a été validée par l'utilisateur, false sinon

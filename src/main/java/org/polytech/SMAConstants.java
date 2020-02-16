@@ -17,6 +17,54 @@ public class SMAConstants {
      */
     public final static double FREQUENCY_DISPLAY_GRID = 0.25;
 
+    // ENVIRONNEMENT & AGENTS ------------------------------------------------------------------------------------------
+
+    // ENVIRONNEMENT
+
+    /**
+     * Nombre de lignes de la grille de l'environnement.
+     */
+    public static final int GRID_ROWS = 50; // N
+    /**
+     * Nombre de colonnes de la grille de l'environnement.
+     */
+    public static final int GRID_COLUMNS = 50; // M
+    /**
+     * Nombre de blocs A à générer dans l'environnement.
+     */
+    public static final int NUMBER_BLOCKS_A = 200;
+    /**
+     * Nombre de blocs B à générer dans l'environnement.
+     */
+    public static final int NUMBER_BLOCKS_B = 200;
+    /**
+     * Nombre d'agents à générer et placer dans l'environnement.
+     */
+    public static final int NUMBER_AGENTS = 20;
+
+    // AGENTS
+
+    /**
+     * Taille de la mémoire des agents.
+     */
+    public static final int MEMORY_SIZE = 10; // t
+    /**
+     * Distance de perception et de déplacement des agents.
+     */
+    public static final int SUCCESSIVE_MOVEMENTS = 1; // i
+    /**
+     * Valeur k+ des agents.
+     */
+    public static final double K_PLUS = 0.1; // k+
+    /**
+     * Valeur k- des agents.
+     */
+    public static final double K_MINUS = 0.3; // k-
+    /**
+     * Valeur d'erreur de perception des agents.
+     */
+    public static final double ERROR = 0d; // e
+
     // EVALUATION ------------------------------------------------------------------------------------------------------
 
     /**

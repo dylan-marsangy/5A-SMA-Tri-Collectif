@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.function.Function;
 
 /**
  * Classe utilitaire pour la sauvegarde d'images.
@@ -43,11 +42,12 @@ public class ImageWriterHelper {
 
     /**
      * Sauvegarde un node dans le format référencé par {@link #FILE_FORMAT}.
-     * @param node Noeud JavaFX à sauvegarder
+     *
+     * @param node  Noeud JavaFX à sauvegarder
      * @param owner Fenêtre dans laquelle afficher un éventuel message d'erreur
      */
     public static void save(Node node, Window owner) {
-       WritableImage snapshot = node.snapshot(new SnapshotParameters(), null);
+        WritableImage snapshot = node.snapshot(new SnapshotParameters(), null);
         BufferedImage image = SwingFXUtils.fromFXImage(snapshot, null);
         try {
             String fileName = generateFileName();

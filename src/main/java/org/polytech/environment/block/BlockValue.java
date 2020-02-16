@@ -1,29 +1,29 @@
 package org.polytech.environment.block;
 
-import org.polytech.utils.Color;
+import org.polytech.utils.ColorConsole;
 
 /**
  * Valeur d'un bloc.
  */
 public enum BlockValue {
-    A("A", Color.BLUE_BACKGROUND), B("B", Color.RED_BACKGROUND), ZERO("0", Color.RESET);
+    A("A", ColorConsole.BLUE_BACKGROUND), B("B", ColorConsole.RED_BACKGROUND), ZERO("0", ColorConsole.RESET);
 
     /**
      * Couleur d'affichage console de la valeur.
      */
-    private Color color;
+    private ColorConsole colorConsole;
     /**
      * Valeur d'un bloc.
      */
     private String value;
 
-    BlockValue(String value, Color color) {
+    BlockValue(String value, ColorConsole colorConsole) {
         this.value = value;
-        this.color = color;
+        this.colorConsole = colorConsole;
     }
 
     @Override
     public String toString() {
-        return this.color + this.value + Color.RESET;
+        return this.colorConsole + this.value + ColorConsole.RESET;
     }
 }

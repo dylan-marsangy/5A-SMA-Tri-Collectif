@@ -6,13 +6,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
+import javafx.util.converter.IntegerStringConverter;
+import org.polytech.SMAConstants;
 import org.polytech.system.SystemMA;
 import org.polytech.view.helper.AlertHelper;
 import org.polytech.view.helper.ImageWriterHelper;
@@ -20,15 +18,13 @@ import org.polytech.view.helper.NodeHelper;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
-import static org.polytech.SMApplicationV1.*;
+import static org.polytech.SMAConstants.*;
 
 public class ControllerSystemMA implements Initializable {
 
-    private TaskSystemMA task;
-
-    @FXML
-    private BorderPane root;
+    private ServiceSystemMA service;
 
     @FXML
     private GridPane grid;
@@ -48,11 +44,15 @@ public class ControllerSystemMA implements Initializable {
     @FXML
     private Slider sliderFrequency;
 
+    @FXML
+    private TextField inputIterations;
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initInputs();
+
         // Statistiques sommaires du système
         System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
                 (double) (NUMBER_BLOCKS_A + NUMBER_BLOCKS_B + NUMBER_AGENTS) / (GRID_COLUMNS * GRID_COLUMNS) * 100,
@@ -62,21 +62,21 @@ public class ControllerSystemMA implements Initializable {
         System.out.println();
     }
 
-    private void initTask() {
-        task = new TaskSystemMA();
+    private void initService() {
+        service = new ServiceSystemMA();
 
-        // A chaque fois que la tâche envoie une notification, mise à jour de l'UI
-        task.valueProperty().addListener(((observable, oldValue, newValue) -> {
+        // A chaque fois que le service envoie une notification de progression, mise à jour de la grille
+        service.valueProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 refresh(newValue);
             }
         }));
 
         // A chaque nouvelle itération de l'algorithme, mise à jour de la bar de progression
-        progressBar.progressProperty().bind(task.progressProperty());
+        progressBar.progressProperty().bind(service.progressProperty());
 
         // Quand l'algorithme est terminé, on réinitialise les boutons de l'UI
-        task.setOnSucceeded((event) -> {
+        service.setOnSucceeded((event) -> {
             startButton.setDisable(false);
             cancelButton.setDisable(true);
             AlertHelper.showAlert(Alert.AlertType.INFORMATION, grid.getScene().getWindow(),
@@ -86,7 +86,12 @@ public class ControllerSystemMA implements Initializable {
         });
 
         // Mise à jour de la fréquence d'affichage selon l'input de l'utilisateur
-        sliderFrequency.valueProperty().bindBidirectional(task.frequencyUpdateUIProperty());
+        sliderFrequency.valueProperty().bindBidirectional(service.frequencyUpdateUIProperty());
+
+        // Mise à jour de l'input itérations lors du redémarrage du service
+        service.maxIterationsProperty().addListener((observable, oldValue, newValue) ->
+                inputIterations.setText(newValue.toString())
+        );
     }
 
     private void initGrid(SystemMA system) {
@@ -103,6 +108,23 @@ public class ControllerSystemMA implements Initializable {
                 grid.add(node, i, j);
             }
         }
+    }
+
+    private void initInputs() {
+        // Autoriser uniquement les inputs de chiffres. Tout autre input sera ignoré.
+        UnaryOperator<TextFormatter.Change> integerFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.matches("-?([1-9][0-9]*)?")) {
+                return change;
+            }
+            return null;
+        };
+
+        IntegerStringConverter converter = new IntegerStringConverter();
+        inputIterations.setTextFormatter(new TextFormatter<>(
+                converter,
+                SMAConstants.ITERATION_LOOPS,
+                integerFilter));
     }
 
     // ACTION ----------------------------------------------------------------------------------------------------------
@@ -124,10 +146,9 @@ public class ControllerSystemMA implements Initializable {
         cancelButton.setDisable(false);
         saveButton.setDisable(false);
 
-        initTask();
-        initGrid(task.getSystem());
+        initService();
         try {
-            new Thread(task).start();
+            service.restart();
         } catch (Exception e) {
             Window owner = startButton.getScene().getWindow();
             AlertHelper.showError(owner, "Exécution de l'algorithme", e.getMessage());
@@ -140,7 +161,7 @@ public class ControllerSystemMA implements Initializable {
         cancelButton.setDisable(true);
 
         try {
-            task.cancel();
+            service.cancel();
         } catch (Exception e) {
             Window owner = cancelButton.getScene().getWindow();
             AlertHelper.showError(owner, "Interruption de l'algorithme", e.getMessage());
@@ -170,5 +191,10 @@ public class ControllerSystemMA implements Initializable {
         }));
     }
 
+    @FXML
+    public void onIterationChanged(ActionEvent inputMethodEvent) {
+        // Mise à jour de nombre maximal d'itérations selon l'input de l'utilisateur
+        service.setMaxIterations(Integer.parseInt(inputIterations.getText()));
+    }
 }
 

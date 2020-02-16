@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.polytech.view.ControllerSystemMA"
-            id="window" fx:id="root">
+            id="window">
     <top>
         <BorderPane styleClass="header-section">
             <left>
@@ -31,6 +31,9 @@
             <Slider fx:id="sliderFrequency"
                     max="1" blockIncrement="0.10" majorTickUnit="0.1" minorTickCount="10"
                     showTickMarks="true" snapToTicks="true"/>
+
+            <Label text="Nombre d'itérations"/>
+            <TextField fx:id="inputIterations" onAction="#onIterationChanged" />
         </VBox>
     </right>
 

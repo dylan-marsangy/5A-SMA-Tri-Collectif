@@ -3,33 +3,30 @@ package org.polytech.statistiques.excel;
 import org.apache.poi.ss.usermodel.*;
 
 /**
- * Classe générant des styles à appliquer dans l'Excel
+ * Classe utilitaire générant des styles à appliquer dans les fichiers Excel.
  */
 public class ExcelStyles {
 
     /**
-     * Crée une police spécifique pour les entêtes des paramètres
+     * Renvoie la police spécifique à utiliser pour les en-têtes des paramètres d'exécution de l'algorithme.
      *
      * @param wb Workbook où appliquer le style
-     * @return Font à appliquer au cellStyle
+     * @return Font à appliquer aux cellules
      */
-    public static Font getParamLeadFont(Workbook wb) {
+    private static Font getParamLeadFont(Workbook wb) {
         Font font = wb.createFont();
-        // police et taille
         font.setFontHeightInPoints((short) 10);
         font.setFontName("Arial");
-        // met en gras
         font.setBold(true);
         return font;
     }
 
-
     /**
-     * Récupère le style à appliquer aux cellules contenant les paramètres d'exécution
+     * Renvoie le style à appliquer aux cellules contenant les paramètres d'exécution de l'algorithme.
      *
      * @param wb   Workbook où appliquer le style
-     * @param lead boolean à true si la cellule est dans les entêtes
-     * @return CellStyle
+     * @param lead Indique si la cellule est dans les en-têtes ou non
+     * @return Style à appliquer aux cellules
      */
     public static CellStyle getParamsStyle(Workbook wb, boolean lead) {
         CellStyle cellStyle = wb.createCellStyle();
@@ -44,16 +41,14 @@ public class ExcelStyles {
         return cellStyle;
     }
 
-
     /**
-     * Retourne la police à utiliser pour les entêtes des résultats d'exécution
+     * Retourne la police à utiliser pour les en-têtes des résultats des évaluations des exécutions de l'algorithme.
      *
      * @param wb Workbook où appliquer la police
-     * @return Font
+     * @return Font à appliquer aux cellules
      */
-    public static Font getEvaluationLeadFont(Workbook wb) {
+    private static Font getEvaluationLeadFont(Workbook wb) {
         Font font = wb.createFont();
-        // police et taille
         font.setFontHeightInPoints((short) 10);
         font.setFontName("Arial");
         font.setBold(true);
@@ -62,10 +57,10 @@ public class ExcelStyles {
 
 
     /**
-     * Retourne le style à appliquer sur une cellule contenant les résultats d'exécution
+     * Renvoie le style à appliquer sur une cellule contenant les résultats des évaluations des exécutions de l'algorithme.
      *
-     * @param wb   Workbook
-     * @param lead boolean à true si le style doit être appliqué sur un entête
+     * @param wb   Workbook où appliquer la police
+     * @param lead Indique si la cellule est dans les en-têtes ou non
      * @return CellStyle
      */
     public static CellStyle getEvaluationStyle(Workbook wb, boolean lead) {

@@ -1,5 +1,6 @@
 package org.polytech.system;
 
+import org.polytech.SMAConstants;
 import org.polytech.agent.Agent;
 import org.polytech.agent.strategies.StrategyMove;
 import org.polytech.agent.strategies.StrategyPickUp;
@@ -10,7 +11,10 @@ import org.polytech.environment.Movable;
 import org.polytech.environment.block.Block;
 import org.polytech.environment.block.BlockValue;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Système étant principalement caractérisé par un environnement (avec les blocs à trier) et les agents y évoluant.
@@ -29,29 +33,16 @@ public class SystemMA {
      */
     private Environment environment;
 
-    /**
-     * Nombre d'itérations de l'exécution de l'algorithme (nombre de fois où un agent exécute une action dans l'environnement).
-     */
-    private int nbIterations;
+    private SystemMA() {
+    }
 
-    /**
-     * Fréquence d'affichage de la grille lors d'une exécution de l'algorithme.
-     */
-    private double frequencyDiplayGrid;
-
-    private SystemMA() {}
-
-    public SystemMA(Environment environment,
-                    Set<Agent> agents,
-                    int nbIterations, double frequencyDiplayGrid) throws IllegalArgumentException {
+    public SystemMA(Environment environment, Set<Agent> agents) throws IllegalArgumentException {
         Map<BlockValue, Integer> countBlocks = environment.getNbBlocks();
         if (agents.size() + countBlocks.get(BlockValue.A) + countBlocks.get(BlockValue.B)
                 >= environment.getNbRows() * environment.getNbColumns())
             throw new IllegalArgumentException("Il y a trop d'entités par rapport aux dimensions de la grille.");
 
         this.environment = environment;
-        this.nbIterations = nbIterations;
-        this.frequencyDiplayGrid = frequencyDiplayGrid;
 
         this.agents = agents;
         placeAgentsOnGrid();
@@ -82,26 +73,56 @@ public class SystemMA {
 
     /**
      * Exécute l'algorithme de tri collectif (exécution du système) sur plusieurs itérations.
+     * Le nombre maximal d'itérations est donné par la valeur de la constante {@link SMAConstants#ITERATION_LOOPS}.
+     * La fréquence d'affichage de la grille de l'environnement en console est donnée par la valeur de la constante {@link SMAConstants#FREQUENCY_DISPLAY_GRID}.
      */
     public void run() {
-        int frequency = (int) (nbIterations * frequencyDiplayGrid);
+        run(SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
+    }
+
+    /**
+     * Exécute l'algorithme de tri collectif (exécution du système) sur plusieurs itérations.
+     * La fréquence d'affichage de la grille de l'environnement en console est donnée par la valeur de la constante {@link SMAConstants#FREQUENCY_DISPLAY_GRID}.
+     */
+    public void run(double frequencyDisplayGrid) {
+        run(SMAConstants.ITERATION_LOOPS, frequencyDisplayGrid);
+    }
+
+    /**
+     * Exécute l'algorithme de tri collectif (exécution du système) sur plusieurs itérations.
+     * La fréquence d'affichage de la grille de l'environnement en console est donnée par la valeur de la constante {@link SMAConstants#FREQUENCY_DISPLAY_GRID}.
+     *
+     * @param maxIterations Nombre maximal d'itérations de l'algorithme
+     */
+    public void run(int maxIterations) {
+        run(maxIterations, SMAConstants.FREQUENCY_DISPLAY_GRID);
+    }
+
+    /**
+     * Exécute l'algorithme de tri collectif (exécution du système) sur plusieurs itérations.
+     *
+     * @param maxIterations        Nombre maximal d'itérations de l'algorithme
+     * @param frequencyDisplayGrid Fréquence d'affichage de la progression de l'environnement du système
+     */
+    public void run(int maxIterations, double frequencyDisplayGrid) {
+        int frequency = (int) (maxIterations * frequencyDisplayGrid);
         int count = 0;
 
-        displayProgress(count);
+        displayProgress(count, maxIterations);
 
-        while (count < nbIterations) {
+        while (count < maxIterations) {
             count++;
 
             execute();
 
             // Affichage de la grille résultante si nécessaire.
             if (frequency != 0d && count % frequency == 0) {
-                displayProgress(count);
+                displayProgress(count, maxIterations);
             }
         }
 
         if (frequency == 0 || count % frequency != 0) {
-            displayProgress(count);
+            displayProgress(count, maxIterations);
         }
     }
 
@@ -165,11 +186,13 @@ public class SystemMA {
 
     /**
      * Affiche en console le progrès de l'exécution de l'algorithme.
+     *
      * @param count Étape actuelle de l'algorithme
+     * @param max   Nombre maximal d'étapes de l'algorithme
      */
-    private void displayProgress(int count) {
+    private void displayProgress(int count, int max) {
         System.out.print(environment);
-        System.out.println(String.format("%d / %d (%.0f%%)", count, nbIterations, (double) count / nbIterations * 100));
+        System.out.println(String.format("%d / %d (%.0f%%)", count, max, (double) count / max * 100));
         System.out.println();
     }
 
@@ -193,8 +216,6 @@ public class SystemMA {
         SystemMA copy = new SystemMA();
         copy.environment = this.environment.copy();
         copy.agents = new HashSet<>(agents);
-        copy.nbIterations = this.nbIterations;
-        copy.frequencyDiplayGrid = this.frequencyDiplayGrid;
         return copy;
     }
 
@@ -205,14 +226,6 @@ public class SystemMA {
 
     public Environment getEnvironment() {
         return environment;
-    }
-
-    public int getNbIterations() {
-        return nbIterations;
-    }
-
-    public double getFrequencyDiplayGrid() {
-        return frequencyDiplayGrid;
     }
 
 }

@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Construit un fichier Excel avec les résultats (statistiques) des évaluations faites sur les exécutions de l'algorithme de tri.
+ * Classe utilitaire construisant un fichier Excel avec les résultats (statistiques) des évaluations faites sur les exécutions de l'algorithme de tri.
  * Implémente le pattern singleton.
  */
 public class ExcelGenerator {
