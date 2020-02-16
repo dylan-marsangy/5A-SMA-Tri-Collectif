@@ -13,6 +13,13 @@ root {
 .header-section Label {
     -fx-text-fill: #ffffff;
     -fx-padding: 10px;
+    -fx-font-weight: bold;
+}
+
+.header-section ProgressBar {
+    -fx-padding: 10px;
+    -fx-alignment: baseline-center;
+    -fx-pref-width: 200px;
 }
 
 .header-section ProgressBar > .track {
@@ -20,7 +27,6 @@ root {
     -fx-control-inner-background: palegreen;
     -fx-background-insets: 3 3 4 3;
     -fx-background-radius: 2;
-    -fx-padding: 10px;
 }
 
 .content-section {
@@ -64,4 +70,8 @@ root {
     -fx-padding: 10 10 10 10;
     -fx-border-width: 1;
     -fx-border-color: #E8E8E8 transparent transparent transparent;
+}
+
+#footer-section Label {
+    -fx-font-style: italic;
 }
