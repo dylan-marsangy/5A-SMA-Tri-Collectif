@@ -6,8 +6,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
@@ -32,17 +34,19 @@ public class ControllerSystemMA implements Initializable {
     private GridPane grid;
 
     @FXML
-    public ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @FXML
     private Button startButton;
 
     @FXML
-    public Button saveButton;
+    private Button saveButton;
 
     @FXML
-    public Button cancelButton;
+    private Button cancelButton;
 
+    @FXML
+    private Slider sliderFrequency;
 
 
     // INITIALIZATION --------------------------------------------------------------------------------------------------
@@ -59,23 +63,30 @@ public class ControllerSystemMA implements Initializable {
     }
 
     private void initTask() {
-        // Instanciation de la tâche
         task = new TaskSystemMA();
 
-        // Configuration de la tâche
+        // A chaque fois que la tâche envoie une notification, mise à jour de l'UI
         task.valueProperty().addListener(((observable, oldValue, newValue) -> {
-            // A chaque fois que la tâche envoie une notification, mise à jour de l'UI
             if (newValue != null) {
                 refresh(newValue);
             }
         }));
 
+        // A chaque nouvelle itération de l'algorithme, mise à jour de la bar de progression
         progressBar.progressProperty().bind(task.progressProperty());
 
-        task.setOnSucceeded((event) ->  {
+        // Quand l'algorithme est terminé, on réinitialise les boutons de l'UI
+        task.setOnSucceeded((event) -> {
             startButton.setDisable(false);
             cancelButton.setDisable(true);
+            AlertHelper.showAlert(Alert.AlertType.INFORMATION, grid.getScene().getWindow(),
+                    "Exécution du système",
+                    "Fin de simulation",
+                    "L'exécution s'est terminée avec succès !");
         });
+
+        // Mise à jour de la fréquence d'affichage selon l'input de l'utilisateur
+        sliderFrequency.valueProperty().bindBidirectional(task.frequencyUpdateUIProperty());
     }
 
     private void initGrid(SystemMA system) {
@@ -83,7 +94,7 @@ public class ControllerSystemMA implements Initializable {
         for (int i = 0; i < system.getEnvironment().getNbRows(); i++) {
             for (int j = 0; j < system.getEnvironment().getNbColumns(); j++) {
                 // Instantie un node selon le contenu de la case dans l'environnement
-                node = NodeHelper.instantiateNode(root, system, j, i);
+                node = NodeHelper.instantiateNode(grid, system, j, i);
 
                 // Index du noeud dans la grille
                 GridPane.setRowIndex(node, i);
@@ -96,7 +107,7 @@ public class ControllerSystemMA implements Initializable {
 
     // ACTION ----------------------------------------------------------------------------------------------------------
 
-    public void clean() {
+    private void clean() {
         grid.getChildren().clear();
     }
 
@@ -106,7 +117,9 @@ public class ControllerSystemMA implements Initializable {
     }
 
     @FXML
-    public void start(ActionEvent mouseEvent) {
+    private void start(ActionEvent mouseEvent) {
+        progressBar.setVisible(true);
+        sliderFrequency.setVisible(true);
         startButton.setDisable(true);
         cancelButton.setDisable(false);
         saveButton.setDisable(false);
@@ -122,7 +135,7 @@ public class ControllerSystemMA implements Initializable {
     }
 
     @FXML
-    public void cancel(ActionEvent actionEvent) {
+    private void cancel(ActionEvent actionEvent) {
         startButton.setDisable(false);
         cancelButton.setDisable(true);
 
@@ -135,7 +148,7 @@ public class ControllerSystemMA implements Initializable {
     }
 
     @FXML
-    public void save(ActionEvent actionEvent) {
+    private void save(ActionEvent actionEvent) {
         Window owner = saveButton.getScene().getWindow();
         saveAsPng(owner);
     }
@@ -156,5 +169,6 @@ public class ControllerSystemMA implements Initializable {
             }
         }));
     }
+
 }
 

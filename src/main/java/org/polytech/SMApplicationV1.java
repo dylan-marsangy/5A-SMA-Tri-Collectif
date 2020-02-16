@@ -2,6 +2,7 @@ package org.polytech;
 
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import org.polytech.statistiques.excel.ExecutionParameters;
 import org.polytech.system.SystemMA;
 import org.polytech.system.SystemMAFactory;
 import org.polytech.utils.Color;
@@ -64,8 +65,11 @@ public class SMApplicationV1 implements Callable<Integer> {
             List<Evaluation> evaluations = new ArrayList<>();
 
             ExcelGenerator excelGenerator = ExcelGenerator.getInstance();
-            ExecutionParameters executionParameters = new ExecutionParameters(NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
-                    GRID_ROWS, GRID_COLUMNS, MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
+            ExecutionParameters executionParameters = new ExecutionParameters(
+                    SMAConstants.NB_RUN,
+                    NUMBER_BLOCKS_A, NUMBER_BLOCKS_B, NUMBER_AGENTS,
+                    GRID_ROWS, GRID_COLUMNS,
+                    MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
 
             for (int i = 0; i < SMAConstants.NB_RUN; i++) {
                 // Affichage console pour différencier les différentes itérations.
@@ -96,7 +100,7 @@ public class SMApplicationV1 implements Callable<Integer> {
                 evaluations.add(evaluation);
             }
 
-            excelGenerator.fillExcel(evaluations, executionParameters, "SMApplicationV1");
+            excelGenerator.save(evaluations, executionParameters, "SMApplicationV1");
             return 0;
         } catch (Exception e) {
             System.err.println("Une erreur imprévue est survenue lors de l'écriture du fichier 'extern/demo.xlsx'.");

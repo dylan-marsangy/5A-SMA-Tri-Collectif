@@ -26,6 +26,9 @@ public class ImageWriterHelper {
      */
     private static final String FOLDER = "extern/snapshots";
 
+    /**
+     * Préfixe attaché à chaque fichier généré.
+     */
     private static final String FILE_NAME_PREFIX = "snapshot";
 
     /**
@@ -39,12 +42,6 @@ public class ImageWriterHelper {
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM@HH-mm-ss");
 
     /**
-     * Générateur du chemin d'accès d'une image à sauvegarder.
-     */
-    private static final Function<String, String> GENERATOR_FILE_NAME = (String filename) ->
-            String.format("%s/%s-%s.%s", FOLDER, FILE_NAME_PREFIX, filename, FILE_FORMAT);
-
-    /**
      * Sauvegarde un node dans le format référencé par {@link #FILE_FORMAT}.
      * @param node Noeud JavaFX à sauvegarder
      * @param owner Fenêtre dans laquelle afficher un éventuel message d'erreur
@@ -53,7 +50,7 @@ public class ImageWriterHelper {
        WritableImage snapshot = node.snapshot(new SnapshotParameters(), null);
         BufferedImage image = SwingFXUtils.fromFXImage(snapshot, null);
         try {
-            String fileName = GENERATOR_FILE_NAME.apply(generateFileName());
+            String fileName = generateFileName();
             File output = new File(fileName);
 
             if (output.getParentFile().mkdirs() || output.createNewFile() || output.exists()) { // Créer le dossier si nécessaire
@@ -86,7 +83,7 @@ public class ImageWriterHelper {
      * @return Nom de fichier.
      */
     private static String generateFileName() {
-        return DATE_FORMAT.format(new Date());
+        return String.format("%s/%s-%s.%s", FOLDER, FILE_NAME_PREFIX, DATE_FORMAT.format(new Date()), FILE_FORMAT);
     }
 
 }

@@ -16,6 +16,7 @@ public class ViewSystemMA extends Application {
 
         primaryStage.setTitle("SMA Tri collectif");
         primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

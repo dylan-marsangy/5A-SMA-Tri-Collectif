@@ -4,19 +4,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.polytech.agent.Agent;
-import org.polytech.environment.Environment;
-import org.polytech.environment.RandomEnvironment;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import org.polytech.statistiques.excel.ExecutionParameters;
 import org.polytech.system.SystemMA;
 import org.polytech.system.SystemMAFactory;
 import org.polytech.utils.Color;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 @DisplayName("Application Tests")
@@ -148,8 +144,11 @@ public class SMApplicationV1Test {
                               int gridRows, int gridColumns,
                               int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
         List<Evaluation> evaluations = new ArrayList<>();
-        ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
-                gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
+        ExecutionParameters executionParameters = new ExecutionParameters(
+                SMAConstants.NB_RUN,
+                numberBlocksA, numberBlocksB, numberAgents,
+                gridRows, gridColumns,
+                memorySize, successiveMovements, kMinus, kPlus, error);
 
         for (int i = 0; i < SMAConstants.NB_RUN; i++) {
             // Affichage console pour différencier les différentes itérations.
@@ -185,6 +184,6 @@ public class SMApplicationV1Test {
         }
 
         // Remplissage de la feuille Excel
-        excelGenerator.fillExcel(evaluations, executionParameters, executionName);
+        excelGenerator.save(evaluations, executionParameters, executionName);
     }
 }

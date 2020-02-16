@@ -4,8 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.polytech.view.ControllerSystemMA"
-            fx:id="root"
-            prefHeight="900" prefWidth="1000">
+            id="window" fx:id="root">
     <top>
         <BorderPane styleClass="header-section">
             <left>
@@ -13,17 +12,13 @@
             </left>
 
             <right>
-                <ProgressBar fx:id="progressBar" progress="0">
-                </ProgressBar>
+                <ProgressBar fx:id="progressBar" progress="0" visible="false"/>
             </right>
         </BorderPane>
     </top>
 
     <center>
-        <ScrollPane styleClass="content-section">
-            <GridPane fx:id="grid" alignment="center">
-            </GridPane>
-        </ScrollPane>
+        <GridPane fx:id="grid" styleClass="content-section"/>
     </center>
 
     <right>
@@ -31,7 +26,11 @@
             <Button fx:id="startButton" text="Start" onAction="#start"/>
             <Button fx:id="cancelButton" text="Cancel" onAction="#cancel" disable="true"/>
             <Button fx:id="saveButton" text="Save" onAction="#save" disable="true"/>
-            <Label text="Sidebar Item4"/>
+
+            <Label text="Fréquence de MàJ"/>
+            <Slider fx:id="sliderFrequency"
+                    max="1" blockIncrement="0.10" majorTickUnit="0.1" minorTickCount="10"
+                    showTickMarks="true" snapToTicks="true"/>
         </VBox>
     </right>
 
