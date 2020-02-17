@@ -3,43 +3,68 @@ package org.polytech.statistiques.excel;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.polytech.ExecutionParameters;
-import org.polytech.SMAConstants;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.block.BlockValue;
 import org.polytech.statistiques.Evaluation;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
- * Construit un Excel avec les résultat des évaluations faites sur les exécutions de l'algorithme
- * Implémente le pattern singleton
+ * Classe utilitaire construisant un fichier Excel avec les résultats (statistiques) des évaluations faites sur les exécutions de l'algorithme de tri.
+ * Implémente le pattern singleton.
  */
 public class ExcelGenerator {
 
+    /**
+     * Instance unique de la classe.
+     */
     private static final ExcelGenerator instance = new ExcelGenerator();
-    // nom de l'Excel dans lequel écrire les résultats
-    private final String fileName = "extern/demo.xlsx";
+
+    /**
+     * Dossier de sauvegarde des fichiers Excel.
+     */
+    private static final String FOLDER = "extern/stats";
+
+    /**
+     * Préfixe attaché à chaque fichier généré.
+     */
+    private static final String FILE_NAME_PREFIX = "demo";
+
+    /**
+     * Format de sauvegarde des fichiers Excel.
+     */
+    private static final String FILE_FORMAT = "xlsx";
+
+    /**
+     * Formatteur de date, notamment utilisé comme nom de fichier à générer lors de la sauvegarde d'une image.
+     */
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM@HH-mm-ss");
 
     private ExcelGenerator() {
-        cleanExcel();
     }
 
+    /**
+     * Renvoie l'{@link #instance} de la classe.
+     *
+     * @return Instance
+     */
     public static ExcelGenerator getInstance() {
         return instance;
     }
 
     /**
-     * Remplit la ligne numérotée rownum avec les entêtes des paramètres d'exécution
+     * Remplit une ligne du fichier Excel avec les en-têtes des paramètres d'exécution de l'algorithme de tri.
      *
-     * @param sheet  Sheet
-     * @param rownum int
+     * @param sheet    Feuille Excel à remplir
+     * @param rowIndex Numéro de la ligne d'en-têtes à remplir
      */
-    private void fillParamsLead(Sheet sheet, int rownum) {
-        Row row = sheet.createRow(rownum);
+    private void fillParamsLead(Sheet sheet, int rowIndex) {
+        Row row = sheet.createRow(rowIndex);
 
         // Nb Blocs A
         Cell cell = row.createCell(0, CellType.STRING);
@@ -85,14 +110,14 @@ public class ExcelGenerator {
 
 
     /**
-     * Remplit la ligne numérotée rownum avec les valeurs d'exécution spécifiées
+     * Remplit une ligne du fichier Excel avec les valeurs des paramètres d'exécution de l'algorithme de tri.
      *
-     * @param executionParameters ExecutionParameters
-     * @param sheet               Sheet
-     * @param rownum              int
+     * @param executionParameters Paramètres d'exécution de l'algorithme
+     * @param sheet               Feuille à remplir
+     * @param rowIndex            Numéro de la ligne à remplir
      */
-    private void fillParamsValues(ExecutionParameters executionParameters, Sheet sheet, int rownum) {
-        Row row = sheet.createRow(rownum);
+    private void fillParamsValues(ExecutionParameters executionParameters, Sheet sheet, int rowIndex) {
+        Row row = sheet.createRow(rowIndex);
 
         // Nb Blocs A
         Cell cell = row.createCell(0, CellType.NUMERIC);
@@ -137,13 +162,13 @@ public class ExcelGenerator {
     }
 
     /**
-     * Remplit l'entête de la feuille en paramètre au numéro de ligne indiqué
+     * Remplit une ligne du fichier Excel avec les en-têtes de l'évaluation du résultat de l'exécution de l'algorithme de tri.
      *
-     * @param sheet  Sheet
-     * @param rownum int
+     * @param sheet    Feuille à remplir
+     * @param rowIndex Numéro de la ligne à remplir
      */
-    private void fillLead(Sheet sheet, int rownum) {
-        Row row = sheet.createRow(rownum);
+    private void fillLead(Sheet sheet, int rowIndex) {
+        Row row = sheet.createRow(rowIndex);
 
         // Itération
         Cell cell = row.createCell(0, CellType.STRING);
@@ -188,19 +213,19 @@ public class ExcelGenerator {
     }
 
     /**
-     * Remplit une ligne de l'Excel avec les résultats d'une évaluation
+     * Remplit une ligne du fichier Excel avec l'évaluation du résultat de l'exécution de l'algorithme de tri.
      *
-     * @param evaluation Evaluation
-     * @param sheet      Sheet où écrire les résultats
-     * @param rownum     int correspondant au numéro de ligne où écrire
-     * @param execution  int correspondant au numéro de l'exécution
+     * @param evaluation     Évaluation du résultat de l'algorithme de tri
+     * @param sheet          Feuille à remplir
+     * @param rowIndex       Numéro de la ligne à remplir
+     * @param executionIndex Numéro de l'exécution
      */
-    private void fillEvaluationRow(Evaluation evaluation, Sheet sheet, int rownum, int execution) {
-        Row row = sheet.createRow(rownum);
+    private void fillEvaluationRow(Evaluation evaluation, Sheet sheet, int rowIndex, int executionIndex) {
+        Row row = sheet.createRow(rowIndex);
 
         // Itération
         Cell cell = row.createCell(0, CellType.NUMERIC);
-        cell.setCellValue(execution);
+        cell.setCellValue(executionIndex);
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), false));
         // Nombre de A
         cell = row.createCell(1, CellType.NUMERIC);
@@ -240,29 +265,28 @@ public class ExcelGenerator {
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), false));
     }
 
-
     /**
-     * Génère la formule de la moyenne à utiliser
+     * Génère la formule de la moyenne à appliquer dans une colonne.
      *
-     * @param columnLetter String désignant la colonne sur laquelle effectuer une moyenne
-     * @param from         int donnant la ligne du premier nombre
-     * @param to           int donnant la ligne du dernier nombre
-     * @return String
+     * @param columnLetter Colonne sur laquelle effectuer une moyenne
+     * @param from         Ligne du premier nombre de la colonne
+     * @param to           Ligne du dernier nombre de la colonne
+     * @return Formule de la moyenne
      */
-    public String generateAverageFormula(String columnLetter, int from, int to) {
+    private String generateAverageFormula(String columnLetter, int from, int to) {
         return "AVERAGE(" + columnLetter + from + ":" + columnLetter + to + ")";
     }
 
-
     /**
-     * Remplit une ligne contenant les moyennes des itérations pour un jeu de paramètres
+     * Remplit une ligne contenant les moyennes des résultats des exécutions d'un algorithme de tri pour un jeu de paramètres.
      *
-     * @param sheet  Sheet
-     * @param rownum int donnant la ligne où écrire
+     * @param executionParameters Jeu de paramètres utilisé pour la simulation
+     * @param sheet               Feuille à remplir
+     * @param rowIndex            Numéro de la ligne à remplir
      */
-    public void fillEvaluationAvgRow(Sheet sheet, int rownum) {
-        Row row = sheet.createRow(rownum);
-        int from = rownum - SMAConstants.NB_RUN + 1;
+    private void fillEvaluationAvgRow(ExecutionParameters executionParameters, Sheet sheet, int rowIndex) {
+        Row row = sheet.createRow(rowIndex);
+        int from = rowIndex - executionParameters.getNumberRuns() + 1;
 
         // Itération
         Cell cell = row.createCell(0, CellType.STRING);
@@ -270,123 +294,111 @@ public class ExcelGenerator {
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Nombre de A
         cell = row.createCell(1, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("B", from, rownum));
+        cell.setCellFormula(generateAverageFormula("B", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Nombre de B
         cell = row.createCell(2, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("C", from, rownum));
+        cell.setCellFormula(generateAverageFormula("C", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // A voisin de A
         cell = row.createCell(3, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("D", from, rownum));
+        cell.setCellFormula(generateAverageFormula("D", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // A voisin de B
         cell = row.createCell(4, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("E", from, rownum));
+        cell.setCellFormula(generateAverageFormula("E", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // B voisin de B
         cell = row.createCell(5, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("F", from, rownum));
+        cell.setCellFormula(generateAverageFormula("F", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Nombre de colonies
         cell = row.createCell(6, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("G", from, rownum));
+        cell.setCellFormula(generateAverageFormula("G", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Taille moyenne d'une colonie
         cell = row.createCell(7, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("H", from, rownum));
+        cell.setCellFormula(generateAverageFormula("H", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Proportion de A par colonie
         cell = row.createCell(8, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("I", from, rownum));
+        cell.setCellFormula(generateAverageFormula("I", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
         // Proportion de B par colonie
         cell = row.createCell(9, CellType.FORMULA);
-        cell.setCellFormula(generateAverageFormula("J", from, rownum));
+        cell.setCellFormula(generateAverageFormula("J", from, rowIndex));
         cell.setCellStyle(ExcelStyles.getEvaluationStyle(sheet.getWorkbook(), true));
     }
 
-    public void fillExcel(List<Evaluation> evaluations, ExecutionParameters executionParameters, String executionName) {
-        Workbook workbook;
-        FileInputStream file;
+    /**
+     * Remplit un fichier Excel avec les résultats des exécutions d'un algorithme de tri.
+     *
+     * @param evaluations         Évaluations des résultats de l'algorithme de tri
+     * @param executionParameters Jeu de paramètres utilisé pour les exécutions
+     * @param executionName       Nom de la feuille à créer et remplir
+     */
+    public void save(List<Evaluation> evaluations, ExecutionParameters executionParameters, String executionName) {
+        String fileName = generateFileName();
+        File file = new File(fileName);
 
         try {
-            // Ouvre l'Excel contenant les résultats
-            file = new FileInputStream(fileName);
-            workbook = WorkbookFactory.create(file);
+            if (file.getParentFile().mkdirs() || file.createNewFile() || file.exists()) {
+                try (FileOutputStream output = new FileOutputStream(file);
+                     Workbook workbook = new XSSFWorkbook()) {
+                    Sheet sheet = workbook.createSheet(executionName);
+                    int rownum = 0;
+                    int iteration = 1;
 
-            Sheet sheet;
-            int rownum;
-            int iteration = 1;
+                    // Entête des paramètres
+                    fillParamsLead(sheet, rownum);
+                    ++rownum;
 
-            // Récupère la feuille existante ou la crée au besoin
-            if (workbook.getSheet(executionName) != null) {
-                sheet = workbook.getSheet(executionName);
-                rownum = sheet.getLastRowNum() + 4;
+                    // Paramètres utilisés
+                    fillParamsValues(executionParameters, sheet, rownum);
+                    ++rownum;
+
+                    // Entête de l'évaluation
+                    fillLead(sheet, rownum);
+
+                    // Evaluation
+                    for (Evaluation evaluation : evaluations) {
+                        rownum++;
+                        fillEvaluationRow(evaluation, sheet, rownum, iteration);
+                        ++iteration;
+                    }
+
+                    ++rownum;
+
+                    // Moyenne des évaluations
+                    fillEvaluationAvgRow(executionParameters, sheet, rownum);
+                    XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
+
+                    for (int i = 0; i < 10; i++) {
+                        sheet.autoSizeColumn(i);
+                    }
+
+                    workbook.write(output);
+                    System.out.println("Statistiques de la simulation sauvegardées avec succès dans " + fileName);
+                } catch (IOException exc) {
+                    System.err.println(exc.getMessage() + " : tentative de création échouée...");
+                }
             } else {
-                sheet = workbook.createSheet(executionName);
-                rownum = 0;
+                System.err.println(String.format("Le chemin d'accès %s n'existe pas, veuillez le créer.", FOLDER));
             }
-
-            // Entête des paramètres
-            fillParamsLead(sheet, rownum);
-            ++rownum;
-
-            // Paramètres utilisés
-            fillParamsValues(executionParameters, sheet, rownum);
-            ++rownum;
-
-            // Entête de l'évaluation
-            fillLead(sheet, rownum);
-
-            // Evaluation
-            for (Evaluation evaluation : evaluations) {
-                rownum++;
-                fillEvaluationRow(evaluation, sheet, rownum, iteration);
-                ++iteration;
-            }
-
-            ++rownum;
-
-            // Moyenne des évaluations
-            fillEvaluationAvgRow(sheet, rownum);
-            XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
-
-            for (int i = 0; i < 10; i++) {
-                sheet.autoSizeColumn(i);
-            }
-
-            file.close();
-        } catch (IOException ex) {
-            return;
-        }
-
-        // Enregistre les modifications dans le fichier
-        try {
-            FileOutputStream outFile = new FileOutputStream(fileName);
-            workbook.write(outFile);
-            outFile.close();
-            System.out.println("Results saved successfully in " + fileName);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (SecurityException e) {
+            System.err.println(String.format("Il est impossible de vérifier ou de créer le chemin d'accès %s.", FOLDER));
+        } catch (IOException e) {
+            System.err.println("Une erreur imprévue est survenue lors de la création du fichier " + fileName);
         }
     }
 
     /**
-     * Supprime les données présentes dans l'Excel en vue d'une nouvelle exécution
+     * Génère un nom de fichier de sauvegarde des statistiques.
+     * Ce nom contient notamment la timestamp de création du fichier.
+     *
+     * @return Nom de fichier.
      */
-    public void cleanExcel() {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-
-        try {
-            File file = new File(fileName);
-            file.getParentFile().mkdirs(); // Créer le dossier si nécessaire
-            FileOutputStream outFile = new FileOutputStream(file);
-
-            workbook.write(outFile);
-            outFile.close();
-        } catch (IOException exc) {
-            System.out.println(exc.getMessage() + " : tentative de création échouée...");
-        }
+    private String generateFileName() {
+        return String.format("%s/%s-%s.%s", FOLDER, FILE_NAME_PREFIX, DATE_FORMAT.format(new Date()), FILE_FORMAT);
     }
 }

@@ -4,18 +4,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.polytech.agent.Agent;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.RandomEnvironnement;
 import org.polytech.statistiques.Evaluation;
 import org.polytech.statistiques.excel.ExcelGenerator;
+import org.polytech.statistiques.excel.ExecutionParameters;
 import org.polytech.system.SystemMA;
-import org.polytech.utils.Color;
+import org.polytech.system.SystemMAFactory;
+import org.polytech.utils.ColorConsole;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 @DisplayName("Application Tests")
@@ -147,31 +144,28 @@ public class SMApplicationV1Test {
                               int gridRows, int gridColumns,
                               int memorySize, int successiveMovements, double kMinus, double kPlus, double error, String executionName) {
         List<Evaluation> evaluations = new ArrayList<>();
-        ExecutionParameters executionParameters = new ExecutionParameters(numberBlocksA, numberBlocksB, numberAgents,
-                gridRows, gridColumns, memorySize, successiveMovements, kMinus, kPlus, error);
+        ExecutionParameters executionParameters = new ExecutionParameters(
+                SMAConstants.NB_RUN,
+                numberBlocksA, numberBlocksB, numberAgents,
+                gridRows, gridColumns,
+                memorySize, successiveMovements, kMinus, kPlus, error);
 
         for (int i = 0; i < SMAConstants.NB_RUN; i++) {
             // Affichage console pour différencier les différentes itérations.
             IntStream.rangeClosed(1, 3).forEach(index ->
                     System.out.println(
-                            Color.CYAN +
+                            ColorConsole.CYAN +
                                     "===============================================================================" +
                                     "===============================================================================" +
                                     "===============================================================================" +
-                                    Color.RESET));
-            System.out.println(Color.CYAN + String.format("Execution n°%d", i + 1) + Color.RESET);
-            System.out.println(Color.CYAN + "-----------------------" + Color.RESET);
-
-            // Instantiation de l'environnement
-            Environnement environnement = new RandomEnvironnement(GRID_ROWS, GRID_COLUMNS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B);
-
-            // Génération des agents
-            Set<Agent> agents = new HashSet<>();
-            IntStream.rangeClosed(1, NUMBER_AGENTS).forEach(index ->
-                    agents.add(new Agent(SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR)));
+                                    ColorConsole.RESET));
+            System.out.println(ColorConsole.CYAN + String.format("Execution n°%d", i + 1) + ColorConsole.RESET);
+            System.out.println(ColorConsole.CYAN + "-----------------------" + ColorConsole.RESET);
 
             // Génération du système (place les agents dans l'environnement)
-            SystemMA system = new SystemMA(environnement, agents, SMAConstants.ITERATION_LOOPS, SMAConstants.FREQUENCY_DISPLAY_GRID);
+            SystemMA system = SystemMAFactory.instantiateRandom(
+                    GRID_ROWS, GRID_COLUMNS, NUMBER_AGENTS, NUMBER_BLOCKS_A, NUMBER_BLOCKS_B,
+                    SUCCESSIVE_MOVEMENTS, MEMORY_SIZE, K_PLUS, K_MINUS, ERROR);
 
             // Quelques stats simples sur le remplissage de la grille
             System.out.println(String.format("Grille remplie à %.2f%% d'entités dont %.2f%% d'agents et %.2f%% de blocs.",
@@ -185,11 +179,11 @@ public class SMApplicationV1Test {
             system.run();
 
             // Evaluation de l'environnement à la fin de la simulation
-            Evaluation evaluation = new Evaluation(environnement);
+            Evaluation evaluation = new Evaluation(system.getEnvironment());
             evaluations.add(evaluation);
         }
 
         // Remplissage de la feuille Excel
-        excelGenerator.fillExcel(evaluations, executionParameters, executionName);
+        excelGenerator.save(evaluations, executionParameters, executionName);
     }
 }

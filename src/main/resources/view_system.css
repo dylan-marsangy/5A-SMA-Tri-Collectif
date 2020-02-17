@@ -1,0 +1,134 @@
+/* --- ROOT --- */
+
+root {
+    -fx-font-size: 14px;
+    -fx-font-family: sans-serif;
+    -fx-background-color: #ffffff;
+}
+
+#window {
+    -fx-min-height: 900px;
+    -fx-max-height: 900px;
+    -fx-pref-height: 900px;
+    -fx-min-width: 1000px;
+    -fx-max-width: 1000px;
+    -fx-pref-width: 1000px;
+}
+
+/* --- HEADER --- */
+
+.header-section {
+    -fx-padding: 10px;
+    -fx-font-size: 20px;
+    -fx-background-color: teal;
+}
+
+.header-section Label {
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px;
+    -fx-font-weight: bold;
+}
+
+.header-section ProgressBar {
+    -fx-padding: 10px;
+    -fx-alignment: baseline-center;
+    -fx-pref-width: 200px;
+}
+
+.header-section ProgressBar > .track {
+    -fx-text-box-border: forestgreen;
+    -fx-control-inner-background: palegreen;
+    -fx-background-insets: 3 3 4 3;
+    -fx-background-radius: 2;
+}
+
+/* --- CONTENT --- */
+
+.content-section {
+    -fx-alignment: center;
+    -fx-min-height: 750px;
+    -fx-max-height: 750px;
+    -fx-pref-height: 750px;
+    -fx-min-width: 750px;
+    -fx-max-width: 750px;
+    -fx-pref-width: 750px;
+}
+
+.case {
+    -fx-stroke: black;
+    -fx-stroke-type: inside;
+    -fx-stroke-width: 0.5;
+    -fx-fill: white;
+}
+
+.blockA {
+    -fx-fill: red;
+}
+
+.blockB {
+    -fx-fill: blue;
+}
+
+.agent {
+    -fx-fill: yellow;
+}
+
+.holdingA {
+    -fx-fill: lightblue;
+}
+
+.holdingB {
+    -fx-fill: palevioletred;
+}
+
+/* --- SIDEBAR --- */
+
+.sidebar-section {
+    -fx-spacing: 10px;
+    -fx-padding: 10px;
+    -fx-alignment: top-center;
+}
+
+.sidebar-section Label {
+    -fx-font-size: 18px;
+    -fx-border-width: 1;
+    -fx-padding: 10 15 10 15;
+    -fx-border-color: transparent transparent #E8E8E8 transparent;
+    -fx-min-width: 200px;
+    -fx-pref-width: 200px;
+    -fx-max-width: 200px;
+    -fx-wrap-text: true;
+}
+
+.sidebar-section Button {
+    -fx-background-color: #a6b5c9,
+    linear-gradient(#303842 0%, #3e5577 20%, #375074 100%),
+    linear-gradient(#768aa5 0%, #849cbb 5%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%);
+    -fx-background-insets: 0 0 -1 0, 0, 1;
+    -fx-background-radius: 5, 5, 4;
+    -fx-padding: 10 15 10 15;
+    -fx-font-family: "Helvetica";
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-pref-width: 100px;
+}
+
+/*TODO: A changer idéalement pour une meilleure expérience utilisateur */
+.sidebar-section Button:hover {
+    -fx-background-color: #a6b5c9,
+    linear-gradient(#303842 0%, #3e5577 20%, #375074 100%),
+    linear-gradient(#768aa5 0%, #849cbb 5%, #5877a2 50%, #486a9a 51%, #4a6c9b 100%);
+}
+
+/* --- FOOTER --- */
+
+#footer-section {
+    -fx-alignment: center;
+    -fx-padding: 10 10 10 10;
+    -fx-border-width: 1;
+    -fx-border-color: #E8E8E8 transparent transparent transparent;
+}
+
+#footer-section Label {
+    -fx-font-style: italic;
+}

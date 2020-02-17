@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.polytech.view.ControllerSystemMA"
+            id="window">
+    <top>
+        <BorderPane styleClass="header-section">
+            <left>
+                <Label id="header-text" text="SMA Tri collectif"/>
+            </left>
+
+            <right>
+                <ProgressBar fx:id="progressBar" progress="0" visible="false"/>
+            </right>
+        </BorderPane>
+    </top>
+
+    <center>
+        <GridPane fx:id="grid" styleClass="content-section"/>
+    </center>
+
+    <right>
+        <VBox styleClass="sidebar-section">
+            <Button fx:id="startButton" text="Start" onAction="#start"/>
+            <Button fx:id="cancelButton" text="Cancel" onAction="#cancel" disable="true"/>
+            <Button fx:id="saveButton" text="Save" onAction="#save" disable="true"/>
+
+            <Label text="Fréquence de MàJ"/>
+            <Slider fx:id="sliderFrequency" visible="false"
+                    max="1" blockIncrement="0.10" majorTickUnit="0.1" minorTickCount="10"
+                    showTickMarks="true" snapToTicks="true"/>
+
+            <Label text="Nombre d'itérations"/>
+            <TextField fx:id="inputIterations" visible="false"
+                       onAction="#onIterationChanged"/>
+        </VBox>
+    </right>
+
+    <bottom>
+        <HBox id="footer-section">
+            <Label text="© Dylan MARSANGY - Laura PHILIBERT (5A Polytech 2020 Informatique)"/>
+        </HBox>
+    </bottom>
+
+    <stylesheets>
+        <URL value="@view_system.css"/>
+    </stylesheets>
+</BorderPane>

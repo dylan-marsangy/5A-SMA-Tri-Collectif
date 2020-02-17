@@ -1,22 +1,22 @@
 package org.polytech.statistiques;
 
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Environment;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 import java.util.*;
 
 public class Colonies {
 
-    private Environnement environnement;
+    private Environment environment;
     private Neighbours neighbours;
 
     // HashMap associant le numéro de colonie à une HashMap contenant le nombre de blocs A et B contenus dans la colonie
     private HashMap<Integer, HashMap<BlockValue, Integer>> numberOfBlocksPerColony;
 
-    public Colonies(Environnement environnement, Neighbours neighbours) {
-        this.environnement = environnement;
+    public Colonies(Environment environment, Neighbours neighbours) {
+        this.environment = environment;
         this.neighbours = neighbours;
     }
 
@@ -24,7 +24,7 @@ public class Colonies {
      * Crée les colonies à partir de l'environnement
      */
     public void createColonies() {
-        Movable[][] grid = environnement.getGrid();
+        Movable[][] grid = environment.getGrid();
         int colonyNumber = 1;
 
         for (int i = 0; i < grid.length; i++) {
@@ -37,9 +37,9 @@ public class Colonies {
 
                         for (BlockValue neighbourBlockValue : blockNeighbours.keySet()) {
                             for (List coordinates : blockNeighbours.get(neighbourBlockValue)) {
-                                if (environnement.getEntity((int) coordinates.get(0), (int) coordinates.get(1)) instanceof Block) {
+                                if (environment.getEntity((int) coordinates.get(0), (int) coordinates.get(1)) instanceof Block) {
                                     // récupère les voisins du bloc courant
-                                    Block currentNeighbour = (Block) environnement.getEntity((int) coordinates.get(0), (int) coordinates.get(1));
+                                    Block currentNeighbour = (Block) environment.getEntity((int) coordinates.get(0), (int) coordinates.get(1));
 
                                     // si l'un des voisins a déjà une colonie attribuée, on assigne la même au bloc courant
                                     if (currentNeighbour.getColonyNumber() != -1) {
@@ -77,7 +77,7 @@ public class Colonies {
      * Compte le nombre de blocs de chaque type par colonie
      */
     public void computeNumberOfBlocksPerColony() {
-        Movable[][] grid = environnement.getGrid();
+        Movable[][] grid = environment.getGrid();
         numberOfBlocksPerColony = new HashMap<>();
 
         for (int i = 0; i < grid.length; i++) {

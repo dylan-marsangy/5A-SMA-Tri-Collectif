@@ -1,21 +1,21 @@
 package org.polytech.statistiques;
 
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Environment;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 import java.util.*;
 
 public class Neighbours {
-    private Environnement environnement;
+    private Environment environment;
     private int NEIGHBOURHOOD_SIZE;
 
     // nombre de voisins de chaque type, pour chaque valeur possible de Bloc (A ou B)
     private Map<BlockValue, Map<BlockValue, Integer>> neighboursNumberByBlockValue;
 
-    public Neighbours(Environnement environnement, int neighbourhoodSize) {
-        this.environnement = environnement;
+    public Neighbours(Environment environment, int neighbourhoodSize) {
+        this.environment = environment;
         this.NEIGHBOURHOOD_SIZE = neighbourhoodSize;
 
         this.neighboursNumberByBlockValue = new HashMap<>();
@@ -43,7 +43,7 @@ public class Neighbours {
      * Calcule les voisins de chaque type de Bloc contenu dans l'environnement
      */
     public void calculateNeighbours() {
-        Movable[][] grid = environnement.getGrid();
+        Movable[][] grid = environment.getGrid();
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -85,10 +85,10 @@ public class Neighbours {
 
         for (int i = x - NEIGHBOURHOOD_SIZE; i <= x + NEIGHBOURHOOD_SIZE; i++) {
             for (int j = y - NEIGHBOURHOOD_SIZE; j <= y + NEIGHBOURHOOD_SIZE; j++) {
-                if (environnement.isInside(i, j)) {
-                    if (environnement.getEntity(i, j) instanceof Block) {
+                if (environment.isInside(i, j)) {
+                    if (environment.getEntity(i, j) instanceof Block) {
                         if (i != x || j != y) {
-                            BlockValue blockValue = ((Block) environnement.getEntity(i, j)).getValue();
+                            BlockValue blockValue = ((Block) environment.getEntity(i, j)).getValue();
                             neighbours.put(blockValue, neighbours.get(blockValue) + 1);
                         }
                     }
@@ -115,10 +115,10 @@ public class Neighbours {
 
         for (int i = x - NEIGHBOURHOOD_SIZE; i <= x + NEIGHBOURHOOD_SIZE; i++) {
             for (int j = y - NEIGHBOURHOOD_SIZE; j <= y + NEIGHBOURHOOD_SIZE; j++) {
-                if (environnement.isInside(i, j)) {
-                    if (environnement.getEntity(i, j) instanceof Block) {
+                if (environment.isInside(i, j)) {
+                    if (environment.getEntity(i, j) instanceof Block) {
                         if (i != x || j != y) {
-                            BlockValue blockValue = ((Block) environnement.getEntity(i, j)).getValue();
+                            BlockValue blockValue = ((Block) environment.getEntity(i, j)).getValue();
                             ArrayList<Integer> coordinates = new ArrayList<>();
                             coordinates.add(0, i);
                             coordinates.add(1, j);

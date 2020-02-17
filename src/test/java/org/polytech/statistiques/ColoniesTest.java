@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Environment;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 import java.util.HashMap;
 
@@ -23,105 +23,105 @@ public class ColoniesTest {
     private final double K_PLUS = 0.1;
     private final double ERROR = 0;
 
-    private Environnement environnement;
+    private Environment environment;
     private Colonies colonies;
     private Neighbours neighbours;
 
 
     @BeforeEach
-    public void initializeEnvironnement() {
-        environnement = new Environnement(N, M);
+    public void initializeEnvironment() {
+        environment = new Environment(N, M);
 
-        this.neighbours = new Neighbours(environnement, 1);
+        this.neighbours = new Neighbours(environment, 1);
         this.neighbours.calculateNeighbours();
         initializeColonies();
     }
 
     public void initializeColonies() {
-        this.colonies = new Colonies(this.environnement, this.neighbours);
+        this.colonies = new Colonies(this.environment, this.neighbours);
     }
 
     @Test
     @DisplayName("Colonies should be separated from one another")
     public void giveColonyNumbers() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
 
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+        environment.insert(new Block(BlockValue.A), 0, 4);
+        environment.insert(new Block(BlockValue.A), 1, 4);
+        environment.insert(new Block(BlockValue.B), 3, 4);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         colonies.createColonies();
 
-        assertEquals(-1, ((Block) environnement.getEntity(0, 1)).getColonyNumber());
-        assertEquals(1, ((Block) environnement.getEntity(0, 2)).getColonyNumber());
-        assertEquals(2, ((Block) environnement.getEntity(0, 4)).getColonyNumber());
-        assertEquals(2, ((Block) environnement.getEntity(1, 4)).getColonyNumber());
-        assertEquals(3, ((Block) environnement.getEntity(2, 0)).getColonyNumber());
-        assertEquals(3, ((Block) environnement.getEntity(2, 1)).getColonyNumber());
-        assertEquals(-1, ((Block) environnement.getEntity(2, 2)).getColonyNumber());
-        assertEquals(4, ((Block) environnement.getEntity(3, 4)).getColonyNumber());
+        assertEquals(-1, ((Block) environment.getEntity(0, 1)).getColonyNumber());
+        assertEquals(1, ((Block) environment.getEntity(0, 2)).getColonyNumber());
+        assertEquals(2, ((Block) environment.getEntity(0, 4)).getColonyNumber());
+        assertEquals(2, ((Block) environment.getEntity(1, 4)).getColonyNumber());
+        assertEquals(3, ((Block) environment.getEntity(2, 0)).getColonyNumber());
+        assertEquals(3, ((Block) environment.getEntity(2, 1)).getColonyNumber());
+        assertEquals(-1, ((Block) environment.getEntity(2, 2)).getColonyNumber());
+        assertEquals(4, ((Block) environment.getEntity(3, 4)).getColonyNumber());
     }
 
     @Test
     @DisplayName("Colonies should be separated from one another with a neighbourhood size set to 2")
     public void giveColonyNumbersWithNeighbourhoodSize() {
-        this.neighbours = new Neighbours(environnement, 2);
+        this.neighbours = new Neighbours(environment, 2);
         this.neighbours.calculateNeighbours();
         initializeColonies();
 
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
 
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 4, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+        environment.insert(new Block(BlockValue.A), 0, 4);
+        environment.insert(new Block(BlockValue.A), 1, 4);
+        environment.insert(new Block(BlockValue.B), 4, 4);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         colonies.createColonies();
 
-        assertEquals(-1, ((Block) environnement.getEntity(0, 1)).getColonyNumber());
-        assertEquals(1, ((Block) environnement.getEntity(0, 2)).getColonyNumber());
-        assertEquals(1, ((Block) environnement.getEntity(0, 4)).getColonyNumber());
-        assertEquals(1, ((Block) environnement.getEntity(1, 4)).getColonyNumber());
-        assertEquals(1, ((Block) environnement.getEntity(2, 0)).getColonyNumber());
-        assertEquals(1, ((Block) environnement.getEntity(2, 1)).getColonyNumber());
-        assertEquals(-1, ((Block) environnement.getEntity(2, 2)).getColonyNumber());
-        assertEquals(2, ((Block) environnement.getEntity(4, 4)).getColonyNumber());
+        assertEquals(-1, ((Block) environment.getEntity(0, 1)).getColonyNumber());
+        assertEquals(1, ((Block) environment.getEntity(0, 2)).getColonyNumber());
+        assertEquals(1, ((Block) environment.getEntity(0, 4)).getColonyNumber());
+        assertEquals(1, ((Block) environment.getEntity(1, 4)).getColonyNumber());
+        assertEquals(1, ((Block) environment.getEntity(2, 0)).getColonyNumber());
+        assertEquals(1, ((Block) environment.getEntity(2, 1)).getColonyNumber());
+        assertEquals(-1, ((Block) environment.getEntity(2, 2)).getColonyNumber());
+        assertEquals(2, ((Block) environment.getEntity(4, 4)).getColonyNumber());
     }
 
     @Test
     @DisplayName("There should be 4 colonies")
     public void getColonyNumbers() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
 
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+        environment.insert(new Block(BlockValue.A), 0, 4);
+        environment.insert(new Block(BlockValue.A), 1, 4);
+        environment.insert(new Block(BlockValue.B), 3, 4);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         colonies.createColonies();
 
@@ -133,20 +133,20 @@ public class ColoniesTest {
     @Test
     @DisplayName("Check if the numbers of blocks in the colonies are correct")
     public void getNumberOfBlocksPerColony() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
 
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+        environment.insert(new Block(BlockValue.A), 0, 4);
+        environment.insert(new Block(BlockValue.A), 1, 4);
+        environment.insert(new Block(BlockValue.B), 3, 4);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         colonies.createColonies();
 
@@ -164,20 +164,20 @@ public class ColoniesTest {
     @Test
     @DisplayName("Check if the average numbers of blocks in the colonies are correct")
     public void getAverageOfBlocksByColony() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
 
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+        environment.insert(new Block(BlockValue.A), 0, 4);
+        environment.insert(new Block(BlockValue.A), 1, 4);
+        environment.insert(new Block(BlockValue.B), 3, 4);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         colonies.createColonies();
 
@@ -191,20 +191,20 @@ public class ColoniesTest {
     @Test
     @DisplayName("Check if the average size of the colonies is correct")
     public void getAverageSizeOfColonies() {
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
-        environnement.insert(new Block(BlockValue.ZERO), 0, 1);
-        environnement.insert(new Block(BlockValue.B), 0, 2);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 0, 0);
+        environment.insert(new Block(BlockValue.ZERO), 0, 1);
+        environment.insert(new Block(BlockValue.B), 0, 2);
 
-        environnement.insert(new Block(BlockValue.B), 2, 0);
-        environnement.insert(new Block(BlockValue.A), 2, 1);
-        environnement.insert(new Block(BlockValue.ZERO), 2, 2);
+        environment.insert(new Block(BlockValue.B), 2, 0);
+        environment.insert(new Block(BlockValue.A), 2, 1);
+        environment.insert(new Block(BlockValue.ZERO), 2, 2);
 
-        environnement.insert(new Block(BlockValue.A), 0, 4);
-        environnement.insert(new Block(BlockValue.A), 1, 4);
-        environnement.insert(new Block(BlockValue.B), 3, 4);
-        environnement.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
+        environment.insert(new Block(BlockValue.A), 0, 4);
+        environment.insert(new Block(BlockValue.A), 1, 4);
+        environment.insert(new Block(BlockValue.B), 3, 4);
+        environment.insert(new Agent(I, T, K_PLUS, K_MINUS, ERROR), 3, 3);
 
-        System.out.println(environnement);
+        System.out.println(environment);
 
         colonies.createColonies();
 

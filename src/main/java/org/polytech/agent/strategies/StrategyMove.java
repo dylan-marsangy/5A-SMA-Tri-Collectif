@@ -1,8 +1,8 @@
 package org.polytech.agent.strategies;
 
 import org.polytech.agent.Agent;
-import org.polytech.environnement.Direction;
-import org.polytech.environnement.Movable;
+import org.polytech.environment.Direction;
+import org.polytech.environment.Movable;
 
 import java.util.HashMap;
 import java.util.Map;

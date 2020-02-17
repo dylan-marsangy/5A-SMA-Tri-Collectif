@@ -2,13 +2,13 @@ package org.polytech.agent;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.polytech.agent.strategies.Strategy;
-import org.polytech.environnement.Direction;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
-import org.polytech.environnement.exceptions.CollisionException;
-import org.polytech.environnement.exceptions.MovableNotFoundException;
-import org.polytech.utils.Color;
+import org.polytech.environment.Direction;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
+import org.polytech.environment.exceptions.CollisionException;
+import org.polytech.environment.exceptions.MovableNotFoundException;
+import org.polytech.utils.ColorConsole;
 
 import java.util.Map;
 import java.util.Queue;
@@ -160,15 +160,15 @@ public class Agent implements Movable {
 
     @Override
     public String toString() {
-        Color format;
+        ColorConsole format;
         if (this.isHolding()) {
-            if (this.getHolding().getValue() == BlockValue.A) format = Color.BLUE;
-            else format = Color.RED;
+            if (this.getHolding().getValue() == BlockValue.A) format = ColorConsole.BLUE;
+            else format = ColorConsole.RED;
         } else {
-            format = Color.YELLOW;
+            format = ColorConsole.YELLOW;
         }
 
-        return format + "X" + Color.RESET;
+        return format + "X" + ColorConsole.RESET;
     }
 
     @Override

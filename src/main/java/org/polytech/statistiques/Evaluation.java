@@ -1,37 +1,37 @@
 package org.polytech.statistiques;
 
-import org.polytech.environnement.Environnement;
-import org.polytech.environnement.Movable;
-import org.polytech.environnement.block.Block;
-import org.polytech.environnement.block.BlockValue;
+import org.polytech.environment.Environment;
+import org.polytech.environment.Movable;
+import org.polytech.environment.block.Block;
+import org.polytech.environment.block.BlockValue;
 
 /**
  * Classe utilisée pour générer les statistiques liées à une exécution de l'algorithme
  */
 public class Evaluation {
-    private Environnement environnement;
+    private Environment environment;
     private Neighbours neighbours;
     private Colonies colonies;
     private int NEIGHBOURHOOD_SIZE = 1;
 
-    public Evaluation(Environnement environnement) {
-        this.environnement = environnement;
+    public Evaluation(Environment environment) {
+        this.environment = environment;
         evaluate();
     }
 
-    public Evaluation(Environnement environnement, int neighbourhoodSize) {
-        this.environnement = environnement;
+    public Evaluation(Environment environment, int neighbourhoodSize) {
+        this.environment = environment;
         this.NEIGHBOURHOOD_SIZE = neighbourhoodSize;
         evaluate();
     }
 
     public void evaluate() {
         // calcule les voisins de chaque bloc A et B
-        this.neighbours = new Neighbours(environnement, NEIGHBOURHOOD_SIZE);
+        this.neighbours = new Neighbours(environment, NEIGHBOURHOOD_SIZE);
         this.neighbours.calculateNeighbours();
 
         // cherche les colonies
-        this.colonies = new Colonies(environnement, neighbours);
+        this.colonies = new Colonies(environment, neighbours);
         this.colonies.createColonies();
     }
 
@@ -40,8 +40,8 @@ public class Evaluation {
      *
      * @return Environnement
      */
-    public Environnement getEnvironnement() {
-        return environnement;
+    public Environment getEnvironment() {
+        return environment;
     }
 
     /**
@@ -51,7 +51,7 @@ public class Evaluation {
      * @return int
      */
     public int getTotalBlockWithValue(BlockValue blockValue) {
-        Movable[][] grid = environnement.getGrid();
+        Movable[][] grid = environment.getGrid();
         int sum = 0;
 
         for (int i = 0; i < grid.length; i++) {
