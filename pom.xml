@@ -92,7 +92,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>org.polytech.SMApplicationV1</mainClass>
+                            <mainClass>org.polytech.view.ViewSystemMA</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

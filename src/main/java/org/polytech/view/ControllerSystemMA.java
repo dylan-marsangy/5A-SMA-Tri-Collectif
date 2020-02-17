@@ -1,6 +1,7 @@
 package org.polytech.view;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Window;
 import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.NumberStringConverter;
 import org.polytech.SMAConstants;
 import org.polytech.system.SystemMA;
 import org.polytech.view.helper.AlertHelper;
@@ -88,10 +90,6 @@ public class ControllerSystemMA implements Initializable {
         // Mise à jour de la fréquence d'affichage selon l'input de l'utilisateur
         sliderFrequency.valueProperty().bindBidirectional(service.frequencyUpdateUIProperty());
 
-        // Mise à jour de l'input itérations lors du redémarrage du service
-        service.maxIterationsProperty().addListener((observable, oldValue, newValue) ->
-                inputIterations.setText(newValue.toString())
-        );
     }
 
     private void initGrid(SystemMA system) {
@@ -142,12 +140,14 @@ public class ControllerSystemMA implements Initializable {
     private void start(ActionEvent mouseEvent) {
         progressBar.setVisible(true);
         sliderFrequency.setVisible(true);
+        inputIterations.setVisible(true);
         startButton.setDisable(true);
         cancelButton.setDisable(false);
         saveButton.setDisable(false);
 
         initService();
         try {
+            inputIterations.setText(Integer.toString(ITERATION_LOOPS));
             service.restart();
         } catch (Exception e) {
             Window owner = startButton.getScene().getWindow();

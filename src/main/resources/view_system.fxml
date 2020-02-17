@@ -28,12 +28,13 @@
             <Button fx:id="saveButton" text="Save" onAction="#save" disable="true"/>
 
             <Label text="Fréquence de MàJ"/>
-            <Slider fx:id="sliderFrequency"
+            <Slider fx:id="sliderFrequency" visible="false"
                     max="1" blockIncrement="0.10" majorTickUnit="0.1" minorTickCount="10"
                     showTickMarks="true" snapToTicks="true"/>
 
             <Label text="Nombre d'itérations"/>
-            <TextField fx:id="inputIterations" onAction="#onIterationChanged" />
+            <TextField fx:id="inputIterations" visible="false"
+                       onAction="#onIterationChanged"/>
         </VBox>
     </right>
 

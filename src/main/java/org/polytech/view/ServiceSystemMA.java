@@ -147,6 +147,8 @@ public class ServiceSystemMA extends Service<SystemMA> {
                     MEMORY_SIZE, SUCCESSIVE_MOVEMENTS, K_MINUS, K_PLUS, ERROR);
             List<Evaluation> evaluations = Collections.singletonList(new Evaluation(system.getEnvironment()));
             excelGenerator.save(evaluations, executionParameters, "SMApplicationV1");
+
+            System.out.println();
         }
 
         @Override
