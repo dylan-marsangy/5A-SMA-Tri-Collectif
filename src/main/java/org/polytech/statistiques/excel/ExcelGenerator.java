@@ -7,11 +7,9 @@ import org.polytech.environment.block.BlockValue;
 import org.polytech.statistiques.Evaluation;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,33 +24,14 @@ public class ExcelGenerator {
     private static final ExcelGenerator instance = new ExcelGenerator();
 
     /**
-     * Dossier de sauvegarde des fichiers Excel.
+     * Nom du fichier Excel dans lequel sauvegarder les statistiques.
      */
-    private static final String FOLDER = "extern/stats";
-
-    /**
-     * Préfixe attaché à chaque fichier généré.
-     */
-    private static final String FILE_NAME_PREFIX = "demo";
-
-    /**
-     * Format de sauvegarde des fichiers Excel.
-     */
-    private static final String FILE_FORMAT = "xlsx";
-
-    /**
-     * Formatteur de date, notamment utilisé comme nom de fichier à générer lors de la sauvegarde d'une image.
-     */
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM@HH-mm-ss");
+    private final String FILE_NAME = "extern/stats/demo.xlsx";
 
     private ExcelGenerator() {
+        cleanExcel();
     }
 
-    /**
-     * Renvoie l'{@link #instance} de la classe.
-     *
-     * @return Instance
-     */
     public static ExcelGenerator getInstance() {
         return instance;
     }
@@ -338,67 +317,89 @@ public class ExcelGenerator {
      * @param executionName       Nom de la feuille à créer et remplir
      */
     public void save(List<Evaluation> evaluations, ExecutionParameters executionParameters, String executionName) {
-        String fileName = generateFileName();
-        File file = new File(fileName);
+        Workbook workbook;
+        FileInputStream file;
 
         try {
-            if (file.getParentFile().mkdirs() || file.createNewFile() || file.exists()) {
-                try (FileOutputStream output = new FileOutputStream(file);
-                     Workbook workbook = new XSSFWorkbook()) {
-                    Sheet sheet = workbook.createSheet(executionName);
-                    int rownum = 0;
-                    int iteration = 1;
+            // Ouvre l'Excel contenant les résultats
+            file = new FileInputStream(FILE_NAME);
+            workbook = WorkbookFactory.create(file);
 
-                    // Entête des paramètres
-                    fillParamsLead(sheet, rownum);
-                    ++rownum;
+            Sheet sheet;
+            int rownum;
+            int iteration = 1;
 
-                    // Paramètres utilisés
-                    fillParamsValues(executionParameters, sheet, rownum);
-                    ++rownum;
-
-                    // Entête de l'évaluation
-                    fillLead(sheet, rownum);
-
-                    // Evaluation
-                    for (Evaluation evaluation : evaluations) {
-                        rownum++;
-                        fillEvaluationRow(evaluation, sheet, rownum, iteration);
-                        ++iteration;
-                    }
-
-                    ++rownum;
-
-                    // Moyenne des évaluations
-                    fillEvaluationAvgRow(executionParameters, sheet, rownum);
-                    XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
-
-                    for (int i = 0; i < 10; i++) {
-                        sheet.autoSizeColumn(i);
-                    }
-
-                    workbook.write(output);
-                    System.out.println("Statistiques de la simulation sauvegardées avec succès dans " + fileName);
-                } catch (IOException exc) {
-                    System.err.println(exc.getMessage() + " : tentative de création échouée...");
-                }
+            // Récupère la feuille existante ou la crée au besoin
+            if (workbook.getSheet(executionName) != null) {
+                sheet = workbook.getSheet(executionName);
+                rownum = sheet.getLastRowNum() + 4;
             } else {
-                System.err.println(String.format("Le chemin d'accès %s n'existe pas, veuillez le créer.", FOLDER));
+                sheet = workbook.createSheet(executionName);
+                rownum = 0;
             }
-        } catch (SecurityException e) {
-            System.err.println(String.format("Il est impossible de vérifier ou de créer le chemin d'accès %s.", FOLDER));
-        } catch (IOException e) {
-            System.err.println("Une erreur imprévue est survenue lors de la création du fichier " + fileName);
+
+            // Entête des paramètres
+            fillParamsLead(sheet, rownum);
+            ++rownum;
+
+            // Paramètres utilisés
+            fillParamsValues(executionParameters, sheet, rownum);
+            ++rownum;
+
+            // Entête de l'évaluation
+            fillLead(sheet, rownum);
+
+            // Evaluation
+            for (Evaluation evaluation : evaluations) {
+                rownum++;
+                fillEvaluationRow(evaluation, sheet, rownum, iteration);
+                ++iteration;
+            }
+
+            if (evaluations.size() > 1) {
+                ++rownum;
+
+                // Moyenne des évaluations si nécessaire
+                fillEvaluationAvgRow(executionParameters, sheet, rownum);
+                XSSFFormulaEvaluator.evaluateAllFormulaCells(workbook);
+            }
+
+            for (int i = 0; i < 10; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            file.close();
+        } catch (IOException ex) {
+            return;
+        }
+
+        // Enregistre les modifications dans le fichier
+        try {
+            FileOutputStream outFile = new FileOutputStream(FILE_NAME);
+            workbook.write(outFile);
+            outFile.close();
+            System.out.println("Results saved successfully in " + FILE_NAME);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
     /**
-     * Génère un nom de fichier de sauvegarde des statistiques.
-     * Ce nom contient notamment la timestamp de création du fichier.
-     *
-     * @return Nom de fichier.
+     * Vide les données présentes du fichier Excel en vue d'une nouvelle simulation.
      */
-    private String generateFileName() {
-        return String.format("%s/%s-%s.%s", FOLDER, FILE_NAME_PREFIX, DATE_FORMAT.format(new Date()), FILE_FORMAT);
+    public void cleanExcel() {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        try {
+            File file = new File(FILE_NAME);
+            file.getParentFile().mkdirs();
+
+            FileOutputStream outFile = new FileOutputStream(file);
+            workbook.write(outFile);
+            outFile.close();
+        } catch (IOException exc) {
+            System.out.println(exc.getMessage() + ": tentative de création échouée...");
+        }
     }
+
 }
