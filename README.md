@@ -3,7 +3,13 @@
 
 ## Structure du projet
 
+Le rendu du projet est le fichier `Rapport de TP de SMA.pdf` situé dans le dossier `doc/rendu/` à la racine du projet.
+Dans ce même dossier se trouvent les fichiers Excels qui ont été à la base de notre analyse, situés dans le sous-dossier `sample`. 
 
+Les autres dossiers sont les suivants :
+- `doc/project` contient les énoncés du projet.
+- `doc/screenshots/` contient des screenshots de l'application, utilisées dans ce README.
+- `src/` contient les sources documentées de l'application.
 
 ## Prérequis
 - Java 8.
